@@ -1,0 +1,56 @@
+[
+  {
+    "id": 1,
+    "seed": "cyberpunk-city",
+    "title": "Upcoming Project",
+    "description": "System architecture, performance optimization, and algorithmic interface design currently under development.",
+    "tags": ["React", "Node.js", "MongoDB"],
+    "liveLink": "#",
+    "githubLink": "#"
+  },
+  {
+    "id": 2,
+    "seed": "neural-network",
+    "title": "Upcoming Project",
+    "description": "System architecture, performance optimization, and algorithmic interface design currently under development.",
+    "tags": ["Python", "TypeScript", "API"],
+    "liveLink": "#",
+    "githubLink": "#"
+  },
+  {
+    "id": 3,
+    "seed": "abstract-tech",
+    "title": "Upcoming Project",
+    "description": "System architecture, performance optimization, and algorithmic interface design currently under development.",
+    "tags": ["Vue.js", "GraphQL", "AWS"],
+    "liveLink": "#",
+    "githubLink": "#"
+  },
+  {
+    "id": 4,
+    "seed": "digital-art",
+    "title": "Upcoming Project",
+    "description": "System architecture, performance optimization, and algorithmic interface design currently under development.",
+    "tags": ["Next.js", "Prisma", "Redis"],
+    "liveLink": "#",
+    "githubLink": "#"
+  },
+  {
+    "id": 5,
+    "seed": "neon-circuit",
+    "title": "Upcoming Project",
+    "description": "System architecture, performance optimization, and algorithmic interface design currently under development.",
+    "tags": ["React Native", "Firebase", "AI"],
+    "liveLink": "#",
+    "githubLink": "#"
+  },
+  {
+    "id": 6,
+    "seed": "space-interface",
+    "title": "Upcoming Project",
+    "description": "System architecture, performance optimization, and algorithmic interface design currently under development.",
+    "tags": ["Svelte", "Docker", "CI/CD"],
+    "liveLink": "#",
+    "githubLink": "#"
+  }
+]
