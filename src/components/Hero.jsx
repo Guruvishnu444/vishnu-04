@@ -60,8 +60,8 @@ function Hero() {
           variants={itemVariants}
           className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-off-white leading-tight mb-6 text-balance"
         >
-          Crafting Digital{' '}
-          <span className="gradient-text">Experiences That Matter</span>
+          Hello,I'm{' '}
+          <span className="gradient-text">Guruvishnu S</span>
         </motion.h1>
 
         <motion.p
@@ -94,7 +94,7 @@ function Hero() {
             className="px-8 py-4 rounded-xl glass-card text-off-white font-semibold hover:border-sky-neon/50 transition-all flex items-center gap-2 border border-white/10"
           >
             <FileArrowDown size={20} weight="bold" />
-            Download Resume
+             Resume Here
           </a>
         </motion.div>
 
