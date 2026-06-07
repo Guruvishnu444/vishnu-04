@@ -1,5 +1,67 @@
-import { motion, useScroll, useTransform } from 'framer-motion'
+import { motion, useScroll, useTransform, useMotionValue, useSpring } from 'framer-motion'
 import { ArrowDown, FileArrowDown } from '@phosphor-icons/react'
+
+function MagneticButton({ children, className, onClick }) {
+  const x = useMotionValue(0)
+  const y = useMotionValue(0)
+  const springX = useSpring(x, { stiffness: 150, damping: 20 })
+  const springY = useSpring(y, { stiffness: 150, damping: 20 })
+
+  const handleMouse = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect()
+    x.set((e.clientX - rect.left - rect.width / 2) * 0.3)
+    y.set((e.clientY - rect.top - rect.height / 2) * 0.3)
+  }
+
+  const handleMouseLeave = () => {
+    x.set(0)
+    y.set(0)
+  }
+
+  return (
+    <motion.button
+      style={{ x: springX, y: springY }}
+      onMouseMove={handleMouse}
+      onMouseLeave={handleMouseLeave}
+      onClick={onClick}
+      className={className}
+    >
+      {children}
+    </motion.button>
+  )
+}
+
+function MagneticLink({ children, className, href }) {
+  const x = useMotionValue(0)
+  const y = useMotionValue(0)
+  const springX = useSpring(x, { stiffness: 150, damping: 20 })
+  const springY = useSpring(y, { stiffness: 150, damping: 20 })
+
+  const handleMouse = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect()
+    x.set((e.clientX - rect.left - rect.width / 2) * 0.3)
+    y.set((e.clientY - rect.top - rect.height / 2) * 0.3)
+  }
+
+  const handleMouseLeave = () => {
+    x.set(0)
+    y.set(0)
+  }
+
+  return (
+    <motion.a
+      style={{ x: springX, y: springY }}
+      onMouseMove={handleMouse}
+      onMouseLeave={handleMouseLeave}
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={className}
+    >
+      {children}
+    </motion.a>
+  )
+}
 
 function Hero() {
   const { scrollY } = useScroll()
@@ -60,7 +122,7 @@ function Hero() {
           variants={itemVariants}
           className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-off-white leading-tight mb-6 text-balance"
         >
-          Hello,I'm{' '}
+          Hello, I'm{' '}
           <span className="gradient-text">Guruvishnu S</span>
         </motion.h1>
 
@@ -76,7 +138,8 @@ function Hero() {
           variants={itemVariants}
           className="flex flex-col sm:flex-row items-center justify-center gap-4"
         >
-          <button
+          {/* ✅ Magnetic "View My Work" button */}
+          <MagneticButton
             onClick={scrollToProjects}
             className="group px-8 py-4 rounded-xl bg-gradient-to-r from-sky-neon to-lavender text-midnight font-semibold hover:opacity-90 transition-all flex items-center gap-2"
           >
@@ -86,16 +149,16 @@ function Hero() {
               weight="bold"
               className="group-hover:translate-y-1 transition-transform"
             />
-          </button>
-          <a
+          </MagneticButton>
+
+          {/* ✅ Magnetic "Resume" link */}
+          <MagneticLink
             href="/resume.pdf"
-            target="_blank"
-            rel="noopener noreferrer"
             className="px-8 py-4 rounded-xl glass-card text-off-white font-semibold hover:border-sky-neon/50 transition-all flex items-center gap-2 border border-white/10"
           >
             <FileArrowDown size={20} weight="bold" />
-             Resume Here
-          </a>
+            Resume Here
+          </MagneticLink>
         </motion.div>
 
         {/* Scroll Indicator */}
