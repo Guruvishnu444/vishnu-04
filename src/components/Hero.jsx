@@ -138,7 +138,7 @@ function Hero() {
           variants={itemVariants}
           className="flex flex-col sm:flex-row items-center justify-center gap-4"
         >
-          {/* ✅ Magnetic "View My Work" button */}
+          {/* Magnetic "View My Work" button */}
           <MagneticButton
             onClick={scrollToProjects}
             className="group px-8 py-4 rounded-xl bg-gradient-to-r from-sky-neon to-lavender text-midnight font-semibold hover:opacity-90 transition-all flex items-center gap-2"
@@ -151,7 +151,7 @@ function Hero() {
             />
           </MagneticButton>
 
-          {/* ✅ Magnetic "Resume" link */}
+          {/* Magnetic "Resume" link */}
           <MagneticLink
             href="/resume.pdf"
             className="px-8 py-4 rounded-xl glass-card text-off-white font-semibold hover:border-sky-neon/50 transition-all flex items-center gap-2 border border-white/10"
@@ -173,7 +173,8 @@ function Hero() {
             transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
             className="w-6 h-10 rounded-full border-2 border-off-white/30 flex items-start justify-center p-2"
           >
-            <motion.div className="w-1.5 h-1.5 rounded-full bg-sky-neon" />
+            {/* Changed from sky-neon to off-white to eliminate neon indicator glow */}
+            <motion.div className="w-1.5 h-1.5 rounded-full bg-off-white" />
           </motion.div>
         </motion.div>
       </motion.div>

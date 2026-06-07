@@ -1,7 +1,6 @@
 import { lazy, Suspense } from 'react'
 import { Toaster } from 'react-hot-toast'
 import Navbar from './components/Navbar'
-import CursorGlow from './components/CursorGlow'
 import InteractiveBackground from './components/InteractiveBackground'
 import Footer from './components/Footer'
 
@@ -24,7 +23,6 @@ function App() {
       {/* Interactive Framer Motion Background */}
       <InteractiveBackground />
 
-      <CursorGlow />
       <Navbar />
 
       <main>
