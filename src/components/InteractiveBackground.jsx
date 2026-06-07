@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { motion, useMotionValue } from 'framer-motion'
 
-function ParticleCanvas({ mouseX, mouseY }) {
+function ParticleCanvas() {
   const canvasRef = useRef(null)
   const animationRef = useRef(null)
   const particlesRef = useRef([])
@@ -43,7 +43,6 @@ function ParticleCanvas({ mouseX, mouseY }) {
         const dist = Math.sqrt(dx * dx + dy * dy)
         const repelDist = 120
 
-        // Repel from mouse — particles scatter away
         if (dist < repelDist && dist > 0) {
           const force = (repelDist - dist) / repelDist
           const angle = Math.atan2(dy, dx)
@@ -98,7 +97,6 @@ function ParticleCanvas({ mouseX, mouseY }) {
           }
         }
 
-        // Lines to mouse
         const mdx = p1.x - mouseX
         const mdy = p1.y - mouseY
         const mdist = Math.sqrt(mdx * mdx + mdy * mdy)
@@ -168,18 +166,10 @@ function ParticleCanvas({ mouseX, mouseY }) {
 
 export default function InteractiveBackground() {
   const [mounted, setMounted] = useState(false)
-  const mouseX = useMotionValue(0.5)
-  const mouseY = useMotionValue(0.5)
 
   useEffect(() => {
     setMounted(true)
-    const handleMouseMove = (e) => {
-      mouseX.set(e.clientX / window.innerWidth)
-      mouseY.set(e.clientY / window.innerHeight)
-    }
-    window.addEventListener('mousemove', handleMouseMove)
-    return () => window.removeEventListener('mousemove', handleMouseMove)
-  }, [mouseX, mouseY])
+  }, [])
 
   if (!mounted) return null
 
@@ -189,9 +179,9 @@ export default function InteractiveBackground() {
       <div className="absolute inset-0" style={{ backgroundColor: '#000000' }} />
 
       {/* Particle network canvas */}
-      <ParticleCanvas mouseX={mouseX} mouseY={mouseY} />
+      <ParticleCanvas />
 
-      {/* Subtle vignette — darkens corners slightly */}
+      {/* Subtle vignette */}
       <div
         className="absolute inset-0"
         style={{
