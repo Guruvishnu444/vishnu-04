@@ -171,6 +171,9 @@ function Footer() {
           <p className="text-off-white/50 text-sm">
             © 2025 Guruvishnu S. All rights reserved.
           </p>
+          <p className="text-off-white/30 text-xs mt-2">
+            Made with lots of ☕️ and a whole lot of ❤️.
+          </p>
         </motion.div>
       </div>
     </footer>
