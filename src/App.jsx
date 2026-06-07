@@ -19,8 +19,8 @@ function LoadingFallback() {
 
 function App() {
   return (
-    <div className="relative min-h-screen overflow-hidden bg-slate-950">
-      {/* Interactive Framer Motion Background */}
+    <div className="relative min-h-screen overflow-hidden bg-[#333333]">
+      {/* Interactive Network Background Layer */}
       <InteractiveBackground />
 
       <Navbar />
@@ -69,4 +69,3 @@ function App() {
 }
 
 export default App
-
