@@ -106,27 +106,24 @@ function Navbar() {
       role="navigation"
       aria-label="Main navigation"
     >
-      {/* Particle canvas — same as footer */}
       <ParticleCanvas />
 
       <div className="relative z-10 max-w-7xl mx-auto px-6 py-4">
         <div className="flex items-center justify-between">
-          {/* Logo */}
+
+          {/* Logo — name only, no GV box */}
           <motion.a
             href="#"
             onClick={(e) => {
               e.preventDefault()
               window.scrollTo({ top: 0, behavior: 'smooth' })
             }}
-            className="flex items-center gap-3 group"
+            className="flex items-center group"
             aria-label="Guruvishnu - Home"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-sky-neon to-lavender flex items-center justify-center">
-              <span className="text-midnight font-bold text-lg">GV</span>
-            </div>
             <span className="text-off-white font-semibold text-lg group-hover:text-sky-neon transition-colors">
               Guruvishnu
             </span>
