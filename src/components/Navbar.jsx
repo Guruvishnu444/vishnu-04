@@ -1,6 +1,71 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { List, X } from '@phosphor-icons/react'
+
+function ParticleCanvas() {
+  const canvasRef = useRef(null)
+
+  useEffect(() => {
+    const canvas = canvasRef.current
+    if (!canvas) return
+    const ctx = canvas.getContext('2d')
+
+    const resize = () => {
+      canvas.width = canvas.offsetWidth * window.devicePixelRatio
+      canvas.height = canvas.offsetHeight * window.devicePixelRatio
+      ctx.scale(window.devicePixelRatio, window.devicePixelRatio)
+    }
+    resize()
+    window.addEventListener('resize', resize)
+
+    const particles = []
+    const particleCount = 50
+
+    for (let i = 0; i < particleCount; i++) {
+      particles.push({
+        x: Math.random() * canvas.offsetWidth,
+        y: Math.random() * canvas.offsetHeight,
+        vx: (Math.random() - 0.5) * 0.5,
+        vy: (Math.random() - 0.5) * 0.5,
+        radius: Math.random() * 2 + 1,
+      })
+    }
+
+    let animationId
+    const animate = () => {
+      ctx.clearRect(0, 0, canvas.offsetWidth, canvas.offsetHeight)
+
+      particles.forEach((p) => {
+        p.x += p.vx
+        p.y += p.vy
+
+        if (p.x < 0 || p.x > canvas.offsetWidth) p.vx *= -1
+        if (p.y < 0 || p.y > canvas.offsetHeight) p.vy *= -1
+
+        ctx.beginPath()
+        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2)
+        ctx.fillStyle = 'rgba(56, 189, 248, 0.3)'
+        ctx.fill()
+      })
+
+      animationId = requestAnimationFrame(animate)
+    }
+    animate()
+
+    return () => {
+      window.removeEventListener('resize', resize)
+      cancelAnimationFrame(animationId)
+    }
+  }, [])
+
+  return (
+    <canvas
+      ref={canvasRef}
+      className="absolute inset-0 w-full h-full pointer-events-none"
+      aria-hidden="true"
+    />
+  )
+}
 
 function Navbar() {
   const [scrolled, setScrolled] = useState(false)
@@ -33,7 +98,7 @@ function Navbar() {
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.6, ease: 'easeOut' }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 overflow-hidden ${
         scrolled
           ? 'bg-midnight/80 backdrop-blur-lg border-b border-white/10'
           : 'bg-transparent'
@@ -41,10 +106,13 @@ function Navbar() {
       role="navigation"
       aria-label="Main navigation"
     >
-      <div className="max-w-7xl mx-auto px-6 py-4">
+      {/* Particle canvas — same as footer */}
+      <ParticleCanvas />
+
+      <div className="relative z-10 max-w-7xl mx-auto px-6 py-4">
         <div className="flex items-center justify-between">
           {/* Logo */}
-          <a
+          <motion.a
             href="#"
             onClick={(e) => {
               e.preventDefault()
@@ -52,6 +120,9 @@ function Navbar() {
             }}
             className="flex items-center gap-3 group"
             aria-label="Guruvishnu - Home"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
           >
             <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-sky-neon to-lavender flex items-center justify-center">
               <span className="text-midnight font-bold text-lg">GV</span>
@@ -59,10 +130,15 @@ function Navbar() {
             <span className="text-off-white font-semibold text-lg group-hover:text-sky-neon transition-colors">
               Guruvishnu
             </span>
-          </a>
+          </motion.a>
 
           {/* Desktop Nav Links */}
-          <div className="hidden md:flex items-center gap-8">
+          <motion.div
+            className="hidden md:flex items-center gap-8"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+          >
             {navLinks.map((link) => (
               <button
                 key={link.id}
@@ -72,17 +148,22 @@ function Navbar() {
                 {link.label}
               </button>
             ))}
-          </div>
+          </motion.div>
 
           {/* CTA Button */}
-          <div className="hidden md:block">
+          <motion.div
+            className="hidden md:block"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+          >
             <a
               href="mailto:guruvishnu4gd@gmail.com"
               className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-sky-neon to-lavender text-midnight font-semibold hover:opacity-90 transition-opacity"
             >
               Hii
             </a>
-          </div>
+          </motion.div>
 
           {/* Mobile Menu Toggle */}
           <button
