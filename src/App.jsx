@@ -1,6 +1,7 @@
 import { lazy, Suspense } from 'react'
 import { Toaster } from 'react-hot-toast'
 import Navbar from './components/Navbar'
+import InteractiveBackground from './components/InteractiveBackground'
 import Footer from './components/Footer'
 
 const Hero = lazy(() => import('./components/Hero'))
@@ -19,6 +20,9 @@ function LoadingFallback() {
 function App() {
   return (
     <div className="relative min-h-screen overflow-hidden bg-slate-950">
+      {/* Interactive Framer Motion Background */}
+      <InteractiveBackground />
+
       <Navbar />
 
       <main>
@@ -65,3 +69,4 @@ function App() {
 }
 
 export default App
+
