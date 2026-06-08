@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react'
 import { motion, useScroll, useTransform, useMotionValue, useSpring } from 'framer-motion'
 import { ArrowDown, FileArrowDown } from '@phosphor-icons/react'
 
@@ -63,27 +64,54 @@ function MagneticLink({ children, className, href }) {
   )
 }
 
+// Typing effect hook
+function useTypingEffect(text, speed = 80, startDelay = 600) {
+  const [displayed, setDisplayed] = useState('')
+  const [done, setDone] = useState(false)
+
+  useEffect(() => {
+    let timeout
+    let i = 0
+    setDisplayed('')
+    setDone(false)
+
+    timeout = setTimeout(() => {
+      const interval = setInterval(() => {
+        i++
+        setDisplayed(text.slice(0, i))
+        if (i >= text.length) {
+          clearInterval(interval)
+          setDone(true)
+        }
+      }, speed)
+      return () => clearInterval(interval)
+    }, startDelay)
+
+    return () => clearTimeout(timeout)
+  }, [text, speed, startDelay])
+
+  return { displayed, done }
+}
+
 function Hero() {
   const { scrollY } = useScroll()
   const opacity = useTransform(scrollY, [0, 400], [1, 0])
   const scale = useTransform(scrollY, [0, 400], [1, 0.95])
   const y = useTransform(scrollY, [0, 400], [0, 100])
 
+  const fullName = 'Guruvishnu S'
+  const { displayed, done } = useTypingEffect(fullName, 80, 800)
+
   const scrollToProjects = () => {
     const element = document.getElementById('projects')
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' })
-    }
+    if (element) element.scrollIntoView({ behavior: 'smooth' })
   }
 
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      transition: {
-        staggerChildren: 0.15,
-        delayChildren: 0.2,
-      },
+      transition: { staggerChildren: 0.15, delayChildren: 0.2 },
     },
   }
 
@@ -92,11 +120,7 @@ function Hero() {
     visible: {
       opacity: 1,
       y: 0,
-      transition: {
-        type: 'spring',
-        stiffness: 100,
-        damping: 15,
-      },
+      transition: { type: 'spring', stiffness: 100, damping: 15 },
     },
   }
 
@@ -123,7 +147,17 @@ function Hero() {
           className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-off-white leading-tight mb-6 text-balance"
         >
           Hello, I'm{' '}
-          <span className="gradient-text">Guruvishnu S</span>
+          <span className="gradient-text">
+            {displayed}
+            {/* Blinking cursor while typing */}
+            {!done && (
+              <motion.span
+                animate={{ opacity: [1, 0] }}
+                transition={{ duration: 0.5, repeat: Infinity, repeatType: 'reverse' }}
+                className="inline-block ml-1 w-[3px] h-[0.85em] bg-sky-400 align-middle"
+              />
+            )}
+          </span>
         </motion.h1>
 
         <motion.p
@@ -138,20 +172,14 @@ function Hero() {
           variants={itemVariants}
           className="flex flex-col sm:flex-row items-center justify-center gap-4"
         >
-          {/* Magnetic "View My Work" button */}
           <MagneticButton
             onClick={scrollToProjects}
             className="group px-8 py-4 rounded-xl bg-gradient-to-r from-sky-neon to-lavender text-midnight font-semibold hover:opacity-90 transition-all flex items-center gap-2"
           >
             View My Work
-            <ArrowDown
-              size={20}
-              weight="bold"
-              className="group-hover:translate-y-1 transition-transform"
-            />
+            <ArrowDown size={20} weight="bold" className="group-hover:translate-y-1 transition-transform" />
           </MagneticButton>
 
-          {/* Magnetic "Resume" link */}
           <MagneticLink
             href="/resume.pdf"
             className="px-8 py-4 rounded-xl glass-card text-off-white font-semibold hover:border-sky-neon/50 transition-all flex items-center gap-2 border border-white/10"
@@ -173,7 +201,6 @@ function Hero() {
             transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
             className="w-6 h-10 rounded-full border-2 border-off-white/30 flex items-start justify-center p-2"
           >
-            {/* Changed from sky-neon to off-white to eliminate neon indicator glow */}
             <motion.div className="w-1.5 h-1.5 rounded-full bg-off-white" />
           </motion.div>
         </motion.div>

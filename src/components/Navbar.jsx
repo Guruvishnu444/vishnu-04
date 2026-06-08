@@ -19,9 +19,7 @@ function ParticleCanvas() {
     window.addEventListener('resize', resize)
 
     const particles = []
-    const particleCount = 50
-
-    for (let i = 0; i < particleCount; i++) {
+    for (let i = 0; i < 50; i++) {
       particles.push({
         x: Math.random() * canvas.offsetWidth,
         y: Math.random() * canvas.offsetHeight,
@@ -34,20 +32,16 @@ function ParticleCanvas() {
     let animationId
     const animate = () => {
       ctx.clearRect(0, 0, canvas.offsetWidth, canvas.offsetHeight)
-
       particles.forEach((p) => {
         p.x += p.vx
         p.y += p.vy
-
         if (p.x < 0 || p.x > canvas.offsetWidth) p.vx *= -1
         if (p.y < 0 || p.y > canvas.offsetHeight) p.vy *= -1
-
         ctx.beginPath()
         ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2)
         ctx.fillStyle = 'rgba(56, 189, 248, 0.3)'
         ctx.fill()
       })
-
       animationId = requestAnimationFrame(animate)
     }
     animate()
@@ -68,30 +62,41 @@ function ParticleCanvas() {
 }
 
 function Navbar() {
-  const [scrolled, setScrolled] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 60)
-    }
-    window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
-
-  const scrollToSection = (id) => {
-    const element = document.getElementById(id)
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' })
-    }
-    setMobileMenuOpen(false)
-  }
+  const [activeSection, setActiveSection] = useState('')
 
   const navLinks = [
     { label: 'About', id: 'about' },
     { label: 'Projects', id: 'projects' },
     { label: 'Contact', id: 'contact' },
   ]
+
+  // Detect which section is in view
+  useEffect(() => {
+    const observers = []
+
+    navLinks.forEach(({ id }) => {
+      const el = document.getElementById(id)
+      if (!el) return
+
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) setActiveSection(id)
+        },
+        { threshold: 0.4 }
+      )
+      observer.observe(el)
+      observers.push(observer)
+    })
+
+    return () => observers.forEach((o) => o.disconnect())
+  }, [])
+
+  const scrollToSection = (id) => {
+    const element = document.getElementById(id)
+    if (element) element.scrollIntoView({ behavior: 'smooth' })
+    setMobileMenuOpen(false)
+  }
 
   return (
     <motion.nav
@@ -107,7 +112,7 @@ function Navbar() {
       <div className="relative z-10 max-w-7xl mx-auto px-6 py-4">
         <div className="flex items-center justify-between">
 
-          {/* Logo — name only, no GV box */}
+          {/* Logo */}
           <motion.a
             href="#"
             onClick={(e) => {
@@ -136,9 +141,15 @@ function Navbar() {
               <button
                 key={link.id}
                 onClick={() => scrollToSection(link.id)}
-                className="text-off-white/80 hover:text-sky-neon transition-colors font-medium"
+                className="relative text-off-white/80 hover:text-white transition-colors font-medium pb-1 group"
               >
                 {link.label}
+                {/* White underline — shows when active */}
+                <span
+                  className={`absolute bottom-0 left-0 h-[2px] bg-white rounded-full transition-all duration-300 ${
+                    activeSection === link.id ? 'w-full' : 'w-0 group-hover:w-full'
+                  }`}
+                />
               </button>
             ))}
           </motion.div>
@@ -185,7 +196,11 @@ function Navbar() {
                 <button
                   key={link.id}
                   onClick={() => scrollToSection(link.id)}
-                  className="text-left text-off-white/80 hover:text-sky-neon transition-colors font-medium py-2"
+                  className={`text-left transition-colors font-medium py-2 border-b-2 ${
+                    activeSection === link.id
+                      ? 'text-white border-white'
+                      : 'text-off-white/80 border-transparent hover:text-sky-neon'
+                  }`}
                 >
                   {link.label}
                 </button>
