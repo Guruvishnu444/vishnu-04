@@ -6,6 +6,7 @@ import Footer from './components/Footer'
 
 const Hero = lazy(() => import('./components/Hero'))
 const About = lazy(() => import('./components/About'))
+const Journey = lazy(() => import('./components/Journey'))
 const Projects = lazy(() => import('./components/Projects'))
 const Contact = lazy(() => import('./components/Contact'))
 
@@ -20,9 +21,7 @@ function LoadingFallback() {
 function App() {
   return (
     <div className="relative min-h-screen overflow-hidden bg-[#333333]">
-      {/* Interactive Network Background Layer */}
       <InteractiveBackground />
-
       <Navbar />
 
       <main>
@@ -31,6 +30,9 @@ function App() {
         </Suspense>
         <Suspense fallback={<LoadingFallback />}>
           <About />
+        </Suspense>
+        <Suspense fallback={<LoadingFallback />}>
+          <Journey />
         </Suspense>
         <Suspense fallback={<LoadingFallback />}>
           <Projects />
@@ -51,16 +53,10 @@ function App() {
             border: '1px solid rgba(255, 255, 255, 0.1)',
           },
           success: {
-            iconTheme: {
-              primary: '#38BDF8',
-              secondary: '#0B0F19',
-            },
+            iconTheme: { primary: '#38BDF8', secondary: '#0B0F19' },
           },
           error: {
-            iconTheme: {
-              primary: '#EF4444',
-              secondary: '#0B0F19',
-            },
+            iconTheme: { primary: '#EF4444', secondary: '#0B0F19' },
           },
         }}
       />
