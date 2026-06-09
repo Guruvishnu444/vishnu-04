@@ -15,7 +15,7 @@ const timelineData = [
     title: 'BSc. Information Technology',
     institution: 'KPR College of Arts, Science and Research (KPRCAS), Uthupalayam.',
     period: '2024 - Present',
-    description: 'CGPA — Coming soon.',
+    description: '',
     side: 'right',
   },
 ]
