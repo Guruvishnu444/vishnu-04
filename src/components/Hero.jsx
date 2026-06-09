@@ -137,9 +137,10 @@ function Hero() {
         className="max-w-4xl mx-auto text-center"
       >
         <motion.div variants={itemVariants} className="mb-6">
-          <span className="inline-block px-4 py-2 rounded-full glass-card text-sm text-off-white/80 font-medium">
-            Full Stack Developer
-          </span>
+         <span class="inline-block px-4 py-2 text-sm font-bold text-white bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-xl shadow-sm">
+  Full Stack Developer
+</span>
+
         </motion.div>
 
         <motion.h1
