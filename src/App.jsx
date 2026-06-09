@@ -3,6 +3,8 @@ import { Toaster } from 'react-hot-toast'
 import Navbar from './components/Navbar'
 import InteractiveBackground from './components/InteractiveBackground'
 import Footer from './components/Footer'
+import Journey from './components/journey';
+
 
 const Hero = lazy(() => import('./components/Hero'))
 const About = lazy(() => import('./components/About'))
