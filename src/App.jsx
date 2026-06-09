@@ -7,7 +7,6 @@ const Journey = lazy(() => import('./components/journey')) //  KEEP THIS ONE
 
 const Hero = lazy(() => import('./components/Hero'))
 const About = lazy(() => import('./components/About'))
-const Journey = lazy(() => import('./components/Journey'))
 const Projects = lazy(() => import('./components/Projects'))
 const Contact = lazy(() => import('./components/Contact'))
 
