@@ -116,17 +116,13 @@ function ParticleCanvas() {
 
     const animate = () => {
       ctx.clearRect(0, 0, width, height)
-
       const mx = mouseRef.current.x
       const my = mouseRef.current.y
-
       drawConnections(particlesRef.current, mx, my)
-
       particlesRef.current.forEach(p => {
         p.update(mx, my)
         p.draw(ctx)
       })
-
       animationRef.current = requestAnimationFrame(animate)
     }
 
@@ -175,8 +171,8 @@ export default function InteractiveBackground() {
 
   return (
     <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
-      {/* Pure black background */}
-      <div className="absolute inset-0" style={{ backgroundColor: '#000000' }} />
+      {/* Dark navy background */}
+      <div className="absolute inset-0" style={{ backgroundColor: '#0A0F1E' }} />
 
       {/* Particle network canvas */}
       <ParticleCanvas />
@@ -185,7 +181,7 @@ export default function InteractiveBackground() {
       <div
         className="absolute inset-0"
         style={{
-          background: 'radial-gradient(ellipse at 50% 50%, transparent 40%, rgba(0,0,0,0.5) 100%)',
+          background: 'radial-gradient(ellipse at 50% 50%, transparent 40%, rgba(5, 8, 18, 0.6) 100%)',
         }}
       />
     </div>
