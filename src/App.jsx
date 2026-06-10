@@ -20,7 +20,7 @@ function LoadingFallback() {
 
 function App() {
   return (
-    <div className="relative min-h-screen overflow-hidden bg-[#0A0F1E]">
+    <div className="relative min-h-screen overflow-hidden bg-[#B8BABE]">
       <InteractiveBackground />
       <Navbar />
 
