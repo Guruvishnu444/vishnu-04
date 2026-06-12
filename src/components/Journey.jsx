@@ -1,6 +1,6 @@
 import { useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
-import { useTheme } from './ThemeContext'
+import { useTheme } from '../ThemeContext'
 
 const timelineData = [
   {

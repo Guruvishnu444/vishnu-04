@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
-import { useTheme } from './ThemeContext'
+import { useTheme } from '../ThemeContext'
 
 function SkeletonCard({ dark }) {
   const shimmer = dark ? 'bg-white/10' : 'bg-black/10'
