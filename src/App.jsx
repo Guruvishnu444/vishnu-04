@@ -1,6 +1,7 @@
 import { lazy, Suspense } from 'react'
 import { Toaster } from 'react-hot-toast'
-import { ThemeProvider, useTheme } from './ThemeContext.jsx'
+import { ThemeProvider, useTheme } from './ThemeContext'
+import { ThemeProvider } from './ThemeContext'
 import Navbar from './components/Navbar'
 import InteractiveBackground from './components/InteractiveBackground'
 import Footer from './components/Footer'
