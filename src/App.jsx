@@ -12,7 +12,8 @@ const Projects = lazy(() => import('./components/Projects'))
 const Contact = lazy(() => import('./components/Contact'))
 
 function LoadingFallback() {
-  const { dark } = useTheme()
+  const theme = useTheme()
+const dark = theme?.dark ?? true
   return (
     <div className="min-h-[50vh] flex items-center justify-center">
       <div className={`w-8 h-8 border-2 border-t-transparent rounded-full animate-spin ${dark ? 'border-sky-400' : 'border-sky-500'}`} />
