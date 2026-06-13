@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect } from 'react'
 
-const ThemeContext = createContext({ dark: true, toggle: () => {} }) // ✅ "toggle" not "toggleTheme"
+const ThemeContext = createContext()
 
 export function ThemeProvider({ children }) {
   const [dark, setDark] = useState(true)
@@ -18,7 +18,7 @@ export function ThemeProvider({ children }) {
   }
 
   return (
-    <ThemeContext.Provider value={{ dark, toggle }}> {/* ✅ consistent */}
+    <ThemeContext.Provider value={{ dark, toggle }}>
       {children}
     </ThemeContext.Provider>
   )
