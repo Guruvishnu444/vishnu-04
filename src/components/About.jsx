@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion'
 import { Code, FileHtml, FileCss, FileJs, Atom, BracketsAngle } from '@phosphor-icons/react'
-import { useTheme } from './ThemeContext'
+import { useTheme } from '../ThemeContext'
 
 const skills = [
   { name: 'HTML5', icon: FileHtml },

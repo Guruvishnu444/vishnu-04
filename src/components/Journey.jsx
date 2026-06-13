@@ -1,6 +1,6 @@
 import { useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
-import { useTheme } from './ThemeContext'
+import { useTheme } from '../ThemeContext'
 
 const timelineData = [
   { id: 1, title: 'Schooling', institution: 'Kongu Vellalar Matriculation Higher Secondary School, Karumathampatti.', period: '2021 - 2024', description: 'Scored 72% in 10th and 83.8% in 12th standard.', side: 'left' },

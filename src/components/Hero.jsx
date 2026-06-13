@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { motion, useScroll, useTransform, useMotionValue, useSpring } from 'framer-motion'
 import { ArrowDown, FileArrowDown } from '@phosphor-icons/react'
-import { useTheme } from './ThemeContext'
+import { useTheme } from '../ThemeContext'
 
 function MagneticButton({ children, className, onClick }) {
   const x = useMotionValue(0); const y = useMotionValue(0)

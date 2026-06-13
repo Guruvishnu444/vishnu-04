@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence, useScroll } from 'framer-motion'
 import { List, X, Sun, Moon } from '@phosphor-icons/react'
-import { useTheme } from './ThemeContext'
+import { useTheme } from '../ThemeContext'
 
 function ParticleCanvas({ dark }) {
   const canvasRef = useRef(null)

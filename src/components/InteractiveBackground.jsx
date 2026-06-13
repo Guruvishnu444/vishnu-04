@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { useTheme } from './ThemeContext'
+import { useTheme } from '../ThemeContext'
 
 export default function InteractiveBackground() {
   const canvasRef = useRef(null)

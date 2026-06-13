@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion'
 import { Envelope, GithubLogo, LinkedinLogo, Code } from '@phosphor-icons/react'
-import { useTheme } from './ThemeContext'
+import { useTheme } from '../ThemeContext'
 
 function Contact() {
   const { dark } = useTheme()

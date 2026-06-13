@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
 import { GithubLogo, LinkedinLogo, Code } from '@phosphor-icons/react'
-import { useTheme } from './ThemeContext'
+import { useTheme } from '../ThemeContext'
 
 function FooterParticles({ dark }) {
   const canvasRef = useRef(null)
