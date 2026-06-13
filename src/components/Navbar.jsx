@@ -135,10 +135,7 @@ function Navbar() {
               className={`font-bold text-lg transition-all duration-300 ${textColor} hover:opacity-70`}
               initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}
             >
-              {dark
-                ? <span className="bg-gradient-to-r from-red-500 to-orange-400 bg-clip-text text-transparent">Guruvishnu</span>
-                : <span className="bg-gradient-to-r from-blue-400 via-pink-400 to-violet-500 bg-clip-text text-transparent">Guruvishnu</span>
-              }
+              
             </motion.a>
 
             {/* Desktop Nav */}
@@ -161,7 +158,7 @@ function Navbar() {
               </button>
               <a href="mailto:guruvishnu4gd@gmail.com"
                 className={`px-4 py-2 rounded-full font-semibold text-sm text-white hover:opacity-90 transition-opacity ${dark ? 'bg-gradient-to-r from-red-600 to-orange-500' : 'bg-gradient-to-r from-blue-400 via-pink-400 to-violet-500'}`}>
-                Hii
+                Follow
               </a>
             </div>
 
