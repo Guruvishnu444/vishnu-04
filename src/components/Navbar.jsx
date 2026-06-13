@@ -126,8 +126,8 @@ function Navbar() {
         aria-label="Main navigation"
       >
         <ParticleCanvas dark={dark} />
-        <div className="relative z-10 w-full px-0 py-4">
-          <div className={`flex items-center justify-between ${scrolled ? "" : "max-w-7xl mx-auto px-8"}`}>
+        <div className="relative z-10 w-full px-0 py-3">
+          <div className={`flex items-center justify-between gap-8 ${scrolled ? "px-2" : "max-w-7xl mx-auto px-8"}`}>
 
             {/* Logo */}
             <motion.a href="#"
@@ -142,7 +142,7 @@ function Navbar() {
             </motion.a>
 
             {/* Desktop Nav */}
-            <div className="hidden md:flex items-center gap-10">
+            <div className="hidden md:flex items-center gap-12">
               {navLinks.map(link => (
                 <button key={link.id} onClick={() => scrollToSection(link.id)}
                   className={`relative font-medium pb-1 group transition-colors duration-300 ${mutedText} hover:opacity-100`}>
@@ -153,7 +153,7 @@ function Navbar() {
             </div>
 
             {/* Right: toggle + CTA */}
-            <div className="hidden md:flex items-center gap-4">
+            <div className="hidden md:flex items-center gap-5">
               <button onClick={toggle}
                 className={`w-9 h-9 rounded-xl flex items-center justify-center border transition-all duration-300 ${toggleBorder}`}
                 aria-label="Toggle theme">
