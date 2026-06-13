@@ -1,24 +1,10 @@
 import { useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
-import { useTheme } from '../ThemeContext'
+import { useTheme } from './ThemeContext'
 
 const timelineData = [
-  {
-    id: 1,
-    title: 'Schooling',
-    institution: 'Kongu Vellalar Matriculation Higher Secondary School, Karumathampatti.',
-    period: '2021 - 2024',
-    description: 'Scored 72% in 10th and 83.8% in 12th standard.',
-    side: 'left',
-  },
-  {
-    id: 2,
-    title: 'BSc. Information Technology',
-    institution: 'KPR College of Arts, Science and Research (KPRCAS), Uthupalayam.',
-    period: '2024 - Present',
-    description: 'CGPA — Coming soon.',
-    side: 'right',
-  },
+  { id: 1, title: 'Schooling', institution: 'Kongu Vellalar Matriculation Higher Secondary School, Karumathampatti.', period: '2021 - 2024', description: 'Scored 72% in 10th and 83.8% in 12th standard.', side: 'left' },
+  { id: 2, title: 'BSc. Information Technology', institution: 'KPR College of Arts, Science and Research (KPRCAS), Uthupalayam.', period: '2024 - Present', description: 'CGPA — Coming soon.', side: 'right' },
 ]
 
 function TimelineCard({ item, index }) {
@@ -26,10 +12,11 @@ function TimelineCard({ item, index }) {
   const inView = useInView(ref, { once: true, margin: '-80px' })
   const { dark } = useTheme()
   const isLeft = item.side === 'left'
-  const textColor = dark ? 'text-[#f5f5f5]' : 'text-[#2b2b2b]'
-  const mutedText = dark ? 'text-[#f5f5f5]/50' : 'text-[#2b2b2b]/50'
-  const cardBg = dark ? 'bg-white/5 border-white/10 hover:border-white/25' : 'bg-black/5 border-black/10 hover:border-black/25'
-  const dotBorder = dark ? 'border-white/60' : 'border-[#2b2b2b]/60'
+  const textColor = dark ? 'text-[#f5f5f5]' : 'text-[#1a1a1a]'
+  const mutedText = dark ? 'text-[#f5f5f5]/50' : 'text-[#1a1a1a]/50'
+  const bodyText = dark ? 'text-[#f5f5f5]/65' : 'text-[#1a1a1a]/65'
+  const cardBg = dark ? 'bg-white/5 border-white/10 hover:border-orange-500/30' : 'bg-black/4 border-black/10 hover:border-violet-400/30'
+  const dotBorder = dark ? 'border-orange-500' : 'border-violet-500'
 
   return (
     <div className="relative flex items-center justify-center w-full mb-20">
@@ -38,22 +25,17 @@ function TimelineCard({ item, index }) {
         animate={inView ? { opacity: 1, x: 0 } : {}}
         transition={{ duration: 0.6, ease: 'easeOut', delay: index * 0.15 }}
         className={`w-[44%] ${isLeft ? 'mr-auto pr-10' : 'ml-auto pl-10'}`}>
-        <div className={`border backdrop-blur-sm rounded-2xl p-6 transition-all duration-300 ${cardBg}`}>
+        <div className={`border rounded-2xl p-6 transition-all duration-300 ${cardBg}`}>
           <h3 className={`font-bold text-lg mb-2 ${textColor}`}>{item.title}</h3>
           <p className="font-semibold text-sm mb-1" style={{ color: '#BFA181' }}>{item.institution}</p>
           <p className={`text-sm mb-3 ${mutedText}`}>{item.period}</p>
-          <p className={`text-sm leading-relaxed ${dark ? 'text-[#f5f5f5]/70' : 'text-[#2b2b2b]/70'}`}
-            dangerouslySetInnerHTML={{
-              __html: item.description.replace(/(\d+\.?\d*%|\d+\.\d+)/g, '<strong>$1</strong>')
-            }} />
+          <p className={`text-sm leading-relaxed ${bodyText}`}
+            dangerouslySetInnerHTML={{ __html: item.description.replace(/(\d+\.?\d*%|\d+\.\d+)/g, '<strong>$1</strong>') }} />
         </div>
       </motion.div>
-      <motion.div
-        initial={{ scale: 0, opacity: 0 }}
-        animate={inView ? { scale: 1, opacity: 1 } : {}}
+      <motion.div initial={{ scale: 0, opacity: 0 }} animate={inView ? { scale: 1, opacity: 1 } : {}}
         transition={{ duration: 0.4, delay: index * 0.15 + 0.2 }}
-        className={`absolute left-1/2 -translate-x-1/2 w-4 h-4 rounded-full border-2 bg-transparent z-10 ${dotBorder}`}
-      />
+        className={`absolute left-1/2 -translate-x-1/2 w-4 h-4 rounded-full border-2 bg-transparent z-10 ${dotBorder}`} />
     </div>
   )
 }
@@ -62,32 +44,29 @@ function Journey() {
   const headingRef = useRef(null)
   const headingInView = useInView(headingRef, { once: true })
   const { dark } = useTheme()
-  const textColor = dark ? 'text-[#f5f5f5]' : 'text-[#2b2b2b]'
+  const textColor = dark ? 'text-[#f5f5f5]' : 'text-[#1a1a1a]'
+  const gradient = dark ? 'from-red-500 via-orange-400 to-red-400' : 'from-blue-400 via-pink-400 to-violet-500'
   const lineColor = dark ? 'bg-white/10' : 'bg-black/10'
 
   return (
     <section id="journey" className="relative py-24 px-6">
       <div className="max-w-5xl mx-auto">
-        <motion.div ref={headingRef}
-          initial={{ opacity: 0, y: 30 }}
-          animate={headingInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6 }}
+        <motion.div ref={headingRef} initial={{ opacity: 0, y: 30 }}
+          animate={headingInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.6 }}
           className="text-center mb-20">
           <h2 className={`text-4xl sm:text-5xl font-bold mb-4 ${textColor}`}>
             My{' '}
-            <span className="bg-gradient-to-r from-sky-400 to-purple-500 bg-clip-text text-transparent">
+            <span className={`bg-gradient-to-r ${gradient} bg-clip-text text-transparent`}>
               Journey & Education
             </span>
           </h2>
-          <p className={`text-lg max-w-xl mx-auto ${dark ? 'text-[#f5f5f5]/50' : 'text-[#2b2b2b]/50'}`}>
+          <p className={`text-lg max-w-xl mx-auto ${dark ? 'text-[#f5f5f5]/50' : 'text-[#1a1a1a]/50'}`}>
             Milestones and roles that have shaped my expertise and perspective.
           </p>
         </motion.div>
         <div className="relative">
           <div className={`absolute left-1/2 -translate-x-1/2 top-0 bottom-0 w-px ${lineColor}`} />
-          {timelineData.map((item, index) => (
-            <TimelineCard key={item.id} item={item} index={index} />
-          ))}
+          {timelineData.map((item, index) => <TimelineCard key={item.id} item={item} index={index} />)}
         </div>
       </div>
     </section>

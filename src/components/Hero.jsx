@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { motion, useScroll, useTransform, useMotionValue, useSpring } from 'framer-motion'
 import { ArrowDown, FileArrowDown } from '@phosphor-icons/react'
-import { useTheme } from '../ThemeContext'
+import { useTheme } from './ThemeContext'
 
 function MagneticButton({ children, className, onClick }) {
   const x = useMotionValue(0); const y = useMotionValue(0)
@@ -48,7 +48,7 @@ function useTypingEffect(text, speed = 80, startDelay = 600) {
       return () => clearInterval(interval)
     }, startDelay)
     return () => clearTimeout(timeout)
-  }, [text, speed, startDelay])
+  }, [text])
   return { displayed, done }
 }
 
@@ -60,11 +60,23 @@ function Hero() {
   const y = useTransform(scrollY, [0, 400], [0, 100])
   const { displayed, done } = useTypingEffect('Guruvishnu S', 80, 800)
 
-  const textColor = dark ? 'text-[#f5f5f5]' : 'text-[#2b2b2b]'
-  const mutedText = dark ? 'text-[#f5f5f5]/70' : 'text-[#2b2b2b]/70'
-  const cardBorder = dark ? 'border-white/10 hover:border-white/30 text-[#f5f5f5]' : 'border-black/10 hover:border-black/30 text-[#2b2b2b]'
-  const scrollBorder = dark ? 'border-[#f5f5f5]/30' : 'border-[#2b2b2b]/30'
-  const scrollDot = dark ? 'bg-[#f5f5f5]' : 'bg-[#2b2b2b]'
+  const textColor = dark ? 'text-[#f5f5f5]' : 'text-[#1a1a1a]'
+  const mutedText = dark ? 'text-[#f5f5f5]/65' : 'text-[#1a1a1a]/65'
+  const nameGradient = dark
+    ? 'from-red-500 via-orange-400 to-red-400'
+    : 'from-blue-400 via-pink-400 to-violet-500'
+  const cursorColor = dark ? 'bg-orange-400' : 'bg-violet-500'
+  const btnGradient = dark
+    ? 'bg-gradient-to-r from-red-600 to-orange-500'
+    : 'bg-gradient-to-r from-blue-400 via-pink-400 to-violet-500'
+  const resumeBtn = dark
+    ? 'border-white/15 text-[#f5f5f5] hover:border-orange-500/50'
+    : 'border-black/15 text-[#1a1a1a] hover:border-violet-400/50'
+  const scrollBorder = dark ? 'border-white/25' : 'border-black/25'
+  const scrollDot = dark ? 'bg-orange-400' : 'bg-violet-500'
+  const badgeGradient = dark
+    ? 'from-red-600 via-orange-500 to-red-400'
+    : 'from-blue-400 via-pink-400 to-violet-500'
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -77,13 +89,13 @@ function Hero() {
 
   return (
     <motion.section style={{ opacity, scale, y }}
-      className="relative min-h-screen flex items-center justify-center pt-20 px-6"
+      className="relative min-h-screen flex items-center justify-center pt-24 px-6"
       aria-label="Hero section">
       <motion.div variants={containerVariants} initial="hidden" animate="visible"
         className="max-w-4xl mx-auto text-center">
 
         <motion.div variants={itemVariants} className="mb-6">
-          <span className="inline-block px-4 py-2 text-sm font-bold text-white bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-xl shadow-sm">
+          <span className={`inline-block px-4 py-2 text-sm font-bold text-white bg-gradient-to-r ${badgeGradient} rounded-xl shadow-sm`}>
             Full Stack Developer
           </span>
         </motion.div>
@@ -91,14 +103,12 @@ function Hero() {
         <motion.h1 variants={itemVariants}
           className={`text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-tight mb-6 ${textColor}`}>
           Hello, I'm{' '}
-          <span className="bg-gradient-to-r from-sky-400 to-purple-500 bg-clip-text text-transparent">
+          <span className={`bg-gradient-to-r ${nameGradient} bg-clip-text text-transparent`}>
             {displayed}
             {!done && (
-              <motion.span
-                animate={{ opacity: [1, 0] }}
+              <motion.span animate={{ opacity: [1, 0] }}
                 transition={{ duration: 0.5, repeat: Infinity, repeatType: 'reverse' }}
-                className="inline-block ml-1 w-[3px] h-[0.85em] bg-sky-400 align-middle"
-              />
+                className={`inline-block ml-1 w-[3px] h-[0.85em] align-middle ${cursorColor}`} />
             )}
           </span>
         </motion.h1>
@@ -113,13 +123,13 @@ function Hero() {
           className="flex flex-col sm:flex-row items-center justify-center gap-4">
           <MagneticButton
             onClick={() => document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' })}
-            className="group px-8 py-4 rounded-xl bg-gradient-to-r from-sky-400 to-purple-500 text-white font-semibold hover:opacity-90 transition-all flex items-center gap-2">
+            className={`group px-8 py-4 rounded-xl text-white font-semibold hover:opacity-90 transition-all flex items-center gap-2 ${btnGradient}`}>
             View My Work
             <ArrowDown size={20} weight="bold" className="group-hover:translate-y-1 transition-transform" />
           </MagneticButton>
 
           <MagneticLink href="/resume.pdf"
-            className={`px-8 py-4 rounded-xl border font-semibold transition-all flex items-center gap-2 backdrop-blur-sm ${cardBorder}`}>
+            className={`px-8 py-4 rounded-xl border font-semibold transition-all flex items-center gap-2 backdrop-blur-sm ${resumeBtn}`}>
             <FileArrowDown size={20} weight="bold" />
             Resume Here
           </MagneticLink>

@@ -12,11 +12,10 @@ const Projects = lazy(() => import('./components/Projects'))
 const Contact = lazy(() => import('./components/Contact'))
 
 function LoadingFallback() {
-  const theme = useTheme()
-const dark = theme?.dark ?? true
+  const { dark } = useTheme()
   return (
     <div className="min-h-[50vh] flex items-center justify-center">
-      <div className={`w-8 h-8 border-2 border-t-transparent rounded-full animate-spin ${dark ? 'border-sky-400' : 'border-sky-500'}`} />
+      <div className={`w-8 h-8 border-2 border-t-transparent rounded-full animate-spin ${dark ? 'border-orange-400' : 'border-violet-500'}`} />
     </div>
   )
 }
@@ -24,7 +23,7 @@ const dark = theme?.dark ?? true
 function AppInner() {
   const { dark } = useTheme()
   return (
-    <div className={`relative min-h-screen overflow-hidden transition-colors duration-500 ${dark ? 'bg-[#1a1a1a]' : 'bg-[#fffaf0]'}`}>
+    <div className={`relative min-h-screen overflow-hidden transition-colors duration-500 ${dark ? 'bg-black' : 'bg-white'}`}>
       <InteractiveBackground />
       <Navbar />
       <main>
@@ -37,13 +36,13 @@ function AppInner() {
       <Footer />
       <Toaster position="bottom-right" toastOptions={{
         style: {
-          background: dark ? 'rgba(30,30,30,0.95)' : 'rgba(255,250,240,0.95)',
-          color: dark ? '#f5f5f5' : '#2b2b2b',
+          background: dark ? 'rgba(10,10,10,0.95)' : 'rgba(255,255,255,0.95)',
+          color: dark ? '#f5f5f5' : '#1a1a1a',
           backdropFilter: 'blur(10px)',
-          border: dark ? '1px solid rgba(255,255,255,0.1)' : '1px solid rgba(0,0,0,0.1)',
+          border: dark ? '1px solid rgba(255,255,255,0.08)' : '1px solid rgba(0,0,0,0.08)',
         },
-        success: { iconTheme: { primary: '#38BDF8', secondary: dark ? '#1a1a1a' : '#fffaf0' } },
-        error: { iconTheme: { primary: '#EF4444', secondary: dark ? '#1a1a1a' : '#fffaf0' } },
+        success: { iconTheme: { primary: dark ? '#f97316' : '#8b5cf6', secondary: dark ? '#000' : '#fff' } },
+        error: { iconTheme: { primary: '#ef4444', secondary: dark ? '#000' : '#fff' } },
       }} />
     </div>
   )

@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion'
 import { Code, FileHtml, FileCss, FileJs, Atom, BracketsAngle } from '@phosphor-icons/react'
-import { useTheme } from '../ThemeContext'
+import { useTheme } from './ThemeContext'
 
 const skills = [
   { name: 'HTML5', icon: FileHtml },
@@ -15,10 +15,12 @@ const skills = [
 
 function About() {
   const { dark } = useTheme()
-  const textColor = dark ? 'text-[#f5f5f5]' : 'text-[#2b2b2b]'
-  const mutedText = dark ? 'text-[#f5f5f5]/70' : 'text-[#2b2b2b]/70'
-  const cardBg = dark ? 'bg-white/5 border-white/10 hover:border-white/20' : 'bg-black/5 border-black/10 hover:border-black/20'
-  const badgeBg = dark ? 'bg-sky-400/10 text-sky-400' : 'bg-sky-500/10 text-sky-600'
+  const textColor = dark ? 'text-[#f5f5f5]' : 'text-[#1a1a1a]'
+  const mutedText = dark ? 'text-[#f5f5f5]/65' : 'text-[#1a1a1a]/65'
+  const cardBg = dark ? 'bg-white/5 border-white/10 hover:border-orange-500/30' : 'bg-black/4 border-black/10 hover:border-violet-400/30'
+  const badgeBg = dark ? 'bg-red-500/10 text-red-400' : 'bg-blue-400/10 text-blue-500'
+  const headingGradient = dark ? 'from-red-500 via-orange-400 to-red-400' : 'from-blue-400 via-pink-400 to-violet-500'
+  const iconColor = dark ? 'text-orange-400' : 'text-violet-500'
 
   return (
     <section id="about" className="relative py-24 px-6" aria-label="About section">
@@ -33,14 +35,14 @@ function About() {
             </span>
             <h2 className={`text-3xl sm:text-4xl lg:text-5xl font-bold mb-6 ${textColor}`}>
               Turning Ideas Into{' '}
-              <span className="bg-gradient-to-r from-sky-400 to-purple-500 bg-clip-text text-transparent">
+              <span className={`bg-gradient-to-r ${headingGradient} bg-clip-text text-transparent`}>
                 Digital Reality
               </span>
             </h2>
             <div className={`space-y-4 leading-relaxed ${mutedText}`}>
-              <p>Hi! I'm Guruvishnu S, a passionate Full Stack Developer with a strong foundation in modern web technologies. I specialize in building responsive, user-friendly applications that deliver exceptional experiences.</p>
-              <p>I'm currently open to internships and freelance opportunities where I can contribute my skills while continuing to grow as a developer. I love tackling complex problems and transforming them into simple, elegant solutions.</p>
-              <p>When I'm not coding, you'll find me exploring new technologies, contributing to open-source projects, or sharpening my problem-solving skills on competitive programming platforms.</p>
+              <p>Hi! I'm Guruvishnu S, a passionate Full Stack Developer with a strong foundation in modern web technologies.</p>
+              <p>I'm currently open to internships and freelance opportunities where I can contribute my skills while continuing to grow as a developer.</p>
+              <p>When I'm not coding, you'll find me exploring new technologies, contributing to open-source projects, or sharpening my problem-solving skills.</p>
             </div>
           </motion.div>
 
@@ -56,7 +58,7 @@ function About() {
                     viewport={{ once: true }} transition={{ delay: index * 0.1, duration: 0.4 }}
                     whileHover={{ scale: 1.05 }}
                     className={`border rounded-xl p-4 flex flex-col items-center gap-3 cursor-default transition-all ${cardBg}`}>
-                    <skill.icon size={32} weight="duotone" className="text-sky-400" />
+                    <skill.icon size={32} weight="duotone" className={iconColor} />
                     <span className={`text-sm font-medium ${textColor}`}>{skill.name}</span>
                   </motion.div>
                 ))}

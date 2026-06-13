@@ -23,8 +23,5 @@ export function ThemeProvider({ children }) {
     </ThemeContext.Provider>
   )
 }
-export const useTheme = () => {
-  const context = useContext(ThemeContext)
-  if (!context) return { dark: true, toggle: () => {} }
-  return context
-}
+
+export const useTheme = () => useContext(ThemeContext)
