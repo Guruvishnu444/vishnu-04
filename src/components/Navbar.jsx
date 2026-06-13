@@ -108,10 +108,10 @@ function Navbar() {
         style={{
           // shrink pill effect on scroll
           width: scrolled ? 'auto' : '100%',
-          maxWidth: scrolled ? '700px' : '100%',
+          maxWidth: scrolled ? '820px' : '100%',
           borderRadius: scrolled ? '9999px' : '0px',
-          paddingLeft: scrolled ? '24px' : '0px',
-          paddingRight: scrolled ? '24px' : '0px',
+          paddingLeft: scrolled ? '32px' : '0px',
+          paddingRight: scrolled ? '32px' : '0px',
           transition: 'all 0.4s cubic-bezier(0.4,0,0.2,1)',
           backdropFilter: 'blur(16px)',
           backgroundColor: dark
@@ -127,7 +127,7 @@ function Navbar() {
       >
         <ParticleCanvas dark={dark} />
         <div className="relative z-10 w-full px-0 py-4">
-          <div className={`flex items-center justify-between ${scrolled ? '' : 'max-w-7xl mx-auto px-6'}`}>
+          <div className={`flex items-center justify-between ${scrolled ? "" : "max-w-7xl mx-auto px-8"}`}>
 
             {/* Logo */}
             <motion.a href="#"
@@ -142,7 +142,7 @@ function Navbar() {
             </motion.a>
 
             {/* Desktop Nav */}
-            <div className="hidden md:flex items-center gap-6">
+            <div className="hidden md:flex items-center gap-10">
               {navLinks.map(link => (
                 <button key={link.id} onClick={() => scrollToSection(link.id)}
                   className={`relative font-medium pb-1 group transition-colors duration-300 ${mutedText} hover:opacity-100`}>
@@ -153,7 +153,7 @@ function Navbar() {
             </div>
 
             {/* Right: toggle + CTA */}
-            <div className="hidden md:flex items-center gap-3">
+            <div className="hidden md:flex items-center gap-4">
               <button onClick={toggle}
                 className={`w-9 h-9 rounded-xl flex items-center justify-center border transition-all duration-300 ${toggleBorder}`}
                 aria-label="Toggle theme">
