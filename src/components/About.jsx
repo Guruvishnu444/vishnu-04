@@ -12,13 +12,13 @@ const skillCategories = [
       { name: 'HTML5', icon: FileHtml },
       { name: 'CSS3', icon: FileCss },
       { name: 'JavaScript', icon: FileJs },
-      { name: 'React', icon: Atom },
+      
     ]
   },
   {
     category: 'Backend & Languages',
     skills: [
-      { name: 'Python', icon: Code },
+      
       { name: 'Java', icon: Terminal },
       { name: 'C', icon: BracketsAngle },
       { name: 'C++', icon: BracketsAngle },
@@ -28,8 +28,7 @@ const skillCategories = [
     category: 'Tools & Infra',
     skills: [
       { name: 'Git', icon: GitBranch },
-      { name: 'MySQL', icon: Database },
-      { name: 'REST APIs', icon: Cloud },
+     
       { name: 'VS Code', icon: Code },
     ]
   },
@@ -87,9 +86,9 @@ function About() {
             transition={{ duration: 0.6, type: 'spring', stiffness: 100 }}
             className="grid grid-cols-2 gap-4">
             {[
-              { value: '83.8%', label: '12th Grade Score', sub: 'Kongu Vellalar School' },
+              
               { value: '2024', label: 'Started College', sub: 'BSc IT @ KPRCAS' },
-              { value: '8+', label: 'Technologies', sub: 'Frontend & Backend' },
+              
               { value: '100%', label: 'Open to Work', sub: 'Internships & Freelance' },
             ].map((item, i) => (
               <motion.div key={i} custom={i} variants={fadeUp} initial="hidden" whileInView="visible"
