@@ -4,6 +4,7 @@ import { ThemeProvider, useTheme } from './ThemeContext'
 import Navbar from './components/Navbar'
 import InteractiveBackground from './components/InteractiveBackground'
 import Footer from './components/Footer'
+import NotFound from './components/NotFound'
 
 const Hero = lazy(() => import('./components/Hero'))
 const About = lazy(() => import('./components/About'))
@@ -11,19 +12,29 @@ const Journey = lazy(() => import('./components/Journey'))
 const Projects = lazy(() => import('./components/Projects'))
 const Contact = lazy(() => import('./components/Contact'))
 
+// Simple client-side 404 detection
+const is404 = typeof window !== 'undefined' &&
+  !['/', ''].includes(window.location.pathname) &&
+  !window.location.pathname.startsWith('/#')
+
 function LoadingFallback() {
-  const { dark = true } = useTheme()
+  const { dark } = useTheme()
   return (
     <div className="min-h-[50vh] flex items-center justify-center">
-      <div className={`w-8 h-8 border-2 border-t-transparent rounded-full animate-spin ${dark ? 'border-orange-400' : 'border-violet-500'}`} />
+      <motion-div className={`w-8 h-8 border-2 border-t-transparent rounded-full animate-spin ${dark ? 'border-orange-400' : 'border-violet-500'}`} />
     </div>
   )
 }
 
 function AppInner() {
   const { dark } = useTheme()
+
+  if (is404) {
+    return <NotFound />
+  }
+
   return (
-    <div className={`relative min-h-screen overflow-hidden transition-colors duration-500 ${dark ? 'bg-black' : 'bg-white'}`}>
+    <div className={`relative min-h-screen overflow-hidden ${dark ? 'bg-black' : 'bg-white'}`}>
       <InteractiveBackground />
       <Navbar />
       <main>
