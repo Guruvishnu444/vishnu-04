@@ -12,9 +12,9 @@ function Contact() {
   const iconColor = dark ? 'text-orange-400' : 'text-violet-500'
 
   const socialLinks = [
-    { name: 'GitHub', icon: GithubLogo, href: 'https://github.com/guruvishnu' },
-    { name: 'LinkedIn', icon: LinkedinLogo, href: 'https://linkedin.com/in/guruvishnu' },
-    { name: 'LeetCode', icon: Code, href: 'https://leetcode.com/guruvishnu' },
+    { name: 'GitHub', icon: GithubLogo, href: 'https://github.com/Guruvishnu444' },
+    { name: 'LinkedIn', icon: LinkedinLogo, href: 'https://www.linkedin.com/in/guruvishnu-s-951a67345/' },
+    { name: 'LeetCode', icon: Code, href: 'https://leetcode.com/u/GuruvishnuS/' },
   ]
 
   return (
