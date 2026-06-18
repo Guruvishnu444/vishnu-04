@@ -110,30 +110,6 @@ function Tooltip({ text, dark, children }) {
   )
 }
 
-// Marquee skill strip
-function SkillMarquee({ skills, dark, speed = 30 }) {
-  const iconColor = dark ? 'text-orange-400/70' : 'text-violet-500/70'
-  const doubled = [...skills, ...skills]
-  return (
-    <div className="overflow-hidden relative">
-      <motion.div
-        animate={{ x: ['0%', '-50%'] }}
-        transition={{ duration: speed, repeat: Infinity, ease: 'linear' }}
-        className="flex gap-8 w-max"
-      >
-        {doubled.map((s, i) => (
-          <div key={i} className={`flex items-center gap-2 opacity-60 ${iconColor}`}>
-            {icons[s.name] || <span className="w-7 h-7" />}
-            <span className={`text-xs font-medium whitespace-nowrap ${dark ? 'text-[#f5f5f5]/50' : 'text-[#1a1a1a]/50'}`}>{s.name}</span>
-          </div>
-        ))}
-      </motion.div>
-      {/* fade edges */}
-      <div className={`absolute inset-y-0 left-0 w-12 ${dark ? 'bg-gradient-to-r from-black' : 'bg-gradient-to-r from-white'} to-transparent z-10`} />
-      <div className={`absolute inset-y-0 right-0 w-12 ${dark ? 'bg-gradient-to-l from-black' : 'bg-gradient-to-l from-white'} to-transparent z-10`} />
-    </div>
-  )
-}
 
 // Main About component
 function About() {
@@ -157,7 +133,6 @@ function About() {
   const iconColor = dark ? 'text-orange-400' : 'text-violet-500'
 
   const currentSkills = skillTabs[activeTab]
-  const allSkills = Object.values(skillTabs).flat()
 
   return (
     <section id="about" className="relative py-24 px-4 sm:px-6" aria-label="About section">
@@ -203,13 +178,6 @@ function About() {
               </TiltCard>
             ))}
           </div>
-        </motion.div>
-
-        {/* ── Marquee strip ──────────────────────────────── */}
-        <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }}
-          viewport={{ once: true }} transition={{ duration: 0.6, delay: 0.2 }}
-          className={`border rounded-2xl py-4 mb-6 overflow-hidden ${glass}`}>
-          <SkillMarquee skills={allSkills} dark={dark} speed={35} />
         </motion.div>
 
         {/* ── Skills Dashboard ──────────────────────────── */}
