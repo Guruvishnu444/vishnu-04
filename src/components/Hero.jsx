@@ -53,12 +53,6 @@ function useTypingEffect(text, speed = 80, startDelay = 600) {
   return { displayed, done }
 }
 
-const stats = [
-  { value: '3+', label: 'Projects Built' },
-  { value: '8+', label: 'Technologies' },
-  { value: '100%', label: 'Dedication' },
-]
-
 function Hero() {
   const { dark } = useTheme()
   const { scrollY } = useScroll()
@@ -73,11 +67,7 @@ function Hero() {
   const cursorColor = dark ? 'bg-orange-400' : 'bg-violet-500'
   const btnGradient = dark ? 'bg-gradient-to-r from-red-600 to-orange-500' : 'bg-gradient-to-r from-blue-400 via-pink-400 to-violet-500'
   const resumeBtn = dark ? 'border-orange-500/40 text-[#f5f5f5] hover:border-orange-400 hover:bg-orange-500/10' : 'border-violet-400/40 text-[#1a1a1a] hover:border-violet-500 hover:bg-violet-400/10'
-  const scrollBorder = dark ? 'border-white/25' : 'border-black/25'
-  const scrollDot = dark ? 'bg-orange-400' : 'bg-violet-500'
   const badgeGradient = dark ? 'from-red-600 via-orange-500 to-red-400' : 'from-blue-400 via-pink-400 to-violet-500'
-  const statBg = dark ? 'bg-white/5 border-white/10' : 'bg-black/5 border-black/10'
-  const statValue = dark ? 'text-orange-400' : 'text-violet-500'
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -141,31 +131,6 @@ function Hero() {
             <DownloadSimple size={20} weight="bold" />
             Download Resume
           </MagneticLink>
-        </motion.div>
-
-        {/* Stats */}
-        <motion.div variants={itemVariants}
-          className="grid grid-cols-3 gap-3 sm:gap-6 max-w-sm sm:max-w-lg mx-auto">
-          {stats.map((stat, i) => (
-            <motion.div key={i}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 1.2 + i * 0.1 }}
-              className={`border rounded-2xl px-3 py-4 sm:px-6 sm:py-5 text-center ${statBg}`}>
-              <p className={`text-2xl sm:text-3xl font-bold ${statValue}`}>{stat.value}</p>
-              <p className={`text-xs sm:text-sm mt-1 ${mutedText}`}>{stat.label}</p>
-            </motion.div>
-          ))}
-        </motion.div>
-
-        {/* Scroll indicator */}
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.8 }}
-          className="absolute bottom-10 left-1/2 -translate-x-1/2">
-          <motion.div animate={{ y: [0, 10, 0] }}
-            transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-            className={`w-6 h-10 rounded-full border-2 flex items-start justify-center p-2 ${scrollBorder}`}>
-            <motion.div className={`w-1.5 h-1.5 rounded-full ${scrollDot}`} />
-          </motion.div>
         </motion.div>
       </motion.div>
     </motion.section>
