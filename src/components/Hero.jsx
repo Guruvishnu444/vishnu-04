@@ -56,7 +56,7 @@ function Hero() {
 
         <motion.h1 variants={itemVariants}
           className={`text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-tight mb-6 ${textColor}`}>
-          Hello, I'm{' '}
+          Hello, I'm                                         {' '}
           <span className={`bg-gradient-to-r ${nameGradient} bg-clip-text text-transparent`}>
             {displayed}
             {!done && (
