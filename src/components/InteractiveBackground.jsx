@@ -42,13 +42,13 @@ export default function InteractiveBackground() {
       r: Math.random() * 1.5 + 0.5,
     }))
 
-    // dark mode: red/orange particles, light mode: blue/pink/violet
+    // dark mode: white/gray particles, light mode: black/gray particles
     const getDarkColor = () => {
-      const colors = ['220,38,38', '234,88,12', '239,68,68', '249,115,22']
+      const colors = ['255,255,255', '235,235,235', '210,210,210', '180,180,180']
       return colors[Math.floor(Math.random() * colors.length)]
     }
     const getLightColor = () => {
-      const colors = ['56,189,248', '236,72,153', '139,92,246', '99,102,241']
+      const colors = ['0,0,0', '25,25,25', '50,50,50', '75,75,75']
       return colors[Math.floor(Math.random() * colors.length)]
     }
     particles.forEach(p => {
