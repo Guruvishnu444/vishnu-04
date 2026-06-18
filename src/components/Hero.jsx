@@ -65,7 +65,11 @@ function Hero() {
                 className={`inline-block ml-1 w-[3px] h-[0.85em] align-middle ${cursorColor}`} />
             )}
           </span>
-        </motion.h1>
+        </motion.h1> 
+        <motion.p variants={itemVariants}
+          className={`text-base sm:text-lg md:text-xl max-w-2xl mb-10 leading-relaxed ${mutedText}`}>
+          A Enthusiast full-stack developer
+        </motion.p>
 
         <motion.p variants={itemVariants}
           className={`text-base sm:text-lg md:text-xl max-w-2xl mb-10 leading-relaxed ${mutedText}`}>
