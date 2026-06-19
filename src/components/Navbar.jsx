@@ -12,6 +12,7 @@ function Navbar() {
 
   const navLinks = [
     { label: 'About', id: 'about' },
+    { label: 'Journey', id: 'journey' },
     { label: 'Projects', id: 'projects' },
     { label: 'Contact', id: 'contact' },
   ]
@@ -42,11 +43,13 @@ function Navbar() {
     setMobileMenuOpen(false)
   }
 
-  const mutedText = dark ? 'text-[#f5f5f5]/70' : 'text-[#1a1a1a]/70'
-  const textColor = dark ? 'text-[#f5f5f5]' : 'text-[#1a1a1a]'
-  const underlineColor = dark ? 'bg-orange-500' : 'bg-violet-500'
-  const mobileBg = dark ? 'bg-black/95' : 'bg-white/95'
-  const mobileBorder = dark ? 'border-white/10' : 'border-black/10'
+  // ── Exact color system ──
+  const textColor = dark ? '#00F0FF' : '#0A1A3A'
+  const accentColor = dark ? '#FFFFFF' : '#00F0FF'
+  const navBg = dark ? 'rgba(0,0,0,0.85)' : 'rgba(248,249,250,0.9)'
+  const navBgScrolled = dark ? 'rgba(0,0,0,0.92)' : 'rgba(248,249,250,0.95)'
+  const borderColor = dark ? 'rgba(0,240,255,0.15)' : 'rgba(10,26,58,0.1)'
+  const mobileBg = dark ? 'rgba(0,0,0,0.97)' : 'rgba(248,249,250,0.97)'
 
   return (
     <header className="fixed top-0 right-0 left-0 z-50 flex justify-center px-4 pt-5 md:px-0">
@@ -56,48 +59,52 @@ function Navbar() {
         transition={{ duration: 0.6, ease: 'easeOut' }}
         style={{
           width: scrolled ? 'auto' : '100%',
-          maxWidth: scrolled ? '820px' : '100%',
+          maxWidth: scrolled ? '860px' : '100%',
           borderRadius: scrolled ? '9999px' : '0px',
           paddingLeft: scrolled ? '32px' : '0px',
           paddingRight: scrolled ? '32px' : '0px',
           transition: 'all 0.4s cubic-bezier(0.4,0,0.2,1), background-color 0.3s ease, border-color 0.3s ease',
           backdropFilter: 'blur(16px)',
-          backgroundColor: dark
-            ? scrolled ? 'rgba(0,0,0,0.88)' : 'rgba(0,0,0,0.75)'
-            : scrolled ? 'rgba(255,255,255,0.92)' : 'rgba(255,255,255,0.80)',
-          border: dark ? '1px solid rgba(255,255,255,0.08)' : '1px solid rgba(0,0,0,0.08)',
-          boxShadow: scrolled ? (dark ? '0 8px 32px rgba(0,0,0,0.5)' : '0 8px 32px rgba(0,0,0,0.1)') : 'none',
+          backgroundColor: scrolled ? navBgScrolled : navBg,
+          border: `1px solid ${borderColor}`,
+          boxShadow: scrolled ? `0 8px 32px rgba(0,0,0,${dark ? 0.5 : 0.08})` : 'none',
           overflow: 'hidden',
           position: 'relative',
+          color: textColor,
         }}
         role="navigation"
         aria-label="Main navigation"
       >
-        {/* NO ParticleCanvas here — removed */}
         <div className="relative z-10 w-full py-3">
           <div className={`flex items-center justify-between gap-8 ${scrolled ? 'px-2' : 'max-w-7xl mx-auto px-8'}`}>
 
-            {/* Logo */}
+            {/* Brand mark — text label removed, just an accent dot */}
             <motion.a href="#"
               onClick={e => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }) }}
-              className="font-bold text-lg"
               whileHover={{ opacity: 0.75 }}
               initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}
+              aria-label="Home"
+              className="flex items-center justify-center w-9 h-9 rounded-full"
+              style={{ border: `1.5px solid ${accentColor}` }}
             >
-              {dark
-                ? <span className="bg-gradient-to-r from-red-500 to-orange-400 bg-clip-text text-transparent">Guruvishnu</span>
-                : <span className="bg-gradient-to-r from-blue-400 via-pink-400 to-violet-500 bg-clip-text text-transparent">Guruvishnu</span>
-              }
+              <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: accentColor }} />
             </motion.a>
 
             {/* Desktop Nav */}
-            <div className="hidden md:flex items-center gap-12">
+            <div className="hidden md:flex items-center gap-10">
               {navLinks.map(link => (
                 <motion.button key={link.id} onClick={() => scrollToSection(link.id)}
-                  whileHover={{ opacity: 1, y: -1 }}
-                  className={`relative font-medium pb-1 group transition-opacity ${mutedText}`}>
+                  whileHover={{ y: -1 }}
+                  className="relative font-medium pb-1 group transition-opacity"
+                  style={{ color: textColor, opacity: activeSection === link.id ? 1 : 0.7 }}>
                   {link.label}
-                  <span className={`absolute bottom-0 left-0 h-[2px] rounded-full transition-all duration-300 ${underlineColor} ${activeSection === link.id ? 'w-full' : 'w-0 group-hover:w-full'}`} />
+                  <span
+                    className="absolute bottom-0 left-0 h-[2px] rounded-full transition-all duration-300"
+                    style={{
+                      backgroundColor: accentColor,
+                      width: activeSection === link.id ? '100%' : '0%',
+                    }}
+                  />
                 </motion.button>
               ))}
             </div>
@@ -108,7 +115,12 @@ function Navbar() {
               <motion.a href="mailto:guruvishnu4gd@gmail.com"
                 whileHover={{ scale: 1.05, y: -2 }}
                 whileTap={{ scale: 0.97 }}
-                className="px-4 py-2 rounded-full font-semibold text-sm text-white bg-white/20 hover:bg-white/30 border border-white/30 transition-all">
+                className="px-4 py-2 rounded-full font-semibold text-sm transition-all"
+                style={{
+                  backgroundColor: accentColor,
+                  color: dark ? '#000000' : '#FFFFFF',
+                }}
+              >
                 Hii
               </motion.a>
             </div>
@@ -116,7 +128,7 @@ function Navbar() {
             {/* Mobile */}
             <div className="md:hidden flex items-center gap-3">
               <ThemeToggle />
-              <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className={`p-2 ${textColor}`}>
+              <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="p-2" style={{ color: textColor }}>
                 {mobileMenuOpen ? <X size={24} /> : <List size={24} />}
               </button>
             </div>
@@ -127,19 +139,23 @@ function Navbar() {
           {mobileMenuOpen && (
             <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.3 }}
-              className={`md:hidden border-t ${mobileBg} ${mobileBorder}`}>
+              style={{ backgroundColor: mobileBg, borderTop: `1px solid ${borderColor}` }}
+              className="md:hidden">
               <div className="px-6 py-4 flex flex-col gap-3">
                 {navLinks.map(link => (
                   <button key={link.id} onClick={() => scrollToSection(link.id)}
-                    className={`text-left font-medium py-2 border-b-2 transition-colors ${
-                      activeSection === link.id
-                        ? `${textColor} ${dark ? 'border-orange-500' : 'border-violet-500'}`
-                        : `${mutedText} border-transparent`}`}>
+                    className="text-left font-medium py-2 border-b-2 transition-colors"
+                    style={{
+                      color: textColor,
+                      borderColor: activeSection === link.id ? accentColor : 'transparent',
+                      opacity: activeSection === link.id ? 1 : 0.7,
+                    }}>
                     {link.label}
                   </button>
                 ))}
                 <a href="mailto:guruvishnu4gd@gmail.com"
-                  className="text-center py-2.5 rounded-full text-white font-semibold mt-1 bg-white/20 border border-white/30">
+                  className="text-center py-2.5 rounded-full font-semibold mt-1"
+                  style={{ backgroundColor: accentColor, color: dark ? '#000000' : '#FFFFFF' }}>
                   Hii
                 </a>
               </div>
