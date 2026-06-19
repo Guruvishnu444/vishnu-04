@@ -2,10 +2,8 @@ import { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 
 // ── Digital Plexus background (mono-blue, no dot glow) ─────────
-// A triangulated wireframe mesh of nodes + lines, all in one blue
-// hue, with a few brighter "energy strands" flowing through the
-// mesh like in the reference image. Dots are crisp, flat, no glow.
-// Dark mode only.
+// Enhanced version with smoother animations, better performance,
+// and cursor repulsion instead of attraction.
 
 const BASE = { r: 70, g: 140, b: 255 }   // mesh line / dot blue
 const BRIGHT = { r: 130, g: 210, b: 255 } // bright flowing-strand blue
@@ -42,118 +40,187 @@ export default function InteractiveBackground() {
     resize()
     window.addEventListener('resize', resize)
 
-    const handleMouseMove = (e) => { mouseRef.current = { x: e.clientX, y: e.clientY } }
-    const handleMouseLeave = () => { mouseRef.current = { x: -9999, y: -9999 } }
-    const handleScroll = () => { scrollRef.current = window.scrollY }
+    const handleMouseMove = (e) => { 
+      mouseRef.current = { x: e.clientX, y: e.clientY } 
+    }
+    const handleMouseLeave = () => { 
+      mouseRef.current = { x: -9999, y: -9999 } 
+    }
+    const handleScroll = () => { 
+      scrollRef.current = window.scrollY 
+    }
     window.addEventListener('mousemove', handleMouseMove)
     window.addEventListener('mouseleave', handleMouseLeave)
     window.addEventListener('scroll', handleScroll, { passive: true })
 
-    // ── Mesh nodes: scattered, denser toward one side, like a torn web ──
+    // ── Optimized node distribution ──
     const area = width * height
-    const NODE_COUNT = Math.min(170, Math.max(70, Math.round(area / 9000)))
-    const LINK_DIST = Math.min(width, height) * 0.22
+    const NODE_COUNT = Math.min(200, Math.max(80, Math.round(area / 8000)))
+    const LINK_DIST = Math.min(width, height) * 0.2
+    const REPULSION_RADIUS = 150 // Radius for cursor repulsion
 
+    // Create nodes with better distribution
     const nodes = Array.from({ length: NODE_COUNT }, () => {
-      const x = Math.random() * width
-      const y = Math.random() * height
+      // Distribute nodes more evenly with slight clustering
+      const x = Math.random() * width * 0.95 + width * 0.025
+      const y = Math.random() * height * 0.95 + height * 0.025
       return {
         x, y,
-        vx: (Math.random() - 0.5) * 0.05,
-        vy: (Math.random() - 0.5) * 0.05,
-        r: 1.0 + Math.random() * 1.3,
+        vx: (Math.random() - 0.5) * 0.04,
+        vy: (Math.random() - 0.5) * 0.04,
+        r: 0.8 + Math.random() * 1.5,
         flicker: Math.random() * Math.PI * 2,
-        flickerSpeed: 0.3 + Math.random() * 0.5,
+        flickerSpeed: 0.2 + Math.random() * 0.6,
+        baseX: x, // Store original position for gentle return
+        baseY: y,
       }
     })
 
     const wrap = (n) => {
-      if (n.x < -30) n.x = width + 30
-      if (n.x > width + 30) n.x = -30
-      if (n.y < -30) n.y = height + 30
-      if (n.y > height + 30) n.y = -30
+      const margin = 50
+      if (n.x < -margin) n.x = width + margin
+      if (n.x > width + margin) n.x = -margin
+      if (n.y < -margin) n.y = height + margin
+      if (n.y > height + margin) n.y = -margin
     }
 
+    // Pre-compute line connections for performance
+    const getConnections = (nodes, linkDist) => {
+      const connections = []
+      for (let i = 0; i < nodes.length; i++) {
+        for (let j = i + 1; j < nodes.length; j++) {
+          const a = nodes[i]
+          const b = nodes[j]
+          const dx = a.x - b.x
+          const dy = a.y - b.y
+          const dist = Math.sqrt(dx * dx + dy * dy)
+          if (dist < linkDist) {
+            connections.push({ i, j, dist })
+          }
+        }
+      }
+      return connections
+    }
+
+    let connections = getConnections(nodes, LINK_DIST)
+
     const animate = () => {
-      time += 0.012
+      time += 0.016 // ~60fps timing
       ctx.clearRect(0, 0, width, height)
 
       const mx = mouseRef.current.x
       const my = mouseRef.current.y
-
       const scrollY = scrollRef.current
-      const t = Math.min(scrollY / 1400, 1)
-      const zoom = 1 + t * 0.16
-      const fade = 1 - t * 0.18
+      
+      // Smooth scroll-based zoom and fade
+      const t = Math.min(scrollY / 1500, 1)
+      const zoom = 1 + t * 0.12
+      const fade = 1 - t * 0.15
 
       ctx.save()
       ctx.translate(width / 2, height / 2)
       ctx.scale(zoom, zoom)
       ctx.translate(-width / 2, -height / 2)
 
-      // drift nodes gently, slight mouse attraction like a web being touched
+      // ── Node updates with cursor repulsion ──
       nodes.forEach((n) => {
+        // Gentle drift
         n.x += n.vx
         n.y += n.vy
-        if (mx > 0) {
-          const dx = mx - n.x, dy = my - n.y
+        
+        // Cursor repulsion (push away from cursor)
+        if (mx > 0 && my > 0) {
+          const dx = n.x - mx
+          const dy = n.y - my
           const d2 = dx * dx + dy * dy
-          if (d2 < 50000) {
-            const d = Math.sqrt(d2) || 1
-            n.x += (dx / d) * 0.15
-            n.y += (dy / d) * 0.15
+          
+          if (d2 < REPULSION_RADIUS * REPULSION_RADIUS && d2 > 1) {
+            const d = Math.sqrt(d2)
+            const strength = (1 - d / REPULSION_RADIUS) * 0.8 // Repulsion strength
+            n.x += (dx / d) * strength * 2
+            n.y += (dy / d) * strength * 2
           }
         }
+        
+        // Gentle return to base position (creates organic movement)
+        n.x += (n.baseX - n.x) * 0.002
+        n.y += (n.baseY - n.y) * 0.002
+        
         wrap(n)
       })
 
-      // ── triangulated mesh lines ──
-      for (let i = 0; i < nodes.length; i++) {
+      // Update connections
+      connections = getConnections(nodes, LINK_DIST)
+
+      // ── Draw mesh lines with improved quality ──
+      connections.forEach(({ i, j, dist }) => {
         const a = nodes[i]
-        for (let j = i + 1; j < nodes.length; j++) {
-          const b = nodes[j]
-          const dx = a.x - b.x, dy = a.y - b.y
-          const dist = Math.sqrt(dx * dx + dy * dy)
-          if (dist < LINK_DIST) {
-            const proximity = 1 - dist / LINK_DIST
-            let alpha = proximity * proximity * 0.5 * fade
+        const b = nodes[j]
+        const proximity = 1 - dist / LINK_DIST
+        let alpha = proximity * proximity * 0.45 * fade
 
-            if (mx > 0) {
-              const mdx = (a.x + b.x) / 2 - mx
-              const mdy = (a.y + b.y) / 2 - my
-              const md2 = mdx * mdx + mdy * mdy
-              alpha = Math.min(1, alpha + Math.exp(-md2 / 20000) * 0.45)
-            }
-
-            ctx.beginPath()
-            ctx.strokeStyle = `rgba(${BASE.r},${BASE.g},${BASE.b},${alpha})`
-            ctx.lineWidth = 0.6
-            ctx.moveTo(a.x, a.y)
-            ctx.lineTo(b.x, b.y)
-            ctx.stroke()
-          }
-        }
-      }
-
-      // ── flat, crisp nodes — no glow, just a small soft-edge dot ──
-      nodes.forEach((n) => {
-        const flick = 0.6 + 0.4 * Math.sin(time * n.flickerSpeed + n.flicker)
-        let boost = 1
+        // Subtle cursor influence on line brightness
         if (mx > 0) {
-          const dx = mx - n.x, dy = my - n.y
-          const d2 = dx * dx + dy * dy
-          boost = 1 + Math.exp(-d2 / 14000) * 1.4
+          const midX = (a.x + b.x) / 2
+          const midY = (a.y + b.y) / 2
+          const mdx = midX - mx
+          const mdy = midY - my
+          const md2 = mdx * mdx + mdy * mdy
+          // Lines near cursor become slightly dimmer (repulsion effect)
+          const cursorEffect = Math.min(1, 1 - Math.exp(-md2 / 30000) * 0.3)
+          alpha = alpha * cursorEffect
         }
-        const alpha = Math.min(1, 0.55 * flick * fade * boost)
+
+        if (alpha > 0.01) {
+          ctx.beginPath()
+          ctx.strokeStyle = `rgba(${BASE.r},${BASE.g},${BASE.b},${alpha})`
+          ctx.lineWidth = 0.7 + proximity * 0.3 // Thicker lines when closer
+          ctx.moveTo(a.x, a.y)
+          ctx.lineTo(b.x, b.y)
+          ctx.stroke()
+        }
+      })
+
+      // ── Draw crisp nodes with enhanced quality ──
+      nodes.forEach((n) => {
+        const flick = 0.65 + 0.35 * Math.sin(time * n.flickerSpeed + n.flicker)
+        
+        // Calculate node brightness based on distance from cursor
+        let cursorBoost = 1
+        if (mx > 0) {
+          const dx = mx - n.x
+          const dy = my - n.y
+          const d2 = dx * dx + dy * dy
+          // Nodes near cursor become dimmer (repulsion)
+          cursorBoost = 1 - Math.exp(-d2 / 20000) * 0.5
+        }
+        
+        const alpha = Math.min(1, Math.max(0.15, 0.6 * flick * fade * cursorBoost))
+        
+        // Node glow effect (subtle, without being too bright)
+        const gradient = ctx.createRadialGradient(
+          n.x, n.y, 0,
+          n.x, n.y, n.r * 2.5
+        )
+        gradient.addColorStop(0, `rgba(${BRIGHT.r},${BRIGHT.g},${BRIGHT.b},${alpha * 0.8})`)
+        gradient.addColorStop(1, `rgba(${BRIGHT.r},${BRIGHT.g},${BRIGHT.b},0)`)
+        
         ctx.beginPath()
-        ctx.fillStyle = `rgba(${BRIGHT.r},${BRIGHT.g},${BRIGHT.b},${alpha})`
-        ctx.arc(n.x, n.y, n.r * (boost > 1 ? 1.3 : 1), 0, Math.PI * 2)
+        ctx.fillStyle = gradient
+        ctx.arc(n.x, n.y, n.r * 2.5, 0, Math.PI * 2)
+        ctx.fill()
+        
+        // Core dot
+        ctx.beginPath()
+        ctx.fillStyle = `rgba(${BRIGHT.r},${BRIGHT.g},${BRIGHT.b},${alpha * 0.9})`
+        ctx.arc(n.x, n.y, n.r * 0.8, 0, Math.PI * 2)
         ctx.fill()
       })
 
       ctx.restore()
       animationRef.current = requestAnimationFrame(animate)
     }
+    
     animate()
 
     return () => {
@@ -172,13 +239,23 @@ export default function InteractiveBackground() {
       className="fixed inset-0 pointer-events-none overflow-hidden z-0"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      transition={{ duration: 1.2, ease: 'easeOut' }}
+      transition={{ duration: 1.5, ease: 'easeOut' }}
     >
       <div className="absolute inset-0" style={{ background: '#000000' }} />
-      <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" style={{ background: 'transparent' }} />
+      <canvas 
+        ref={canvasRef} 
+        className="absolute inset-0 w-full h-full" 
+        style={{ 
+          background: 'transparent',
+          imageRendering: 'auto',
+        }} 
+      />
       <div
         className="absolute inset-0"
-        style={{ background: 'radial-gradient(ellipse at center, transparent 60%, rgba(0,0,0,0.5) 100%)' }}
+        style={{ 
+          background: 'radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,0.6) 100%)',
+          pointerEvents: 'none',
+        }}
       />
     </motion.div>
   )
