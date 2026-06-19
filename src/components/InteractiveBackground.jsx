@@ -32,7 +32,6 @@ export default function InteractiveBackground() {
     window.addEventListener('mousemove', handleMouseMove)
     window.addEventListener('mouseleave', handleMouseLeave)
 
-    // particles
     const count = Math.min(Math.floor((width * height) / 9000), 160)
     const particles = Array.from({ length: count }, () => ({
       x: Math.random() * width,
@@ -42,7 +41,6 @@ export default function InteractiveBackground() {
       r: Math.random() * 1.5 + 0.5,
     }))
 
-    // dark mode: white/gray particles, light mode: black/gray particles
     const getDarkColor = () => {
       const colors = ['255,255,255', '235,235,235', '210,210,210', '180,180,180']
       return colors[Math.floor(Math.random() * colors.length)]
@@ -82,7 +80,6 @@ export default function InteractiveBackground() {
         ctx.fill()
       })
 
-      // connections
       const maxDist = 140
       for (let i = 0; i < particles.length; i++) {
         const p1 = particles[i]
@@ -99,7 +96,6 @@ export default function InteractiveBackground() {
             ctx.stroke()
           }
         }
-        // mouse connections
         const mdx = p1.x - mx, mdy = p1.y - my
         const md = Math.sqrt(mdx * mdx + mdy * mdy)
         if (md < 180) {
@@ -129,7 +125,7 @@ export default function InteractiveBackground() {
   return (
     <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
       <div className="absolute inset-0 transition-colors duration-500"
-        style={{ backgroundColor: dark ? '#000000' : '#ffffff' }} />
+        style={{ backgroundColor: dark ? '#000000' : '#00f0ff' }} />
       <canvas ref={canvasRef} className="absolute inset-0 w-full h-full"
         style={{ background: 'transparent' }} />
     </div>

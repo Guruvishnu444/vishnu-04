@@ -1,4 +1,5 @@
 import { motion, AnimatePresence } from 'framer-motion'
+import { Sun, Moon } from '@phosphor-icons/react'
 import { useTheme } from '../ThemeContext'
 
 export default function ThemeToggle() {
@@ -10,11 +11,7 @@ export default function ThemeToggle() {
       aria-label={dark ? 'Switch to light mode' : 'Switch to dark mode'}
       whileHover={{ scale: 1.08 }}
       whileTap={{ scale: 0.92 }}
-      className={`relative w-14 h-7 rounded-full transition-colors duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 ${
-        dark
-          ? 'bg-gradient-to-r from-orange-600 to-red-600 focus-visible:ring-orange-500'
-          : 'bg-gradient-to-r from-blue-400 to-violet-500 focus-visible:ring-violet-400'
-      }`}
+      className="relative w-14 h-7 rounded-full bg-white/20 border border-white/30 transition-colors duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
     >
       {/* Track */}
       <motion.div
@@ -31,9 +28,9 @@ export default function ThemeToggle() {
               animate={{ opacity: 1, rotate: 0, scale: 1 }}
               exit={{ opacity: 0, rotate: 90, scale: 0.5 }}
               transition={{ duration: 0.2 }}
-              className="text-[11px] leading-none"
+              className="flex items-center justify-center"
             >
-              🌙
+              <Moon size={12} weight="fill" className="text-black" />
             </motion.span>
           ) : (
             <motion.span
@@ -42,9 +39,9 @@ export default function ThemeToggle() {
               animate={{ opacity: 1, rotate: 0, scale: 1 }}
               exit={{ opacity: 0, rotate: -90, scale: 0.5 }}
               transition={{ duration: 0.2 }}
-              className="text-[11px] leading-none"
+              className="flex items-center justify-center"
             >
-              ☀️
+              <Sun size={12} weight="fill" className="text-black" />
             </motion.span>
           )}
         </AnimatePresence>

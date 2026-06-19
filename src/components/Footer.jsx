@@ -31,7 +31,6 @@ function FooterParticles({ dark }) {
     let animId
     const animate = () => {
       ctx.clearRect(0, 0, canvas.offsetWidth, canvas.offsetHeight)
-      // draw connections
       for (let i = 0; i < particles.length; i++) {
         for (let j = i + 1; j < particles.length; j++) {
           const dx = particles[i].x - particles[j].x
@@ -66,7 +65,6 @@ function FooterParticles({ dark }) {
 
 function Footer() {
   const { dark } = useTheme()
-  const textColor = dark ? 'text-[#f5f5f5]' : 'text-[#1a1a1a]'
   const mutedColor = dark ? 'text-[#f5f5f5]/50' : 'text-[#1a1a1a]/50'
   const borderColor = dark ? 'border-white/10' : 'border-black/10'
   const cardBorder = dark ? 'border-white/10 hover:border-orange-500/50' : 'border-black/10 hover:border-violet-400/50'
@@ -86,24 +84,15 @@ function Footer() {
 
   return (
     <footer className={`relative border-t py-12 px-6 overflow-hidden transition-colors duration-500 ${borderColor}`}>
+      {/* Particle network moved here from header */}
       <FooterParticles dark={dark} />
       <div className="relative z-10 max-w-6xl mx-auto">
-        <div className="grid md:grid-cols-3 gap-8 items-center">
+        <div className="grid md:grid-cols-2 gap-8 items-center">
 
-          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }} className="flex items-center gap-3">
-            <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${dark ? 'bg-gradient-to-br from-red-600 to-orange-500' : 'bg-gradient-to-br from-blue-400 via-pink-400 to-violet-500'}`}>
-              <span className="text-white font-bold text-lg">GV</span>
-            </div>
-            <div>
-              <span className={`font-semibold ${textColor}`}>Guruvishnu</span>
-              <p className={`text-sm ${mutedColor}`}>Building the future</p>
-            </div>
-          </motion.div>
-
+          {/* Nav links (logo/name removed) */}
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }} transition={{ delay: 0.1 }}
-            className="flex justify-center gap-8">
+            className="flex justify-center md:justify-start gap-8">
             {navLinks.map(link => (
               <a key={link.label} href={link.href}
                 className={`text-sm font-medium transition-colors ${mutedColor} ${linkHover}`}>
@@ -114,7 +103,7 @@ function Footer() {
 
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }} transition={{ delay: 0.2 }}
-            className="flex justify-end gap-4">
+            className="flex justify-center md:justify-end gap-4">
             {socialLinks.map(link => (
               <a key={link.name} href={link.href} target="_blank" rel="noopener noreferrer"
                 aria-label={`Visit ${link.name}`}

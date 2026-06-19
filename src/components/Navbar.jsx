@@ -1,53 +1,8 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { List, X } from '@phosphor-icons/react'
 import { useTheme } from '../ThemeContext'
 import ThemeToggle from './ThemeToggle'
-
-function ParticleCanvas({ dark }) {
-  const canvasRef = useRef(null)
-  useEffect(() => {
-    const canvas = canvasRef.current
-    if (!canvas) return
-    const ctx = canvas.getContext('2d')
-    const resize = () => {
-      canvas.width = canvas.offsetWidth * window.devicePixelRatio
-      canvas.height = canvas.offsetHeight * window.devicePixelRatio
-      ctx.scale(window.devicePixelRatio, window.devicePixelRatio)
-    }
-    resize()
-    window.addEventListener('resize', resize)
-    const darkColors = ['220,38,38', '234,88,12', '239,68,68']
-    const lightColors = ['56,189,248', '236,72,153', '139,92,246']
-    const particles = Array.from({ length: 40 }, () => ({
-      x: Math.random() * canvas.offsetWidth,
-      y: Math.random() * canvas.offsetHeight,
-      vx: (Math.random() - 0.5) * 0.4,
-      vy: (Math.random() - 0.5) * 0.4,
-      radius: Math.random() * 1.5 + 0.5,
-      color: dark
-        ? darkColors[Math.floor(Math.random() * darkColors.length)]
-        : lightColors[Math.floor(Math.random() * lightColors.length)],
-    }))
-    let animId
-    const animate = () => {
-      ctx.clearRect(0, 0, canvas.offsetWidth, canvas.offsetHeight)
-      particles.forEach(p => {
-        p.x += p.vx; p.y += p.vy
-        if (p.x < 0 || p.x > canvas.offsetWidth) p.vx *= -1
-        if (p.y < 0 || p.y > canvas.offsetHeight) p.vy *= -1
-        ctx.beginPath()
-        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2)
-        ctx.fillStyle = `rgba(${p.color},0.35)`
-        ctx.fill()
-      })
-      animId = requestAnimationFrame(animate)
-    }
-    animate()
-    return () => { window.removeEventListener('resize', resize); cancelAnimationFrame(animId) }
-  }, [dark])
-  return <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none" aria-hidden="true" />
-}
 
 function Navbar() {
   const { dark } = useTheme()
@@ -87,8 +42,8 @@ function Navbar() {
     setMobileMenuOpen(false)
   }
 
-  const textColor = dark ? 'text-[#f5f5f5]' : 'text-[#1a1a1a]'
   const mutedText = dark ? 'text-[#f5f5f5]/70' : 'text-[#1a1a1a]/70'
+  const textColor = dark ? 'text-[#f5f5f5]' : 'text-[#1a1a1a]'
   const underlineColor = dark ? 'bg-orange-500' : 'bg-violet-500'
   const mobileBg = dark ? 'bg-black/95' : 'bg-white/95'
   const mobileBorder = dark ? 'border-white/10' : 'border-black/10'
@@ -118,7 +73,7 @@ function Navbar() {
         role="navigation"
         aria-label="Main navigation"
       >
-        <ParticleCanvas dark={dark} />
+        {/* NO ParticleCanvas here — removed */}
         <div className="relative z-10 w-full py-3">
           <div className={`flex items-center justify-between gap-8 ${scrolled ? 'px-2' : 'max-w-7xl mx-auto px-8'}`}>
 
@@ -153,7 +108,7 @@ function Navbar() {
               <motion.a href="mailto:guruvishnu4gd@gmail.com"
                 whileHover={{ scale: 1.05, y: -2 }}
                 whileTap={{ scale: 0.97 }}
-                className={`px-4 py-2 rounded-full font-semibold text-sm text-white hover:opacity-90 ${dark ? 'bg-gradient-to-r from-red-600 to-orange-500' : 'bg-gradient-to-r from-blue-400 via-pink-400 to-violet-500'}`}>
+                className="px-4 py-2 rounded-full font-semibold text-sm text-white bg-white/20 hover:bg-white/30 border border-white/30 transition-all">
                 Hii
               </motion.a>
             </div>
@@ -184,7 +139,7 @@ function Navbar() {
                   </button>
                 ))}
                 <a href="mailto:guruvishnu4gd@gmail.com"
-                  className={`text-center py-2.5 rounded-full text-white font-semibold mt-1 ${dark ? 'bg-gradient-to-r from-red-600 to-orange-500' : 'bg-gradient-to-r from-blue-400 via-pink-400 to-violet-500'}`}>
+                  className="text-center py-2.5 rounded-full text-white font-semibold mt-1 bg-white/20 border border-white/30">
                   Hii
                 </a>
               </div>

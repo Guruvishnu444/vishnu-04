@@ -12,7 +12,6 @@ const Journey = lazy(() => import('./components/Journey'))
 const Projects = lazy(() => import('./components/Projects'))
 const Contact = lazy(() => import('./components/Contact'))
 
-// Simple client-side 404 detection
 const is404 = typeof window !== 'undefined' &&
   !['/', ''].includes(window.location.pathname) &&
   !window.location.pathname.startsWith('/#')
@@ -21,7 +20,7 @@ function LoadingFallback() {
   const { dark } = useTheme()
   return (
     <div className="min-h-[50vh] flex items-center justify-center">
-      <motion-div className={`w-8 h-8 border-2 border-t-transparent rounded-full animate-spin ${dark ? 'border-orange-400' : 'border-violet-500'}`} />
+      <div className={`w-8 h-8 border-2 border-t-transparent rounded-full animate-spin ${dark ? 'border-orange-400' : 'border-violet-500'}`} />
     </div>
   )
 }
@@ -34,7 +33,7 @@ function AppInner() {
   }
 
   return (
-    <div className={`relative min-h-screen overflow-hidden ${dark ? 'bg-black' : 'bg-white'}`}>
+    <div className="relative min-h-screen overflow-hidden" style={{ backgroundColor: dark ? '#000000' : '#00f0ff' }}>
       <InteractiveBackground />
       <Navbar />
       <main>
