@@ -1,166 +1,177 @@
 import { useEffect, useRef, useState } from 'react'
 import { useTheme } from '../ThemeContext'
-import { motion, useScroll, useTransform } from 'framer-motion'
-import * as THREE from 'three'
 
-// --- HIGH QUALITY 3D WIREFRAME MESH ---
 export default function InteractiveBackground() {
-  const containerRef = useRef(null)
-  const sceneRef = useRef(null)
+  const canvasRef = useRef(null)
+  const animationRef = useRef(null)
+  const mouseRef = useRef({ x: -9999, y: -9999 })
+  const scrollRef = useRef(0)
   const [mounted, setMounted] = useState(false)
   const { dark } = useTheme()
-
-  // Framer Motion Scroll tracking
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end end"]
-  })
-  
-  // Map scroll to 3D Zoom (1x to 1.5x) 
-  const zoom = useTransform(scrollYProgress, [0, 1], [1, 1.5])
 
   useEffect(() => { setMounted(true) }, [])
 
   useEffect(() => {
     if (!mounted) return
-
-    // 1. Setup Three.js Scene
-    const scene = new THREE.Scene()
-    const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000)
-    camera.position.set(0, 0, 6)
-
-    const renderer = new THREE.WebGLRenderer({ 
-      antialias: true, 
-      alpha: true 
-    })
-    renderer.setSize(window.innerWidth, window.innerHeight)
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)) // Cap for performance
-    
-    // Append canvas
-    const container = containerRef.current
-    if (container) {
-      // Clear any existing children (just in case)
-      while (container.firstChild) container.removeChild(container.firstChild)
-      container.appendChild(renderer.domElement)
-    }
-
-    // 2. Create the 3D Wireframe Silhouette (Head & Neck)
-    // We use a LatheGeometry to create the organic profile curve
-    const points = [];
-    // Profile curve data (Creates a generic head/neck shape matching your image)
-    points.push(new THREE.Vector2(0.0, -1.2));  // Neck base
-    points.push(new THREE.Vector2(0.5, -1.0));
-    points.push(new THREE.Vector2(0.7, -0.5));
-    points.push(new THREE.Vector2(0.8, 0.0));  // Chin
-    points.push(new THREE.Vector2(0.7, 0.4));  // Mouth area
-    points.push(new THREE.Vector2(0.6, 0.8));  // Nose
-    points.push(new THREE.Vector2(0.55, 1.1)); // Forehead
-    points.push(new THREE.Vector2(0.5, 1.4));  // Top of head
-    points.push(new THREE.Vector2(0.2, 1.5));
-    points.push(new THREE.Vector2(0.0, 1.5));  // Top center
-
-    const geometry = new THREE.LatheGeometry(points, 64) // 64 segments for high detail
-    
-    // 3. Create the Wireframe and Nodes (The "Dots" and "Lines" look)
-    // Instead of a solid mesh, we create an EdgesGeometry to draw the wires
-    const edges = new THREE.EdgesGeometry(geometry)
-    
-    // Setup colors based on Theme
-    const getColor = (isDark) => {
-      return isDark ? 0xffffff : 0x1a1a2e // White in dark mode, Dark blue in light mode
-    }
-    
-    const lineMaterial = new THREE.LineBasicMaterial({ 
-      color: getColor(dark), 
-      transparent: true, 
-      opacity: 0.25 
-    })
-    const wireframe = new THREE.LineSegments(edges, lineMaterial)
-    scene.add(wireframe)
-
-    // Add "Dense particle nodes" at the vertices
-    const positions = geometry.attributes.position.array
-    const particleGeometry = new THREE.BufferGeometry()
-    // Extract unique vertices
-    const uniquePoints = []
-    const seen = new Set()
-    for (let i = 0; i < positions.length; i += 3) {
-      const key = `${positions[i].toFixed(2)},${positions[i+1].toFixed(2)},${positions[i+2].toFixed(2)}`
-      if (!seen.has(key)) {
-        seen.add(key)
-        uniquePoints.push(positions[i], positions[i+1], positions[i+2])
-      }
-    }
-    particleGeometry.setAttribute('position', new THREE.Float32BufferAttribute(uniquePoints, 3))
-    
-    const particleMaterial = new THREE.PointsMaterial({
-      color: getColor(dark),
-      size: 0.035,
-      transparent: true,
-      opacity: 0.8,
-      blending: THREE.AdditiveBlending
-    })
-    const particles = new THREE.Points(particleGeometry, particleMaterial)
-    scene.add(particles)
-
-    // 4. Animation Loop (Rotates Slowly like the reference image)
+    const canvas = canvasRef.current
+    if (!canvas) return
+    const ctx = canvas.getContext('2d')
+    let width = window.innerWidth
+    let height = window.innerHeight
     let time = 0
+
+    const resize = () => {
+      width = window.innerWidth
+      height = window.innerHeight
+      canvas.width = width
+      canvas.height = height
+    }
+    resize()
+    window.addEventListener('resize', resize)
+
+    const handleMouseMove = (e) => { mouseRef.current = { x: e.clientX, y: e.clientY } }
+    const handleMouseLeave = () => { mouseRef.current = { x: -9999, y: -9999 } }
+    const handleScroll = () => { scrollRef.current = window.scrollY }
+    window.addEventListener('mousemove', handleMouseMove)
+    window.addEventListener('mouseleave', handleMouseLeave)
+    window.addEventListener('scroll', handleScroll, { passive: true })
+
+    // ── Flowing contour-line system ──────────────────────────
+    // Horizontal flowing lines that ripple like the reference image's
+    // mesh-wrap contours, made of dense dot clusters along each line.
+    const LINE_COUNT = 46
+    const POINTS_PER_LINE = 90
+
+    const lines = Array.from({ length: LINE_COUNT }, (_, li) => {
+      const baseY = (li / (LINE_COUNT - 1))
+      return {
+        baseY,
+        seedA: Math.random() * Math.PI * 2,
+        seedB: Math.random() * Math.PI * 2,
+        freqA: 0.8 + Math.random() * 1.4,
+        freqB: 1.5 + Math.random() * 2,
+        ampScale: 0.6 + Math.random() * 0.8,
+        density: 0.55 + (li % 5 === 0 ? 0.35 : Math.random() * 0.3),
+      }
+    })
+
+    const lightColor = () => {
+      const shades = ['10,10,10', '30,30,30', '55,55,55', '80,80,80']
+      return shades[Math.floor(Math.random() * shades.length)]
+    }
+    const darkColor = () => {
+      const shades = ['255,255,255', '230,230,230', '205,205,205', '180,180,180']
+      return shades[Math.floor(Math.random() * shades.length)]
+    }
+    const colorFn = dark ? darkColor : lightColor
+
     const animate = () => {
-      time += 0.003
-      // Smooth organic rotation
-      wireframe.rotation.y = Math.sin(time) * 0.4
-      wireframe.rotation.x = Math.sin(time * 0.7) * 0.1
-      particles.rotation.y = wireframe.rotation.y
-      particles.rotation.x = wireframe.rotation.x
-      
-      renderer.render(scene, camera)
-      requestAnimationFrame(animate)
+      time += 0.0045
+      ctx.clearRect(0, 0, width, height)
+
+      const mx = mouseRef.current.x
+      const my = mouseRef.current.y
+
+      // scroll-driven zoom: zoom in as page scrolls down, back out on scroll up
+      const scrollY = scrollRef.current
+      const maxScrollForZoom = 1200
+      const t = Math.min(scrollY / maxScrollForZoom, 1)
+      const zoom = 1 + t * 0.55 // up to 1.55x zoom
+      const fade = 1 - t * 0.35 // slightly fade as it zooms
+
+      ctx.save()
+      ctx.translate(width / 2, height / 2)
+      ctx.scale(zoom, zoom)
+      ctx.translate(-width / 2, -height / 2)
+
+      lines.forEach((line, li) => {
+        const y0 = line.baseY * height
+
+        ctx.beginPath()
+        let prevX = 0, prevY = 0
+
+        for (let p = 0; p <= POINTS_PER_LINE; p++) {
+          const xt = p / POINTS_PER_LINE
+          const x = xt * width
+
+          // layered sine waves for organic contour flow
+          const wave =
+            Math.sin(xt * Math.PI * line.freqA + time + line.seedA) * 28 * line.ampScale +
+            Math.cos(xt * Math.PI * line.freqB - time * 0.7 + line.seedB) * 14 * line.ampScale
+
+          // mouse ripple distortion
+          let mouseEffect = 0
+          if (mx > 0) {
+            const dx = x - mx, dy = y0 - my
+            const d2 = dx * dx + dy * dy
+            mouseEffect = Math.exp(-d2 / 30000) * 40
+          }
+
+          const y = y0 + wave + mouseEffect
+
+          if (p === 0) {
+            ctx.moveTo(x, y)
+          } else {
+            // smooth curve
+            const cx = (prevX + x) / 2
+            const cy = (prevY + y) / 2
+            ctx.quadraticCurveTo(prevX, prevY, cx, cy)
+          }
+          prevX = x; prevY = y
+        }
+
+        const alpha = (0.04 + (li % 7 === 0 ? 0.05 : 0)) * fade
+        ctx.strokeStyle = `rgba(${colorFn()},${alpha})`
+        ctx.lineWidth = 0.6
+        ctx.stroke()
+
+        // dense particle dots along the line (only every few lines, for performance)
+        if (li % 2 === 0) {
+          for (let p = 0; p <= POINTS_PER_LINE; p += 2) {
+            if (Math.random() > line.density) continue
+            const xt = p / POINTS_PER_LINE
+            const x = xt * width
+            const wave =
+              Math.sin(xt * Math.PI * line.freqA + time + line.seedA) * 28 * line.ampScale +
+              Math.cos(xt * Math.PI * line.freqB - time * 0.7 + line.seedB) * 14 * line.ampScale
+            let mouseEffect = 0
+            if (mx > 0) {
+              const dx = x - mx, dy = y0 - my
+              const d2 = dx * dx + dy * dy
+              mouseEffect = Math.exp(-d2 / 30000) * 40
+            }
+            const y = y0 + wave + mouseEffect
+            const r = 0.4 + Math.random() * 0.6
+            ctx.beginPath()
+            ctx.arc(x, y, r, 0, Math.PI * 2)
+            ctx.fillStyle = `rgba(${colorFn()},${0.5 * fade})`
+            ctx.fill()
+          }
+        }
+      })
+
+      ctx.restore()
+      animationRef.current = requestAnimationFrame(animate)
     }
     animate()
 
-    // 5. Window Resize Handling
-    const handleResize = () => {
-      const width = window.innerWidth
-      const height = window.innerHeight
-      camera.aspect = width / height
-      camera.updateProjectionMatrix()
-      renderer.setSize(width, height)
-    }
-    window.addEventListener('resize', handleResize)
-
-    // Cleanup
     return () => {
-      window.removeEventListener('resize', handleResize)
-      if (container && renderer.domElement) {
-        container.removeChild(renderer.domElement)
-      }
-      renderer.dispose()
-      geometry.dispose()
-      edges.dispose()
-      particleGeometry.dispose()
-      // Cancel animation not strictly needed if component unmounts
+      window.removeEventListener('resize', resize)
+      window.removeEventListener('mousemove', handleMouseMove)
+      window.removeEventListener('mouseleave', handleMouseLeave)
+      window.removeEventListener('scroll', handleScroll)
+      if (animationRef.current) cancelAnimationFrame(animationRef.current)
     }
   }, [mounted, dark])
 
   if (!mounted) return null
 
   return (
-    <motion.div 
-      ref={containerRef}
-      className="fixed inset-0 pointer-events-none overflow-hidden z-0"
-      // Use Framer Motion to physically zoom the 3D canvas container
-      style={{ 
-        scale: zoom,
-        transformOrigin: "center center"
-      }}
-    >
-      {/* Background Color Transition */}
-      <motion.div 
-        className="absolute inset-0 transition-colors duration-1000"
-        style={{ 
-          backgroundColor: dark ? '#0b0b0e' : '#eef2f9' // Deep dark or soft light grey
-        }} 
-      />
-    </motion.div>
+    <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
+      <div className="absolute inset-0 transition-colors duration-500"
+        style={{ backgroundColor: dark ? '#000000' : '#00f0ff' }} />
+      <canvas ref={canvasRef} className="absolute inset-0 w-full h-full"
+        style={{ background: 'transparent' }} />
+    </div>
   )
 }
