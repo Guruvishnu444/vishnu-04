@@ -1,37 +1,14 @@
 import { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 
-// ── Digital Plexus background ──────────────────────────────────
-// A glowing blue/violet/magenta particle network, always dark.
-// Nodes drift slowly, link to nearby neighbours with faint lines,
-// and brighten when the mouse comes near — same language as the
-// reference "digital plexus" artwork.
+// ── Digital Plexus background (mono-blue, no dot glow) ─────────
+// A triangulated wireframe mesh of nodes + lines, all in one blue
+// hue, with a few brighter "energy strands" flowing through the
+// mesh like in the reference image. Dots are crisp, flat, no glow.
+// Dark mode only.
 
-const PALETTE = [
-  { r: 56, g: 189, b: 248 },   // cyan-blue
-  { r: 96, g: 130, b: 255 },   // electric blue
-  { r: 147, g: 90, b: 255 },   // violet
-  { r: 200, g: 70, b: 230 },   // magenta-violet
-  { r: 230, g: 60, b: 190 },   // pink-magenta
-]
-
-function lerpColor(a, b, t) {
-  return {
-    r: a.r + (b.r - a.r) * t,
-    g: a.g + (b.g - a.g) * t,
-    b: a.b + (b.b - a.b) * t,
-  }
-}
-
-function pickColor(t) {
-  // t in [0,1) walks across the palette for smooth blue -> violet -> magenta spread
-  const seg = t * (PALETTE.length - 1)
-  const i = Math.floor(seg)
-  const f = seg - i
-  const a = PALETTE[i]
-  const b = PALETTE[Math.min(i + 1, PALETTE.length - 1)]
-  return lerpColor(a, b, f)
-}
+const BASE = { r: 70, g: 140, b: 255 }   // mesh line / dot blue
+const BRIGHT = { r: 130, g: 210, b: 255 } // bright flowing-strand blue
 
 export default function InteractiveBackground() {
   const canvasRef = useRef(null)
@@ -72,103 +49,84 @@ export default function InteractiveBackground() {
     window.addEventListener('mouseleave', handleMouseLeave)
     window.addEventListener('scroll', handleScroll, { passive: true })
 
-    // ── Build particle field ──────────────────────────────────
+    // ── Mesh nodes: scattered, denser toward one side, like a torn web ──
     const area = width * height
-    const NODE_COUNT = Math.min(150, Math.max(60, Math.round(area / 14000)))
-    const DUST_COUNT = Math.min(220, Math.max(90, Math.round(area / 9000)))
-    const LINK_DIST = Math.min(width, height) * 0.16
+    const NODE_COUNT = Math.min(170, Math.max(70, Math.round(area / 9000)))
+    const LINK_DIST = Math.min(width, height) * 0.22
+
+    // converge point: where the bright strands funnel toward (top area)
+    const convergeX = width * 0.32
+    const convergeY = -height * 0.15
 
     const nodes = Array.from({ length: NODE_COUNT }, () => {
-      const colorT = Math.random()
+      const x = Math.random() * width
+      const y = Math.random() * height
       return {
-        x: Math.random() * width,
-        y: Math.random() * height,
-        vx: (Math.random() - 0.5) * 0.12,
-        vy: (Math.random() - 0.5) * 0.12,
-        r: 1.1 + Math.random() * 2.0,
-        colorT,
-        color: pickColor(colorT),
-        pulseSeed: Math.random() * Math.PI * 2,
-        pulseSpeed: 0.4 + Math.random() * 0.6,
-      }
-    })
-
-    // soft background bokeh dust (the small unconnected glow dots in the reference)
-    const dust = Array.from({ length: DUST_COUNT }, () => {
-      const colorT = Math.random()
-      return {
-        x: Math.random() * width,
-        y: Math.random() * height,
+        x, y,
         vx: (Math.random() - 0.5) * 0.05,
         vy: (Math.random() - 0.5) * 0.05,
-        r: 0.6 + Math.random() * 1.8,
-        baseAlpha: 0.15 + Math.random() * 0.35,
-        color: pickColor(colorT),
-        twinkleSeed: Math.random() * Math.PI * 2,
-        twinkleSpeed: 0.3 + Math.random() * 0.8,
+        r: 1.0 + Math.random() * 1.3,
+        flicker: Math.random() * Math.PI * 2,
+        flickerSpeed: 0.3 + Math.random() * 0.5,
       }
     })
 
-    const wrap = (p) => {
-      if (p.x < -20) p.x = width + 20
-      if (p.x > width + 20) p.x = -20
-      if (p.y < -20) p.y = height + 20
-      if (p.y > height + 20) p.y = -20
+    // a handful of flowing energy strands (the bright streaks in the reference)
+    const STRAND_COUNT = 7
+    const strands = Array.from({ length: STRAND_COUNT }, () => {
+      const startX = width * (0.18 + Math.random() * 0.22)
+      return {
+        baseX: startX,
+        amp: 18 + Math.random() * 30,
+        freq: 1.2 + Math.random() * 1.6,
+        seed: Math.random() * Math.PI * 2,
+        speed: 0.15 + Math.random() * 0.2,
+        width: 1.1 + Math.random() * 1.4,
+        bend: (Math.random() - 0.5) * 0.6,
+      }
+    })
+
+    const wrap = (n) => {
+      if (n.x < -30) n.x = width + 30
+      if (n.x > width + 30) n.x = -30
+      if (n.y < -30) n.y = height + 30
+      if (n.y > height + 30) n.y = -30
     }
 
     const animate = () => {
-      time += 0.016
+      time += 0.012
       ctx.clearRect(0, 0, width, height)
 
       const mx = mouseRef.current.x
       const my = mouseRef.current.y
 
-      // scroll-driven gentle zoom, same feel as before but subtler
       const scrollY = scrollRef.current
       const t = Math.min(scrollY / 1400, 1)
-      const zoom = 1 + t * 0.18
-      const fade = 1 - t * 0.2
+      const zoom = 1 + t * 0.16
+      const fade = 1 - t * 0.18
 
       ctx.save()
       ctx.translate(width / 2, height / 2)
       ctx.scale(zoom, zoom)
       ctx.translate(-width / 2, -height / 2)
 
-      // background dust bokeh
-      dust.forEach((p) => {
-        p.x += p.vx
-        p.y += p.vy
-        wrap(p)
-        const twinkle = 0.6 + 0.4 * Math.sin(time * p.twinkleSpeed + p.twinkleSeed)
-        const alpha = p.baseAlpha * twinkle * fade
-        const { r, g, b } = p.color
-        const glowR = p.r * 4
-        const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, glowR)
-        grad.addColorStop(0, `rgba(${r|0},${g|0},${b|0},${alpha})`)
-        grad.addColorStop(1, `rgba(${r|0},${g|0},${b|0},0)`)
-        ctx.beginPath()
-        ctx.fillStyle = grad
-        ctx.arc(p.x, p.y, glowR, 0, Math.PI * 2)
-        ctx.fill()
-      })
-
-      // update node positions, with gentle mouse attraction
+      // drift nodes gently, slight mouse attraction like a web being touched
       nodes.forEach((n) => {
         n.x += n.vx
         n.y += n.vy
         if (mx > 0) {
           const dx = mx - n.x, dy = my - n.y
           const d2 = dx * dx + dy * dy
-          if (d2 < 60000) {
+          if (d2 < 50000) {
             const d = Math.sqrt(d2) || 1
-            n.x += (dx / d) * 0.18
-            n.y += (dy / d) * 0.18
+            n.x += (dx / d) * 0.15
+            n.y += (dy / d) * 0.15
           }
         }
         wrap(n)
       })
 
-      // draw links between near nodes
+      // ── triangulated mesh lines ──
       for (let i = 0; i < nodes.length; i++) {
         const a = nodes[i]
         for (let j = i + 1; j < nodes.length; j++) {
@@ -177,21 +135,18 @@ export default function InteractiveBackground() {
           const dist = Math.sqrt(dx * dx + dy * dy)
           if (dist < LINK_DIST) {
             const proximity = 1 - dist / LINK_DIST
-            let lineAlpha = proximity * proximity * 0.55 * fade
+            let alpha = proximity * proximity * 0.5 * fade
 
-            // brighten links near the cursor
             if (mx > 0) {
               const mdx = (a.x + b.x) / 2 - mx
               const mdy = (a.y + b.y) / 2 - my
               const md2 = mdx * mdx + mdy * mdy
-              const boost = Math.exp(-md2 / 24000)
-              lineAlpha = Math.min(1, lineAlpha + boost * 0.5)
+              alpha = Math.min(1, alpha + Math.exp(-md2 / 20000) * 0.45)
             }
 
-            const mix = lerpColor(a.color, b.color, 0.5)
             ctx.beginPath()
-            ctx.strokeStyle = `rgba(${mix.r|0},${mix.g|0},${mix.b|0},${lineAlpha})`
-            ctx.lineWidth = 0.7
+            ctx.strokeStyle = `rgba(${BASE.r},${BASE.g},${BASE.b},${alpha})`
+            ctx.lineWidth = 0.6
             ctx.moveTo(a.x, a.y)
             ctx.lineTo(b.x, b.y)
             ctx.stroke()
@@ -199,31 +154,50 @@ export default function InteractiveBackground() {
         }
       }
 
-      // draw glowing nodes
+      // ── flat, crisp nodes — no glow, just a small soft-edge dot ──
       nodes.forEach((n) => {
-        const pulse = 0.75 + 0.25 * Math.sin(time * n.pulseSpeed + n.pulseSeed)
-        let glowBoost = 1
+        const flick = 0.6 + 0.4 * Math.sin(time * n.flickerSpeed + n.flicker)
+        let boost = 1
         if (mx > 0) {
           const dx = mx - n.x, dy = my - n.y
           const d2 = dx * dx + dy * dy
-          glowBoost = 1 + Math.exp(-d2 / 16000) * 2.2
+          boost = 1 + Math.exp(-d2 / 14000) * 1.4
         }
-        const { r, g, b } = n.color
-        const glowR = n.r * 7 * glowBoost
-        const grad = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, glowR)
-        grad.addColorStop(0, `rgba(${r|0},${g|0},${b|0},${0.65 * pulse * fade})`)
-        grad.addColorStop(0.4, `rgba(${r|0},${g|0},${b|0},${0.22 * pulse * fade})`)
-        grad.addColorStop(1, `rgba(${r|0},${g|0},${b|0},0)`)
+        const alpha = Math.min(1, 0.55 * flick * fade * boost)
         ctx.beginPath()
-        ctx.fillStyle = grad
-        ctx.arc(n.x, n.y, glowR, 0, Math.PI * 2)
+        ctx.fillStyle = `rgba(${BRIGHT.r},${BRIGHT.g},${BRIGHT.b},${alpha})`
+        ctx.arc(n.x, n.y, n.r * (boost > 1 ? 1.3 : 1), 0, Math.PI * 2)
         ctx.fill()
+      })
 
-        // bright core
+      // ── bright flowing energy strands (the streaking highlight lines) ──
+      strands.forEach((s) => {
         ctx.beginPath()
-        ctx.fillStyle = `rgba(${Math.min(255, r + 80)|0},${Math.min(255, g + 80)|0},${Math.min(255, b + 80)|0},${0.9 * pulse * fade})`
-        ctx.arc(n.x, n.y, n.r * 0.9, 0, Math.PI * 2)
-        ctx.fill()
+        let prevX, prevY
+        const steps = 60
+        for (let k = 0; k <= steps; k++) {
+          const ft = k / steps
+          const y = height * (-0.1 + ft * 1.15)
+          const sway =
+            Math.sin(ft * Math.PI * s.freq + time * s.speed + s.seed) * s.amp * (0.3 + ft * 0.7)
+          const bendShift = s.bend * (y - convergeY) * 0.4
+          const x = s.baseX + sway + bendShift + (convergeX - s.baseX) * Math.max(0, 1 - ft * 1.4)
+          if (k === 0) {
+            ctx.moveTo(x, y)
+          } else {
+            const cx = (prevX + x) / 2
+            const cy = (prevY + y) / 2
+            ctx.quadraticCurveTo(prevX, prevY, cx, cy)
+          }
+          prevX = x; prevY = y
+        }
+        const grad = ctx.createLinearGradient(s.baseX, 0, s.baseX, height)
+        grad.addColorStop(0, `rgba(${BRIGHT.r},${BRIGHT.g},${BRIGHT.b},${0.85 * fade})`)
+        grad.addColorStop(0.6, `rgba(${BASE.r},${BASE.g},${BASE.b},${0.4 * fade})`)
+        grad.addColorStop(1, `rgba(${BASE.r},${BASE.g},${BASE.b},0)`)
+        ctx.strokeStyle = grad
+        ctx.lineWidth = s.width
+        ctx.stroke()
       })
 
       ctx.restore()
@@ -249,23 +223,11 @@ export default function InteractiveBackground() {
       animate={{ opacity: 1 }}
       transition={{ duration: 1.2, ease: 'easeOut' }}
     >
-      {/* deep space base + radial glow, always dark regardless of site theme */}
-      <div
-        className="absolute inset-0"
-        style={{
-          background:
-            'radial-gradient(circle at 70% 20%, rgba(120,60,200,0.22), transparent 55%),' +
-            'radial-gradient(circle at 15% 80%, rgba(40,110,255,0.18), transparent 55%),' +
-            '#05030a',
-        }}
-      />
+      <div className="absolute inset-0" style={{ background: '#000000' }} />
       <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" style={{ background: 'transparent' }} />
-      {/* subtle vignette so edges stay rich/dark like the reference */}
       <div
         className="absolute inset-0"
-        style={{
-          background: 'radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,0.55) 100%)',
-        }}
+        style={{ background: 'radial-gradient(ellipse at center, transparent 60%, rgba(0,0,0,0.5) 100%)' }}
       />
     </motion.div>
   )
