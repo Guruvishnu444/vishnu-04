@@ -5,6 +5,7 @@ export default function InteractiveBackground() {
   const canvasRef = useRef(null)
   const animationRef = useRef(null)
   const mouseRef = useRef({ x: -9999, y: -9999 })
+  const scrollRef = useRef(0)
   const [mounted, setMounted] = useState(false)
   const { dark } = useTheme()
 
@@ -17,6 +18,7 @@ export default function InteractiveBackground() {
     const ctx = canvas.getContext('2d')
     let width = window.innerWidth
     let height = window.innerHeight
+    let time = 0
 
     const resize = () => {
       width = window.innerWidth
@@ -29,85 +31,126 @@ export default function InteractiveBackground() {
 
     const handleMouseMove = (e) => { mouseRef.current = { x: e.clientX, y: e.clientY } }
     const handleMouseLeave = () => { mouseRef.current = { x: -9999, y: -9999 } }
+    const handleScroll = () => { scrollRef.current = window.scrollY }
     window.addEventListener('mousemove', handleMouseMove)
     window.addEventListener('mouseleave', handleMouseLeave)
+    window.addEventListener('scroll', handleScroll, { passive: true })
 
-    const count = Math.min(Math.floor((width * height) / 9000), 160)
-    const particles = Array.from({ length: count }, () => ({
-      x: Math.random() * width,
-      y: Math.random() * height,
-      vx: (Math.random() - 0.5) * 0.5,
-      vy: (Math.random() - 0.5) * 0.5,
-      r: Math.random() * 1.5 + 0.5,
-    }))
+    // ── Flowing contour-line system ──────────────────────────
+    // Horizontal flowing lines that ripple like the reference image's
+    // mesh-wrap contours, made of dense dot clusters along each line.
+    const LINE_COUNT = 46
+    const POINTS_PER_LINE = 90
 
-    const getDarkColor = () => {
-      const colors = ['255,255,255', '235,235,235', '210,210,210', '180,180,180']
-      return colors[Math.floor(Math.random() * colors.length)]
-    }
-    const getLightColor = () => {
-      const colors = ['0,0,0', '25,25,25', '50,50,50', '75,75,75']
-      return colors[Math.floor(Math.random() * colors.length)]
-    }
-    particles.forEach(p => {
-      p.color = dark ? getDarkColor() : getLightColor()
+    const lines = Array.from({ length: LINE_COUNT }, (_, li) => {
+      const baseY = (li / (LINE_COUNT - 1))
+      return {
+        baseY,
+        seedA: Math.random() * Math.PI * 2,
+        seedB: Math.random() * Math.PI * 2,
+        freqA: 0.8 + Math.random() * 1.4,
+        freqB: 1.5 + Math.random() * 2,
+        ampScale: 0.6 + Math.random() * 0.8,
+        density: 0.55 + (li % 5 === 0 ? 0.35 : Math.random() * 0.3),
+      }
     })
 
+    const lightColor = () => {
+      const shades = ['10,10,10', '30,30,30', '55,55,55', '80,80,80']
+      return shades[Math.floor(Math.random() * shades.length)]
+    }
+    const darkColor = () => {
+      const shades = ['255,255,255', '230,230,230', '205,205,205', '180,180,180']
+      return shades[Math.floor(Math.random() * shades.length)]
+    }
+    const colorFn = dark ? darkColor : lightColor
+
     const animate = () => {
+      time += 0.0045
       ctx.clearRect(0, 0, width, height)
+
       const mx = mouseRef.current.x
       const my = mouseRef.current.y
 
-      particles.forEach(p => {
-        const dx = mx - p.x, dy = my - p.y
-        const dist = Math.sqrt(dx * dx + dy * dy)
-        if (dist < 130 && dist > 0) {
-          const force = (130 - dist) / 130
-          const angle = Math.atan2(dy, dx)
-          p.vx -= Math.cos(angle) * force * 0.7
-          p.vy -= Math.sin(angle) * force * 0.7
-        }
-        p.vx *= 0.98; p.vy *= 0.98
-        p.x += p.vx; p.y += p.vy
-        if (p.x < -50) p.x = width + 50
-        if (p.x > width + 50) p.x = -50
-        if (p.y < -50) p.y = height + 50
-        if (p.y > height + 50) p.y = -50
+      // scroll-driven zoom: zoom in as page scrolls down, back out on scroll up
+      const scrollY = scrollRef.current
+      const maxScrollForZoom = 1200
+      const t = Math.min(scrollY / maxScrollForZoom, 1)
+      const zoom = 1 + t * 0.55 // up to 1.55x zoom
+      const fade = 1 - t * 0.35 // slightly fade as it zooms
+
+      ctx.save()
+      ctx.translate(width / 2, height / 2)
+      ctx.scale(zoom, zoom)
+      ctx.translate(-width / 2, -height / 2)
+
+      lines.forEach((line, li) => {
+        const y0 = line.baseY * height
 
         ctx.beginPath()
-        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2)
-        ctx.fillStyle = `rgba(${p.color},0.8)`
-        ctx.fill()
-      })
+        let prevX = 0, prevY = 0
 
-      const maxDist = 140
-      for (let i = 0; i < particles.length; i++) {
-        const p1 = particles[i]
-        for (let j = i + 1; j < particles.length; j++) {
-          const p2 = particles[j]
-          const dx = p1.x - p2.x, dy = p1.y - p2.y
-          const d = Math.sqrt(dx * dx + dy * dy)
-          if (d < maxDist) {
+        for (let p = 0; p <= POINTS_PER_LINE; p++) {
+          const xt = p / POINTS_PER_LINE
+          const x = xt * width
+
+          // layered sine waves for organic contour flow
+          const wave =
+            Math.sin(xt * Math.PI * line.freqA + time + line.seedA) * 28 * line.ampScale +
+            Math.cos(xt * Math.PI * line.freqB - time * 0.7 + line.seedB) * 14 * line.ampScale
+
+          // mouse ripple distortion
+          let mouseEffect = 0
+          if (mx > 0) {
+            const dx = x - mx, dy = y0 - my
+            const d2 = dx * dx + dy * dy
+            mouseEffect = Math.exp(-d2 / 30000) * 40
+          }
+
+          const y = y0 + wave + mouseEffect
+
+          if (p === 0) {
+            ctx.moveTo(x, y)
+          } else {
+            // smooth curve
+            const cx = (prevX + x) / 2
+            const cy = (prevY + y) / 2
+            ctx.quadraticCurveTo(prevX, prevY, cx, cy)
+          }
+          prevX = x; prevY = y
+        }
+
+        const alpha = (0.04 + (li % 7 === 0 ? 0.05 : 0)) * fade
+        ctx.strokeStyle = `rgba(${colorFn()},${alpha})`
+        ctx.lineWidth = 0.6
+        ctx.stroke()
+
+        // dense particle dots along the line (only every few lines, for performance)
+        if (li % 2 === 0) {
+          for (let p = 0; p <= POINTS_PER_LINE; p += 2) {
+            if (Math.random() > line.density) continue
+            const xt = p / POINTS_PER_LINE
+            const x = xt * width
+            const wave =
+              Math.sin(xt * Math.PI * line.freqA + time + line.seedA) * 28 * line.ampScale +
+              Math.cos(xt * Math.PI * line.freqB - time * 0.7 + line.seedB) * 14 * line.ampScale
+            let mouseEffect = 0
+            if (mx > 0) {
+              const dx = x - mx, dy = y0 - my
+              const d2 = dx * dx + dy * dy
+              mouseEffect = Math.exp(-d2 / 30000) * 40
+            }
+            const y = y0 + wave + mouseEffect
+            const r = 0.4 + Math.random() * 0.6
             ctx.beginPath()
-            ctx.moveTo(p1.x, p1.y)
-            ctx.lineTo(p2.x, p2.y)
-            ctx.strokeStyle = `rgba(${p1.color},${(1 - d / maxDist) * 0.3})`
-            ctx.lineWidth = 0.5
-            ctx.stroke()
+            ctx.arc(x, y, r, 0, Math.PI * 2)
+            ctx.fillStyle = `rgba(${colorFn()},${0.5 * fade})`
+            ctx.fill()
           }
         }
-        const mdx = p1.x - mx, mdy = p1.y - my
-        const md = Math.sqrt(mdx * mdx + mdy * mdy)
-        if (md < 180) {
-          ctx.beginPath()
-          ctx.moveTo(p1.x, p1.y)
-          ctx.lineTo(mx, my)
-          ctx.strokeStyle = `rgba(${p1.color},${(1 - md / 180) * 0.55})`
-          ctx.lineWidth = 0.7
-          ctx.stroke()
-        }
-      }
+      })
 
+      ctx.restore()
       animationRef.current = requestAnimationFrame(animate)
     }
     animate()
@@ -116,6 +159,7 @@ export default function InteractiveBackground() {
       window.removeEventListener('resize', resize)
       window.removeEventListener('mousemove', handleMouseMove)
       window.removeEventListener('mouseleave', handleMouseLeave)
+      window.removeEventListener('scroll', handleScroll)
       if (animationRef.current) cancelAnimationFrame(animationRef.current)
     }
   }, [mounted, dark])
