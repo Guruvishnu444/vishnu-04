@@ -1,214 +1,177 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from 'react'
+import { useTheme } from '../ThemeContext'
 
 export default function InteractiveBackground() {
-  const canvasRef = useRef(null);
+  const canvasRef = useRef(null)
+  const animationRef = useRef(null)
+  const mouseRef = useRef({ x: -9999, y: -9999 })
+  const scrollRef = useRef(0)
+  const [mounted, setMounted] = useState(false)
+  const { dark } = useTheme()
+
+  useEffect(() => { setMounted(true) }, [])
 
   useEffect(() => {
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext("2d", { alpha: true });
-
-    let width = window.innerWidth;
-    let height = window.innerHeight;
-    let animationFrame = null;
-    let scrollY = 0;
-    let time = 0;
-
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
-
-    const particles = [];
-    const PARTICLE_COUNT = 5200;
+    if (!mounted) return
+    const canvas = canvasRef.current
+    if (!canvas) return
+    const ctx = canvas.getContext('2d')
+    let width = window.innerWidth
+    let height = window.innerHeight
+    let time = 0
 
     const resize = () => {
-      width = window.innerWidth;
-      height = window.innerHeight;
+      width = window.innerWidth
+      height = window.innerHeight
+      canvas.width = width
+      canvas.height = height
+    }
+    resize()
+    window.addEventListener('resize', resize)
 
-      canvas.width = width * dpr;
-      canvas.height = height * dpr;
-      canvas.style.width = `${width}px`;
-      canvas.style.height = `${height}px`;
+    const handleMouseMove = (e) => { mouseRef.current = { x: e.clientX, y: e.clientY } }
+    const handleMouseLeave = () => { mouseRef.current = { x: -9999, y: -9999 } }
+    const handleScroll = () => { scrollRef.current = window.scrollY }
+    window.addEventListener('mousemove', handleMouseMove)
+    window.addEventListener('mouseleave', handleMouseLeave)
+    window.addEventListener('scroll', handleScroll, { passive: true })
 
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    };
+    // ── Flowing contour-line system ──────────────────────────
+    // Horizontal flowing lines that ripple like the reference image's
+    // mesh-wrap contours, made of dense dot clusters along each line.
+    const LINE_COUNT = 46
+    const POINTS_PER_LINE = 90
 
-    const handleScroll = () => {
-      scrollY = window.scrollY || window.pageYOffset;
-    };
-
-    const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
-
-    const createHorizontalFigure = () => {
-      particles.length = 0;
-
-      for (let i = 0; i < PARTICLE_COUNT; i++) {
-        const t = Math.random();
-        const x = (t - 0.5) * 1000;
-
-        let bandRadius = 0;
-        const absX = Math.abs(x);
-
-        if (absX < 140) {
-          bandRadius = 170;
-        } else if (absX < 320) {
-          bandRadius = 130;
-        } else if (absX < 470) {
-          bandRadius = 92;
-        } else {
-          bandRadius = 48;
-        }
-
-        const angle = Math.random() * Math.PI * 2;
-        const y = Math.cos(angle) * bandRadius * (0.28 + Math.random() * 0.95);
-        const z = Math.sin(angle) * bandRadius * (0.55 + Math.random() * 1.15);
-
-        particles.push({
-          x,
-          y,
-          z,
-          size: Math.random() * 1.2 + 0.45,
-          alpha: Math.random() * 0.45 + 0.18,
-          seed: Math.random() * Math.PI * 2,
-          drift: Math.random() * 0.6 + 0.2,
-        });
-      }
-    };
-
-    const project = (x, y, z, scale) => {
-      const perspective = 1400;
-      const depth = perspective / (perspective + z);
-
+    const lines = Array.from({ length: LINE_COUNT }, (_, li) => {
+      const baseY = (li / (LINE_COUNT - 1))
       return {
-        x: x * depth * scale,
-        y: y * depth * scale,
-        depth,
-      };
-    };
+        baseY,
+        seedA: Math.random() * Math.PI * 2,
+        seedB: Math.random() * Math.PI * 2,
+        freqA: 0.8 + Math.random() * 1.4,
+        freqB: 1.5 + Math.random() * 2,
+        ampScale: 0.6 + Math.random() * 0.8,
+        density: 0.55 + (li % 5 === 0 ? 0.35 : Math.random() * 0.3),
+      }
+    })
 
-    resize();
-    createHorizontalFigure();
-    handleScroll();
-
-    window.addEventListener("resize", resize);
-    window.addEventListener("scroll", handleScroll, { passive: true });
-
-    const drawBackground = () => {
-      const gradient = ctx.createLinearGradient(0, 0, width, 0);
-      gradient.addColorStop(0, "#d7d7d7");
-      gradient.addColorStop(0.24, "#9f9f9f");
-      gradient.addColorStop(0.52, "#111111");
-      gradient.addColorStop(1, "#000000");
-
-      ctx.fillStyle = gradient;
-      ctx.fillRect(0, 0, width, height);
-    };
+    const lightColor = () => {
+      const shades = ['10,10,10', '30,30,30', '55,55,55', '80,80,80']
+      return shades[Math.floor(Math.random() * shades.length)]
+    }
+    const darkColor = () => {
+      const shades = ['255,255,255', '230,230,230', '205,205,205', '180,180,180']
+      return shades[Math.floor(Math.random() * shades.length)]
+    }
+    const colorFn = dark ? darkColor : lightColor
 
     const animate = () => {
-      time += 0.0065;
+      time += 0.0045
+      ctx.clearRect(0, 0, width, height)
 
-      drawBackground();
+      const mx = mouseRef.current.x
+      const my = mouseRef.current.y
 
-      const scrollProgress = clamp(scrollY / 1200, 0, 1);
-      const zoom = 0.9 + scrollProgress * 0.62;
-      const rotateY = -0.18 + scrollProgress * 0.32;
-      const rotateX = Math.sin(time * 0.7) * 0.04;
+      // scroll-driven zoom: zoom in as page scrolls down, back out on scroll up
+      const scrollY = scrollRef.current
+      const maxScrollForZoom = 1200
+      const t = Math.min(scrollY / maxScrollForZoom, 1)
+      const zoom = 1 + t * 0.55 // up to 1.55x zoom
+      const fade = 1 - t * 0.35 // slightly fade as it zooms
 
-      const cosY = Math.cos(rotateY);
-      const sinY = Math.sin(rotateY);
-      const cosX = Math.cos(rotateX);
-      const sinX = Math.sin(rotateX);
+      ctx.save()
+      ctx.translate(width / 2, height / 2)
+      ctx.scale(zoom, zoom)
+      ctx.translate(-width / 2, -height / 2)
 
-      const cloud = [];
+      lines.forEach((line, li) => {
+        const y0 = line.baseY * height
 
-      ctx.save();
-      ctx.translate(width / 2, height / 2);
-      ctx.scale(zoom, zoom);
+        ctx.beginPath()
+        let prevX = 0, prevY = 0
 
-      for (let i = 0; i < particles.length; i++) {
-        const p = particles[i];
+        for (let p = 0; p <= POINTS_PER_LINE; p++) {
+          const xt = p / POINTS_PER_LINE
+          const x = xt * width
 
-        const waveY =
-          p.y +
-          Math.sin(time * 1.2 + p.seed) * (2.4 + p.drift) +
-          Math.cos(time * 0.8 + p.x * 0.01) * 1.4;
+          // layered sine waves for organic contour flow
+          const wave =
+            Math.sin(xt * Math.PI * line.freqA + time + line.seedA) * 28 * line.ampScale +
+            Math.cos(xt * Math.PI * line.freqB - time * 0.7 + line.seedB) * 14 * line.ampScale
 
-        const waveZ =
-          p.z + Math.sin(time + p.seed * 1.3) * 3.5;
+          // mouse ripple distortion
+          let mouseEffect = 0
+          if (mx > 0) {
+            const dx = x - mx, dy = y0 - my
+            const d2 = dx * dx + dy * dy
+            mouseEffect = Math.exp(-d2 / 30000) * 40
+          }
 
-        const x1 = p.x * cosY - waveZ * sinY;
-        const z1 = p.x * sinY + waveZ * cosY;
+          const y = y0 + wave + mouseEffect
 
-        const y2 = waveY * cosX - z1 * sinX;
-        const z2 = waveY * sinX + z1 * cosX;
+          if (p === 0) {
+            ctx.moveTo(x, y)
+          } else {
+            // smooth curve
+            const cx = (prevX + x) / 2
+            const cy = (prevY + y) / 2
+            ctx.quadraticCurveTo(prevX, prevY, cx, cy)
+          }
+          prevX = x; prevY = y
+        }
 
-        const point = project(x1, y2, z2, 1);
+        const alpha = (0.04 + (li % 7 === 0 ? 0.05 : 0)) * fade
+        ctx.strokeStyle = `rgba(${colorFn()},${alpha})`
+        ctx.lineWidth = 0.6
+        ctx.stroke()
 
-        cloud.push({
-          x: point.x,
-          y: point.y,
-          z: z2,
-          alpha: p.alpha * point.depth,
-          size: p.size * point.depth,
-        });
-      }
-
-      cloud.sort((a, b) => a.z - b.z);
-
-      for (let i = 0; i < cloud.length; i++) {
-        const p = cloud[i];
-        const glow = clamp(p.alpha, 0.08, 0.9);
-
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(255,255,255,${glow})`;
-        ctx.fill();
-      }
-
-      ctx.lineWidth = 0.42;
-
-      for (let i = 0; i < cloud.length; i += 8) {
-        const a = cloud[i];
-
-        for (let j = i + 8; j < Math.min(i + 120, cloud.length); j += 8) {
-          const b = cloud[j];
-
-          const dx = a.x - b.x;
-          const dy = a.y - b.y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-
-          if (dist < 26) {
-            const alpha = (1 - dist / 26) * 0.09;
-            ctx.strokeStyle = `rgba(255,255,255,${alpha})`;
-            ctx.beginPath();
-            ctx.moveTo(a.x, a.y);
-            ctx.lineTo(b.x, b.y);
-            ctx.stroke();
+        // dense particle dots along the line (only every few lines, for performance)
+        if (li % 2 === 0) {
+          for (let p = 0; p <= POINTS_PER_LINE; p += 2) {
+            if (Math.random() > line.density) continue
+            const xt = p / POINTS_PER_LINE
+            const x = xt * width
+            const wave =
+              Math.sin(xt * Math.PI * line.freqA + time + line.seedA) * 28 * line.ampScale +
+              Math.cos(xt * Math.PI * line.freqB - time * 0.7 + line.seedB) * 14 * line.ampScale
+            let mouseEffect = 0
+            if (mx > 0) {
+              const dx = x - mx, dy = y0 - my
+              const d2 = dx * dx + dy * dy
+              mouseEffect = Math.exp(-d2 / 30000) * 40
+            }
+            const y = y0 + wave + mouseEffect
+            const r = 0.4 + Math.random() * 0.6
+            ctx.beginPath()
+            ctx.arc(x, y, r, 0, Math.PI * 2)
+            ctx.fillStyle = `rgba(${colorFn()},${0.5 * fade})`
+            ctx.fill()
           }
         }
-      }
+      })
 
-      const haze = ctx.createRadialGradient(0, 0, 20, 0, 0, Math.min(width, height) * 0.42);
-      haze.addColorStop(0, "rgba(255,255,255,0.08)");
-      haze.addColorStop(0.45, "rgba(255,255,255,0.03)");
-      haze.addColorStop(1, "rgba(255,255,255,0)");
-      ctx.fillStyle = haze;
-      ctx.fillRect(-width, -height, width * 2, height * 2);
-
-      ctx.restore();
-
-      animationFrame = requestAnimationFrame(animate);
-    };
-
-    animate();
+      ctx.restore()
+      animationRef.current = requestAnimationFrame(animate)
+    }
+    animate()
 
     return () => {
-      cancelAnimationFrame(animationFrame);
-      window.removeEventListener("resize", resize);
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, []);
+      window.removeEventListener('resize', resize)
+      window.removeEventListener('mousemove', handleMouseMove)
+      window.removeEventListener('mouseleave', handleMouseLeave)
+      window.removeEventListener('scroll', handleScroll)
+      if (animationRef.current) cancelAnimationFrame(animationRef.current)
+    }
+  }, [mounted, dark])
+
+  if (!mounted) return null
 
   return (
-    <div className="fixed inset-0 -z-10 overflow-hidden bg-black">
-      <canvas ref={canvasRef} className="h-full w-full" />
+    <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
+      <div className="absolute inset-0 transition-colors duration-500"
+        style={{ backgroundColor: dark ? '#000000' : '#00f0ff' }} />
+      <canvas ref={canvasRef} className="absolute inset-0 w-full h-full"
+        style={{ background: 'transparent' }} />
     </div>
-  );
+  )
 }
