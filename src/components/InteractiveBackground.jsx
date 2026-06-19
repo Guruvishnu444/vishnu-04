@@ -54,10 +54,6 @@ export default function InteractiveBackground() {
     const NODE_COUNT = Math.min(170, Math.max(70, Math.round(area / 9000)))
     const LINK_DIST = Math.min(width, height) * 0.22
 
-    // converge point: where the bright strands funnel toward (top area)
-    const convergeX = width * 0.32
-    const convergeY = -height * 0.15
-
     const nodes = Array.from({ length: NODE_COUNT }, () => {
       const x = Math.random() * width
       const y = Math.random() * height
@@ -68,21 +64,6 @@ export default function InteractiveBackground() {
         r: 1.0 + Math.random() * 1.3,
         flicker: Math.random() * Math.PI * 2,
         flickerSpeed: 0.3 + Math.random() * 0.5,
-      }
-    })
-
-    // a handful of flowing energy strands (the bright streaks in the reference)
-    const STRAND_COUNT = 7
-    const strands = Array.from({ length: STRAND_COUNT }, () => {
-      const startX = width * (0.18 + Math.random() * 0.22)
-      return {
-        baseX: startX,
-        amp: 18 + Math.random() * 30,
-        freq: 1.2 + Math.random() * 1.6,
-        seed: Math.random() * Math.PI * 2,
-        speed: 0.15 + Math.random() * 0.2,
-        width: 1.1 + Math.random() * 1.4,
-        bend: (Math.random() - 0.5) * 0.6,
       }
     })
 
@@ -168,36 +149,6 @@ export default function InteractiveBackground() {
         ctx.fillStyle = `rgba(${BRIGHT.r},${BRIGHT.g},${BRIGHT.b},${alpha})`
         ctx.arc(n.x, n.y, n.r * (boost > 1 ? 1.3 : 1), 0, Math.PI * 2)
         ctx.fill()
-      })
-
-      // ── bright flowing energy strands (the streaking highlight lines) ──
-      strands.forEach((s) => {
-        ctx.beginPath()
-        let prevX, prevY
-        const steps = 60
-        for (let k = 0; k <= steps; k++) {
-          const ft = k / steps
-          const y = height * (-0.1 + ft * 1.15)
-          const sway =
-            Math.sin(ft * Math.PI * s.freq + time * s.speed + s.seed) * s.amp * (0.3 + ft * 0.7)
-          const bendShift = s.bend * (y - convergeY) * 0.4
-          const x = s.baseX + sway + bendShift + (convergeX - s.baseX) * Math.max(0, 1 - ft * 1.4)
-          if (k === 0) {
-            ctx.moveTo(x, y)
-          } else {
-            const cx = (prevX + x) / 2
-            const cy = (prevY + y) / 2
-            ctx.quadraticCurveTo(prevX, prevY, cx, cy)
-          }
-          prevX = x; prevY = y
-        }
-        const grad = ctx.createLinearGradient(s.baseX, 0, s.baseX, height)
-        grad.addColorStop(0, `rgba(${BRIGHT.r},${BRIGHT.g},${BRIGHT.b},${0.85 * fade})`)
-        grad.addColorStop(0.6, `rgba(${BASE.r},${BASE.g},${BASE.b},${0.4 * fade})`)
-        grad.addColorStop(1, `rgba(${BASE.r},${BASE.g},${BASE.b},0)`)
-        ctx.strokeStyle = grad
-        ctx.lineWidth = s.width
-        ctx.stroke()
       })
 
       ctx.restore()
