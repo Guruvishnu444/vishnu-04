@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ArrowSquareOut, GithubLogo, X, ArrowRight } from '@phosphor-icons/react'
 import { useTheme } from '../ThemeContext'
+import { getColors } from '../colors'
 
 const statusColors = {
   'Live': { bg: 'rgba(34,197,94,0.18)', text: '#4ade80' },
@@ -9,11 +10,7 @@ const statusColors = {
   'Planned': { bg: 'rgba(59,130,246,0.18)', text: '#60a5fa' },
 }
 
-function CaseStudyModal({ project, onClose, dark, accent, textColor }) {
-  const modalBg = dark ? '#000000' : '#F8F9FA'
-  const rowBg = dark ? 'rgba(0,240,255,0.05)' : 'rgba(10,26,58,0.04)'
-  const rowBorder = dark ? 'rgba(0,240,255,0.12)' : 'rgba(10,26,58,0.1)'
-  const tagBg = dark ? 'rgba(0,240,255,0.12)' : 'rgba(0,200,220,0.12)'
+function CaseStudyModal({ project, onClose, dark, c }) {
   const sc = statusColors[project.status] || { bg: 'rgba(120,120,120,0.2)', text: '#999' }
 
   return (
@@ -25,10 +22,10 @@ function CaseStudyModal({ project, onClose, dark, accent, textColor }) {
         exit={{ scale: 0.9, opacity: 0 }} transition={{ type: 'spring', stiffness: 200 }}
         onClick={e => e.stopPropagation()}
         className="relative z-10 w-full max-w-lg rounded-2xl border p-5 sm:p-8 shadow-2xl max-h-[88vh] overflow-y-auto"
-        style={{ backgroundColor: modalBg, borderColor: rowBorder }}>
+        style={{ backgroundColor: c.card, borderColor: c.cardBorder }}>
         <button onClick={onClose}
           className="absolute top-4 right-4 p-1 rounded-lg transition-opacity hover:opacity-70"
-          style={{ color: textColor }}>
+          style={{ color: c.textPrimary }}>
           <X size={22} />
         </button>
 
@@ -37,7 +34,7 @@ function CaseStudyModal({ project, onClose, dark, accent, textColor }) {
             style={{ backgroundColor: sc.bg, color: sc.text }}>
             {project.status}
           </span>
-          <h3 className="text-lg sm:text-xl font-bold" style={{ color: textColor }}>{project.title}</h3>
+          <h3 className="text-lg sm:text-xl font-bold" style={{ color: c.textPrimary }}>{project.title}</h3>
         </div>
 
         <div className="space-y-3 sm:space-y-4 mb-5 sm:mb-6">
@@ -46,18 +43,18 @@ function CaseStudyModal({ project, onClose, dark, accent, textColor }) {
             { label: '⚡ Action', text: project.action },
             { label: '✅ Result', text: project.result },
           ].map(row => (
-            <div key={row.label} className="border rounded-xl p-4" style={{ backgroundColor: rowBg, borderColor: rowBorder }}>
-              <p className="text-xs font-bold uppercase tracking-wider mb-2" style={{ color: accent }}>
+            <div key={row.label} className="border rounded-xl p-4" style={{ backgroundColor: c.bg, borderColor: c.cardBorder }}>
+              <p className="text-xs font-bold uppercase tracking-wider mb-2" style={{ color: c.accent }}>
                 {row.label}
               </p>
-              <p className="text-sm leading-relaxed" style={{ color: textColor, opacity: 0.7 }}>{row.text}</p>
+              <p className="text-sm leading-relaxed" style={{ color: c.textSecondary }}>{row.text}</p>
             </div>
           ))}
         </div>
 
         <div className="flex flex-wrap gap-2 mb-5 sm:mb-6">
           {project.tags?.map(tag => (
-            <span key={tag} className="px-3 py-1 rounded-full text-xs font-medium" style={{ backgroundColor: tagBg, color: accent }}>{tag}</span>
+            <span key={tag} className="px-3 py-1 rounded-full text-xs font-medium" style={{ backgroundColor: c.accentSoft, color: c.accent }}>{tag}</span>
           ))}
         </div>
 
@@ -65,14 +62,14 @@ function CaseStudyModal({ project, onClose, dark, accent, textColor }) {
           {project.liveLink && project.liveLink !== '#' && (
             <a href={project.liveLink} target="_blank" rel="noopener noreferrer"
               className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-semibold"
-              style={{ backgroundColor: accent, color: dark ? '#000' : '#fff' }}>
+              style={{ backgroundColor: c.accent, color: '#fff' }}>
               <ArrowSquareOut size={16} /> Live Demo
             </a>
           )}
           {project.githubLink && project.githubLink !== '#' && (
             <a href={project.githubLink} target="_blank" rel="noopener noreferrer"
               className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-semibold border"
-              style={{ borderColor: rowBorder, color: textColor }}>
+              style={{ borderColor: c.cardBorder, color: c.textPrimary }}>
               <GithubLogo size={16} /> GitHub
             </a>
           )}
@@ -82,38 +79,36 @@ function CaseStudyModal({ project, onClose, dark, accent, textColor }) {
   )
 }
 
-function ProjectCard({ project, dark, accent, textColor, onClick }) {
-  const cardBorder = dark ? 'rgba(0,240,255,0.12)' : 'rgba(10,26,58,0.1)'
-  const tagBg = dark ? 'rgba(0,240,255,0.1)' : 'rgba(0,200,220,0.1)'
+function ProjectCard({ project, dark, c, onClick }) {
   const sc = statusColors[project.status] || { bg: 'rgba(120,120,120,0.2)', text: '#999' }
 
   return (
     <motion.div whileHover={{ y: -6 }} transition={{ duration: 0.2 }}
       className="flex-shrink-0 w-[280px] sm:w-[320px] md:w-[340px] border rounded-2xl overflow-hidden cursor-pointer transition-all"
-      style={{ borderColor: cardBorder }}
+      style={{ borderColor: c.cardBorder, backgroundColor: c.card }}
       onClick={() => onClick(project)}>
 
-      <div className="h-2" style={{ backgroundColor: accent }} />
+      <div className="h-2" style={{ backgroundColor: c.accent }} />
 
       <div className="p-5 sm:p-6">
         <div className="flex items-start justify-between mb-3 gap-2">
-          <h3 className="font-bold text-base sm:text-lg leading-tight" style={{ color: textColor }}>{project.title}</h3>
+          <h3 className="font-bold text-base sm:text-lg leading-tight" style={{ color: c.textPrimary }}>{project.title}</h3>
           <span className="flex-shrink-0 text-xs font-bold px-2 py-1 rounded-full whitespace-nowrap"
             style={{ backgroundColor: sc.bg, color: sc.text }}>
             {project.status}
           </span>
         </div>
 
-        <p className="text-sm mb-4 sm:mb-5 leading-relaxed line-clamp-3" style={{ color: textColor, opacity: 0.6 }}>{project.description}</p>
+        <p className="text-sm mb-4 sm:mb-5 leading-relaxed line-clamp-3" style={{ color: c.textSecondary }}>{project.description}</p>
 
         <div className="flex flex-wrap gap-2 mb-4 sm:mb-5">
           {project.tags?.map(tag => (
-            <span key={tag} className="px-2.5 py-1 rounded-full text-xs font-medium" style={{ backgroundColor: tagBg, color: accent }}>{tag}</span>
+            <span key={tag} className="px-2.5 py-1 rounded-full text-xs font-medium" style={{ backgroundColor: c.accentSoft, color: c.accent }}>{tag}</span>
           ))}
         </div>
 
         <button className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-semibold transition-opacity hover:opacity-90"
-          style={{ backgroundColor: accent, color: dark ? '#000' : '#fff' }}>
+          style={{ backgroundColor: c.accent, color: '#fff' }}>
           View Case Study <ArrowRight size={15} />
         </button>
       </div>
@@ -130,29 +125,22 @@ function Projects() {
   const [startX, setStartX] = useState(0)
   const [scrollLeft, setScrollLeft] = useState(0)
   const { dark } = useTheme()
-
-  const textColor = dark ? '#00F0FF' : '#0A1A3A'
-  const accent = dark ? '#FFFFFF' : '#00F0FF'
-  const badgeBg = dark ? 'rgba(0,240,255,0.1)' : 'rgba(0,200,220,0.12)'
+  const c = getColors(dark)
 
   useEffect(() => {
     fetch('./projects.json').then(r => r.json()).then(d => setProjects(d)).catch(() => {}).finally(() => setLoading(false))
   }, [])
 
-  const SkeletonCard = () => {
-    const shimmer = dark ? 'rgba(0,240,255,0.08)' : 'rgba(10,26,58,0.08)'
-    const border = dark ? 'rgba(0,240,255,0.12)' : 'rgba(10,26,58,0.1)'
-    return (
-      <div className="flex-shrink-0 w-[280px] sm:w-[320px] md:w-[340px] border rounded-2xl overflow-hidden" style={{ borderColor: border }}>
-        <div className="h-2" style={{ backgroundColor: shimmer }} />
-        <div className="p-6 space-y-3">
-          <div className="h-6 w-3/4 rounded-lg animate-pulse" style={{ backgroundColor: shimmer }} />
-          <div className="h-4 w-full rounded animate-pulse" style={{ backgroundColor: shimmer }} />
-          <div className="h-4 w-2/3 rounded animate-pulse" style={{ backgroundColor: shimmer }} />
-        </div>
+  const SkeletonCard = () => (
+    <div className="flex-shrink-0 w-[280px] sm:w-[320px] md:w-[340px] border rounded-2xl overflow-hidden" style={{ borderColor: c.cardBorder, backgroundColor: c.card }}>
+      <div className="h-2" style={{ backgroundColor: c.accentSoft }} />
+      <div className="p-6 space-y-3">
+        <div className="h-6 w-3/4 rounded-lg animate-pulse" style={{ backgroundColor: c.accentSoft }} />
+        <div className="h-4 w-full rounded animate-pulse" style={{ backgroundColor: c.accentSoft }} />
+        <div className="h-4 w-2/3 rounded animate-pulse" style={{ backgroundColor: c.accentSoft }} />
       </div>
-    )
-  }
+    </div>
+  )
 
   return (
     <section id="projects" className="relative py-20 sm:py-24 px-4 sm:px-6" aria-label="Projects section">
@@ -160,14 +148,14 @@ function Projects() {
         <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }} transition={{ duration: 0.6 }} className="text-center mb-10 sm:mb-12">
           <span className="inline-block px-3 py-1 rounded-full text-xs font-semibold tracking-wider uppercase mb-4"
-            style={{ backgroundColor: badgeBg, color: accent }}>
+            style={{ backgroundColor: c.accentSoft, color: c.accent }}>
             Portfolio
           </span>
-          <h2 className="text-2xl sm:text-4xl lg:text-5xl font-bold" style={{ color: textColor }}>
+          <h2 className="text-2xl sm:text-4xl lg:text-5xl font-bold" style={{ color: c.textPrimary }}>
             My{' '}
-            <span style={{ color: accent }}>Projects</span>
+            <span style={{ color: c.accent }}>Projects</span>
           </h2>
-          <p className="mt-3 text-sm sm:text-base" style={{ color: textColor, opacity: 0.5 }}>
+          <p className="mt-3 text-sm sm:text-base" style={{ color: c.textSecondary }}>
             Tap any card to see the full case study
           </p>
         </motion.div>
@@ -188,18 +176,18 @@ function Projects() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.1 }}>
-                  <ProjectCard project={p} dark={dark} accent={accent} textColor={textColor} onClick={setSelected} />
+                  <ProjectCard project={p} dark={dark} c={c} onClick={setSelected} />
                 </motion.div>
               ))}
         </div>
-        <p className="text-center text-xs sm:text-sm mt-4" style={{ color: textColor, opacity: 0.3 }}>
+        <p className="text-center text-xs sm:text-sm mt-4" style={{ color: c.textSecondary, opacity: 0.6 }}>
           ← Drag to scroll →
         </p>
       </div>
 
       <AnimatePresence>
         {selected && (
-          <CaseStudyModal project={selected} onClose={() => setSelected(null)} dark={dark} accent={accent} textColor={textColor} />
+          <CaseStudyModal project={selected} onClose={() => setSelected(null)} dark={dark} c={c} />
         )}
       </AnimatePresence>
     </section>

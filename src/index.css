@@ -6,15 +6,19 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
 html { scroll-behavior: smooth; }
 
-/* ── CSS Custom Properties: theme color system ── */
+/* ── Premium color system ── */
 :root {
-  --color-bg-dark: #000000;
-  --color-text-dark: #00F0FF;
-  --color-accent-dark: #FFFFFF;
+  --color-bg-dark: #0D1117;
+  --color-card-dark: #161B22;
+  --color-text-primary-dark: #E6EDF2;
+  --color-text-secondary-dark: #8B949E;
+  --color-accent-dark: #58A6FF;
 
   --color-bg-light: #F8F9FA;
-  --color-text-light: #0A1A3A;
-  --color-accent-light: #00F0FF;
+  --color-card-light: #FFFFFF;
+  --color-text-primary-light: #1F2328;
+  --color-text-secondary-light: #57606A;
+  --color-accent-light: #0969DA;
 }
 
 body {
@@ -23,7 +27,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* ── Global smooth theme transitions (no flash on toggle) ── */
+/* ── Smooth theme transitions ── */
 *, *::before, *::after {
   transition:
     background-color 0.3s ease,
@@ -40,13 +44,11 @@ body {
     border-color 0.3s ease !important;
 }
 
-/* ── Glassmorphism base ── */
 .glass {
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
 }
 
-/* ── Hoverable lift ── */
 .hoverable {
   transition: transform 0.2s ease, opacity 0.2s ease !important;
 }
@@ -58,13 +60,11 @@ body {
   transform: translateY(-1px);
 }
 
-/* ── Scrollbar ── */
 ::-webkit-scrollbar { width: 5px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: rgba(0,240,255,0.3); border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: rgba(0,240,255,0.5); }
+::-webkit-scrollbar-thumb { background: rgba(88,166,255,0.3); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(88,166,255,0.5); }
 
-/* ── Line clamp ── */
 .line-clamp-2 {
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -78,7 +78,6 @@ body {
   overflow: hidden;
 }
 
-/* ── Mobile scale ── */
 @media (max-width: 380px) {
   html { font-size: 14px; }
 }
@@ -87,7 +86,6 @@ body {
   html { -webkit-overflow-scrolling: touch; }
 }
 
-/* ── Prevent horizontal scroll on mobile from absolute-positioned elements ── */
 html, body {
   overflow-x: hidden;
   width: 100%;

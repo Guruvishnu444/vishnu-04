@@ -2,8 +2,9 @@ import { useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
 import { GithubLogo, LinkedinLogo, Code } from '@phosphor-icons/react'
 import { useTheme } from '../ThemeContext'
+import { getColors } from '../colors'
 
-function FooterParticles({ dark }) {
+function FooterParticles({ dark, accent }) {
   const canvasRef = useRef(null)
   useEffect(() => {
     const canvas = canvasRef.current
@@ -16,7 +17,11 @@ function FooterParticles({ dark }) {
     }
     resize()
     window.addEventListener('resize', resize)
-    const color = dark ? '0,240,255' : '10,26,58'
+    const hex = accent.replace('#', '')
+    const r = parseInt(hex.substring(0, 2), 16)
+    const g = parseInt(hex.substring(2, 4), 16)
+    const b = parseInt(hex.substring(4, 6), 16)
+    const color = `${r},${g},${b}`
     const particles = Array.from({ length: 45 }, () => ({
       x: Math.random() * canvas.offsetWidth,
       y: Math.random() * canvas.offsetHeight,
@@ -55,16 +60,13 @@ function FooterParticles({ dark }) {
     }
     animate()
     return () => { window.removeEventListener('resize', resize); cancelAnimationFrame(animId) }
-  }, [dark])
+  }, [dark, accent])
   return <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none" aria-hidden="true" />
 }
 
 function Footer() {
   const { dark } = useTheme()
-  const textColor = dark ? '#00F0FF' : '#0A1A3A'
-  const accent = dark ? '#FFFFFF' : '#00F0FF'
-  const borderColor = dark ? 'rgba(0,240,255,0.12)' : 'rgba(10,26,58,0.1)'
-  const cardBorder = dark ? 'rgba(0,240,255,0.15)' : 'rgba(10,26,58,0.12)'
+  const c = getColors(dark)
 
   const navLinks = [
     { label: 'About', href: '#about' },
@@ -81,9 +83,9 @@ function Footer() {
   return (
     <footer
       className="relative border-t py-10 sm:py-12 px-4 sm:px-6 overflow-hidden transition-colors duration-500"
-      style={{ borderColor }}
+      style={{ borderColor: c.cardBorder }}
     >
-      <FooterParticles dark={dark} />
+      <FooterParticles dark={dark} accent={c.accent} />
       <div className="relative z-10 max-w-6xl mx-auto">
         <div className="grid sm:grid-cols-2 gap-6 sm:gap-8 items-center">
 
@@ -93,7 +95,7 @@ function Footer() {
             {navLinks.map(link => (
               <a key={link.label} href={link.href}
                 className="text-sm font-medium transition-opacity hover:opacity-100"
-                style={{ color: textColor, opacity: 0.6 }}>
+                style={{ color: c.textSecondary }}>
                 {link.label}
               </a>
             ))}
@@ -106,7 +108,7 @@ function Footer() {
               <a key={link.name} href={link.href} target="_blank" rel="noopener noreferrer"
                 aria-label={`Visit ${link.name}`}
                 className="w-10 h-10 rounded-lg border flex items-center justify-center transition-all"
-                style={{ borderColor: cardBorder, color: accent }}>
+                style={{ borderColor: c.cardBorder, backgroundColor: c.card, color: c.accent }}>
                 <link.icon size={20} weight="duotone" />
               </a>
             ))}
@@ -116,9 +118,9 @@ function Footer() {
         <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }}
           viewport={{ once: true }} transition={{ delay: 0.3 }}
           className="mt-6 sm:mt-8 pt-6 sm:pt-8 border-t text-center"
-          style={{ borderColor }}>
-          <p className="text-sm" style={{ color: textColor, opacity: 0.5 }}>© 2025 Guruvishnu S. All rights reserved.</p>
-          <p className="text-xs mt-2" style={{ color: textColor, opacity: 0.3 }}>
+          style={{ borderColor: c.cardBorder }}>
+          <p className="text-sm" style={{ color: c.textSecondary }}>© 2025 Guruvishnu S. All rights reserved.</p>
+          <p className="text-xs mt-2" style={{ color: c.textSecondary, opacity: 0.6 }}>
             Made with lots of ☕️ and a whole lot of ❤️.
           </p>
         </motion.div>

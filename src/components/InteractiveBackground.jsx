@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
 import { useTheme } from '../ThemeContext'
+import { getColors } from '../colors'
 
 // ── Polygon-mesh plexus background ──────────────────────────
 // Translucent low-poly triangles + node/line mesh that responds
-// to cursor and zooms in/out on scroll, matching warm dark plexus reference.
+// to cursor and zooms in/out on scroll, themed with premium accent colors.
 
 export default function InteractiveBackground() {
   const canvasRef = useRef(null)
@@ -12,6 +13,7 @@ export default function InteractiveBackground() {
   const scrollRef = useRef(0)
   const [mounted, setMounted] = useState(false)
   const { dark } = useTheme()
+  const c = getColors(dark)
 
   useEffect(() => { setMounted(true) }, [])
 
@@ -43,7 +45,6 @@ export default function InteractiveBackground() {
     window.addEventListener('mouseleave', handleMouseLeave)
     window.addEventListener('scroll', handleScroll, { passive: true })
 
-    // ── Node + triangle mesh setup ──
     let nodes = []
     let triangles = []
 
@@ -62,19 +63,17 @@ export default function InteractiveBackground() {
         }
       })
 
-      // Build a small set of low-poly translucent triangles from nearest neighbors
       triangles = []
       for (let i = 0; i < Math.round(count * 0.18); i++) {
         const a = nodes[Math.floor(Math.random() * nodes.length)]
         const b = nodes[Math.floor(Math.random() * nodes.length)]
-        const c = nodes[Math.floor(Math.random() * nodes.length)]
-        if (a !== b && b !== c && a !== c) {
-          // Only keep reasonably compact triangles
+        const cnode = nodes[Math.floor(Math.random() * nodes.length)]
+        if (a !== b && b !== cnode && a !== cnode) {
           const d1 = Math.hypot(a.x - b.x, a.y - b.y)
-          const d2 = Math.hypot(b.x - c.x, b.y - c.y)
-          const d3 = Math.hypot(a.x - c.x, a.y - c.y)
+          const d2 = Math.hypot(b.x - cnode.x, b.y - cnode.y)
+          const d3 = Math.hypot(a.x - cnode.x, a.y - cnode.y)
           if (d1 < 260 && d2 < 260 && d3 < 260) {
-            triangles.push({ a, b, c, alpha: 0.02 + Math.random() * 0.05 })
+            triangles.push({ a, b, c: cnode, alpha: 0.02 + Math.random() * 0.05 })
           }
         }
       }
@@ -86,8 +85,13 @@ export default function InteractiveBackground() {
     let time = 0
     const LINK_DIST = 130
 
-    const colorRGB = () => dark ? '255,255,255' : '10,26,58'
-    const accentRGB = () => dark ? '0,240,255' : '0,200,220'
+    // base mesh color (subtle, theme text color) and accent color (interactive highlight)
+    const hexToRgb = (hex) => {
+      const h = hex.replace('#', '')
+      return `${parseInt(h.substring(0, 2), 16)},${parseInt(h.substring(2, 4), 16)},${parseInt(h.substring(4, 6), 16)}`
+    }
+    const baseRGB = hexToRgb(c.textSecondary.startsWith('#') ? c.textSecondary : (dark ? '#8B949E' : '#57606A'))
+    const accentRGB = hexToRgb(c.accent)
 
     const animate = () => {
       time += 0.012
@@ -96,7 +100,6 @@ export default function InteractiveBackground() {
       const mx = mouseRef.current.x
       const my = mouseRef.current.y
 
-      // scroll zoom
       const scrollY = scrollRef.current
       const t = Math.min(scrollY / 1200, 1)
       const zoom = 1 + t * 0.4
@@ -107,7 +110,6 @@ export default function InteractiveBackground() {
       ctx.scale(zoom, zoom)
       ctx.translate(-width / 2, -height / 2)
 
-      // update nodes
       nodes.forEach(n => {
         n.x += n.vx
         n.y += n.vy
@@ -124,7 +126,6 @@ export default function InteractiveBackground() {
           }
         }
 
-        // gentle return to base path (keeps mesh stable, not chaotic)
         n.x += (n.baseX - n.x) * 0.002
         n.y += (n.baseY - n.y) * 0.002
 
@@ -135,35 +136,32 @@ export default function InteractiveBackground() {
         if (n.y > height + margin) n.baseY = n.y = -margin
       })
 
-      // draw translucent polygon meshes (triangles)
       triangles.forEach(tri => {
         ctx.beginPath()
         ctx.moveTo(tri.a.x, tri.a.y)
         ctx.lineTo(tri.b.x, tri.b.y)
         ctx.lineTo(tri.c.x, tri.c.y)
         ctx.closePath()
-        ctx.fillStyle = `rgba(${colorRGB()},${tri.alpha * fade})`
+        ctx.fillStyle = `rgba(${baseRGB},${tri.alpha * fade})`
         ctx.fill()
       })
 
-      // draw connecting lines
       for (let i = 0; i < nodes.length; i++) {
         for (let j = i + 1; j < nodes.length; j++) {
           const a = nodes[i], b = nodes[j]
           const dx = a.x - b.x, dy = a.y - b.y
           const dist = Math.sqrt(dx * dx + dy * dy)
           if (dist < LINK_DIST) {
-            const alpha = (1 - dist / LINK_DIST) * 0.22 * fade
+            const alpha = (1 - dist / LINK_DIST) * 0.2 * fade
             ctx.beginPath()
             ctx.moveTo(a.x, a.y)
             ctx.lineTo(b.x, b.y)
-            ctx.strokeStyle = `rgba(${colorRGB()},${alpha})`
+            ctx.strokeStyle = `rgba(${baseRGB},${alpha})`
             ctx.lineWidth = 0.5
             ctx.stroke()
           }
         }
 
-        // cursor connection
         if (mx > 0) {
           const dx = nodes[i].x - mx, dy = nodes[i].y - my
           const dist = Math.sqrt(dx * dx + dy * dy)
@@ -171,14 +169,13 @@ export default function InteractiveBackground() {
             ctx.beginPath()
             ctx.moveTo(nodes[i].x, nodes[i].y)
             ctx.lineTo(mx, my)
-            ctx.strokeStyle = `rgba(${accentRGB()},${(1 - dist / 180) * 0.4 * fade})`
+            ctx.strokeStyle = `rgba(${accentRGB},${(1 - dist / 180) * 0.4 * fade})`
             ctx.lineWidth = 0.7
             ctx.stroke()
           }
         }
       }
 
-      // draw glowing nodes
       nodes.forEach(n => {
         const flick = 0.6 + 0.4 * Math.sin(time * 1.4 + n.flicker)
         let cursorBoost = 0
@@ -189,20 +186,20 @@ export default function InteractiveBackground() {
         }
 
         const radius = n.r * (1 + cursorBoost * 0.8)
-        const alpha = (0.5 * flick + cursorBoost * 0.5) * fade
+        const alpha = (0.45 * flick + cursorBoost * 0.5) * fade
 
         const glowR = radius * (2.5 + cursorBoost * 2)
         const grad = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, glowR)
-        const c = cursorBoost > 0.1 ? accentRGB() : colorRGB()
-        grad.addColorStop(0, `rgba(${c},${alpha * 0.8})`)
-        grad.addColorStop(1, `rgba(${c},0)`)
+        const col = cursorBoost > 0.1 ? accentRGB : baseRGB
+        grad.addColorStop(0, `rgba(${col},${alpha * 0.8})`)
+        grad.addColorStop(1, `rgba(${col},0)`)
         ctx.beginPath()
         ctx.fillStyle = grad
         ctx.arc(n.x, n.y, glowR, 0, Math.PI * 2)
         ctx.fill()
 
         ctx.beginPath()
-        ctx.fillStyle = `rgba(${c},${Math.min(1, alpha + 0.3)})`
+        ctx.fillStyle = `rgba(${col},${Math.min(1, alpha + 0.25)})`
         ctx.arc(n.x, n.y, radius * 0.6, 0, Math.PI * 2)
         ctx.fill()
       })
@@ -227,20 +224,19 @@ export default function InteractiveBackground() {
     <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
       <div
         className="absolute inset-0 transition-colors duration-500"
-        style={{ backgroundColor: dark ? '#000000' : '#F8F9FA' }}
+        style={{ backgroundColor: c.bg }}
       />
       <canvas
         ref={canvasRef}
         className="absolute inset-0 w-full h-full"
         style={{ background: 'transparent' }}
       />
-      {/* subtle vignette for depth */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
           background: dark
-            ? 'radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.55) 100%)'
-            : 'radial-gradient(ellipse at center, transparent 50%, rgba(10,26,58,0.06) 100%)',
+            ? 'radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.45) 100%)'
+            : 'radial-gradient(ellipse at center, transparent 50%, rgba(31,35,40,0.05) 100%)',
         }}
       />
     </div>

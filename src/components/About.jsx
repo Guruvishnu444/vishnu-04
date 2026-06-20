@@ -1,10 +1,7 @@
 import { useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
 import { useTheme } from '../ThemeContext'
-
-// ── Skills radar/orbit layout ─────────────────────────────
-// Concentric circle grid with skill icons placed in a 3x3-ish
-// orbit pattern around a center point, matching the reference image.
+import { getColors } from '../colors'
 
 const skills = [
   { name: 'React', label: 'React', angle: 0,    ring: 2, glyph: 'react' },
@@ -50,15 +47,15 @@ function Glyph({ type }) {
 function OrbitIcon({ skill, dark, index }) {
   const ref = useRef(null)
   const inView = useInView(ref, { once: true })
-  // ring radius as a % of container half-width (container is square)
+  const c = getColors(dark)
   const ringPercent = { 1: 30.5, 2: 57.5, 3: 82.5 }[skill.ring]
   const rad = (skill.angle * Math.PI) / 180
   const x = Math.cos(rad) * ringPercent
   const y = Math.sin(rad) * ringPercent
 
-  const iconBg = dark ? 'rgba(0,240,255,0.06)' : 'rgba(10,26,58,0.04)'
-  const iconBorder = dark ? 'rgba(0,240,255,0.18)' : 'rgba(10,26,58,0.14)'
-  const iconColor = dark ? '#00F0FF' : '#0A1A3A'
+  const iconBg = c.card
+  const iconBorder = c.cardBorder
+  const iconColor = c.accent
 
   return (
     <motion.div
@@ -88,7 +85,8 @@ function OrbitIcon({ skill, dark, index }) {
 }
 
 function RadarGrid({ dark }) {
-  const lineColor = dark ? 'rgba(0,240,255,0.1)' : 'rgba(10,26,58,0.08)'
+  const c = getColors(dark)
+  const lineColor = c.cardBorder
   return (
     <svg className="absolute inset-0 w-full h-full" viewBox="-100 -100 200 200" preserveAspectRatio="xMidYMid meet">
       {[30.5, 57.5, 82.5].map(r => (
@@ -102,11 +100,21 @@ function RadarGrid({ dark }) {
   )
 }
 
+const bioParagraphs = [
+  "Hello! I'm Guru Vishnu, a motivated BSc Information Technology student from Puducherry, India, with a passion for building practical web solutions. I'm currently pursuing my degree at KPR College of Arts, Science and Research, where I'm developing strong foundations in full-stack web development.",
+  "I specialize in front-end development using HTML, CSS, and JavaScript, and I'm actively expanding my skills into back-end technologies including the MERN stack (MongoDB, Express, React, Node.js). My development toolkit includes Visual Studio Code for coding and GitHub for version control and portfolio hosting.",
+  "As an aspiring full-stack developer, I'm dedicated to creating clean, efficient, and user-friendly web applications. I'm currently seeking internship opportunities where I can contribute my skills while learning from experienced professionals in the industry.",
+  "Beyond coding, I'm passionate about continuous learning through certification courses from platforms like IBM SkillBuild, Udemy, Coursera, and LinkedIn Learning. I also maintain a balanced lifestyle with fitness workouts and enjoy Tamil music and movies.",
+  "I'm always excited to connect with fellow developers, explore new technologies, and collaborate on meaningful projects. Feel free to reach out through LinkedIn or email to discuss potential opportunities!",
+]
+
 function About() {
   const { dark } = useTheme()
-  const textColor = dark ? '#00F0FF' : '#0A1A3A'
-  const mutedText = dark ? 'rgba(0,240,255,0.65)' : 'rgba(10,26,58,0.65)'
-  const accent = dark ? '#FFFFFF' : '#00F0FF'
+  const c = getColors(dark)
+  const textColor = c.textPrimary
+  const bodyTextColor = c.textSecondary
+  const mutedText = c.textSecondary
+  const accent = c.accent
 
   return (
     <section id="about" className="relative py-24 px-4 sm:px-6" aria-label="About section">
@@ -117,27 +125,38 @@ function About() {
           viewport={{ once: true }} transition={{ duration: 0.6 }}
           className="text-center max-w-2xl mx-auto mb-16">
           <span className="inline-block px-3 py-1 rounded-full text-xs font-semibold tracking-wider uppercase mb-4"
-            style={{ backgroundColor: dark ? 'rgba(0,240,255,0.1)' : 'rgba(0,200,220,0.12)', color: accent }}>
+            style={{ backgroundColor: c.accentSoft, color: accent }}>
             About Me
           </span>
-          <h2 className="text-3xl sm:text-4xl font-black mb-5" style={{ color: textColor }}>
+          <h2 className="text-3xl sm:text-4xl font-black mb-6" style={{ color: textColor }}>
             Turning Ideas Into <span style={{ color: accent }}>Digital Reality</span>
           </h2>
-          <p className="leading-relaxed text-sm sm:text-base" style={{ color: mutedText }}>
-           
 
-           <p>Hello! I'm Guru Vishnu, a motivated BSc Information Technology student from Puducherry, India, with a passion for building practical web solutions. I'm currently pursuing my degree at KPR College of Arts, Science and Research, where I'm developing strong foundations in full-stack web development.</p>
-
-             <p>I specialize in front-end development using HTML, CSS, and JavaScript, and I'm actively expanding my skills into back-end technologies including the MERN stack (MongoDB, Express, React, Node.js). My development toolkit includes Visual Studio Code for coding and GitHub for version control and portfolio hosting.</p>
-
-              <p>As an aspiring full-stack developer, I'm dedicated to creating clean, efficient, and user-friendly web applications. I'm currently seeking internship opportunities where I can contribute my skills while learning from experienced professionals in the industry.</p>
-
-                  <p>Beyond coding, I'm passionate about continuous learning through certification courses from platforms like IBM Skill Build, Udemy, Coursera, and LinkedIn Learning. I also maintain a balanced lifestyle with fitness workouts and enjoy Tamil music and movies.</p>
-
-                   <p>I'm always excited to connect with fellow developers, explore new technologies, and collaborate on meaningful projects. Feel free to reach out through LinkedIn or email to discuss potential opportunities!</p>
-
-                     <p><strong>Let's build something amazing together!</strong></p>
-                       </p>
+          <div className="space-y-4 text-left sm:text-center">
+            {bioParagraphs.map((para, i) => (
+              <motion.p
+                key={i}
+                initial={{ opacity: 0, y: 12 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.08, duration: 0.5 }}
+                className="leading-relaxed text-sm sm:text-base"
+                style={{ color: bodyTextColor }}
+              >
+                {para}
+              </motion.p>
+            ))}
+            <motion.p
+              initial={{ opacity: 0, y: 12 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: bioParagraphs.length * 0.08, duration: 0.5 }}
+              className="leading-relaxed text-sm sm:text-base font-bold pt-2"
+              style={{ color: accent }}
+            >
+              Let's build something amazing together!
+            </motion.p>
+          </div>
         </motion.div>
 
         {/* ── Skills radar/orbit ── */}
@@ -156,32 +175,28 @@ function About() {
             maxWidth: '100%',
           }}
         >
-          {/* glow center */}
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
             <div
               className="rounded-full blur-3xl"
               style={{
                 width: 'clamp(100px, 34vw, 180px)',
                 height: 'clamp(100px, 34vw, 180px)',
-                background: dark
-                  ? 'radial-gradient(circle, rgba(0,240,255,0.25), transparent 70%)'
-                  : 'radial-gradient(circle, rgba(0,200,220,0.18), transparent 70%)',
+                background: `radial-gradient(circle, ${accent}40, transparent 70%)`,
               }}
             />
           </div>
 
           <RadarGrid dark={dark} />
 
-          {/* center node */}
           <div
             className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full flex items-center justify-center font-black"
             style={{
               width: 'clamp(44px, 12vw, 64px)',
               height: 'clamp(44px, 12vw, 64px)',
               fontSize: 'clamp(11px, 2.6vw, 14px)',
-              backgroundColor: dark ? '#00F0FF' : '#0A1A3A',
-              color: dark ? '#000000' : '#FFFFFF',
-              boxShadow: dark ? '0 0 40px rgba(0,240,255,0.5)' : '0 0 30px rgba(10,26,58,0.3)',
+              backgroundColor: accent,
+              color: dark ? c.bg : '#FFFFFF',
+              boxShadow: `0 0 40px ${accent}80`,
             }}
           >
             GV
