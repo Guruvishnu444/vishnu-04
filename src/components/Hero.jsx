@@ -27,10 +27,9 @@ function Hero() {
   const y = useTransform(scrollY, [0, 400], [0, 100])
   const { displayed, done } = useTypingEffect('Guruvishnu S', 80, 800)
 
-  const textColor = dark ? 'text-[#f5f5f5]' : 'text-[#1a1a1a]'
-  const mutedText = dark ? 'text-[#f5f5f5]/65' : 'text-[#1a1a1a]/65'
-  const nameGradient = dark ? 'from-red-500 via-orange-400 to-red-400' : 'from-blue-400 via-pink-400 to-violet-500'
-  const cursorColor = dark ? 'bg-orange-400' : 'bg-violet-500'
+  const textColor = dark ? '#00F0FF' : '#0A1A3A'
+  const mutedText = dark ? 'rgba(0,240,255,0.65)' : 'rgba(10,26,58,0.65)'
+  const accent = dark ? '#FFFFFF' : '#00F0FF'
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -43,36 +42,46 @@ function Hero() {
 
   return (
     <motion.section style={{ opacity, scale, y }}
-      className="relative min-h-screen flex items-center justify-start pt-24 px-4 sm:px-6 lg:px-16"
+      className="relative min-h-screen flex items-center justify-start pt-28 sm:pt-24 px-4 sm:px-6 lg:px-16"
       aria-label="Hero section">
 
-      {/* Subtle dark overlay behind text for readability */}
-      {dark && (
-        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/30 to-transparent pointer-events-none z-0" />
-      )}
+      {/* Readability overlay — only in dark mode, theme-aware */}
+      <div
+        className="absolute inset-0 pointer-events-none z-0"
+        style={{
+          background: dark
+            ? 'linear-gradient(to bottom, rgba(0,0,0,0.55), rgba(0,0,0,0.25), transparent)'
+            : 'linear-gradient(to bottom, rgba(248,249,250,0.5), rgba(248,249,250,0.2), transparent)',
+        }}
+      />
 
       <motion.div variants={containerVariants} initial="hidden" animate="visible"
         className="relative z-10 max-w-4xl text-left w-full">
 
         <motion.h1 variants={itemVariants}
-          className={`text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-tight mb-6 ${textColor}`}>
-          Hello, I'm                                         {' '}
-          <span className={`bg-gradient-to-r ${nameGradient} bg-clip-text text-transparent`}>
+          className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-tight mb-5 sm:mb-6"
+          style={{ color: textColor }}>
+          Hello, I'm{' '}
+          <span style={{ color: accent }}>
             {displayed}
             {!done && (
               <motion.span animate={{ opacity: [1, 0] }}
                 transition={{ duration: 0.5, repeat: Infinity, repeatType: 'reverse' }}
-                className={`inline-block ml-1 w-[3px] h-[0.85em] align-middle ${cursorColor}`} />
+                className="inline-block ml-1 w-[3px] h-[0.85em] align-middle"
+                style={{ backgroundColor: accent }} />
             )}
           </span>
-        </motion.h1> 
+        </motion.h1>
+
         <motion.p variants={itemVariants}
-          className={`text-base sm:text-lg md:text-xl max-w-2xl mb-10 leading-relaxed ${mutedText}`}>
-          A Enthusiast full-stack developer
+          className="text-base sm:text-lg md:text-xl max-w-2xl mb-4 sm:mb-6 leading-relaxed"
+          style={{ color: mutedText }}>
+          An enthusiastic full-stack developer.
         </motion.p>
 
         <motion.p variants={itemVariants}
-          className={`text-base sm:text-lg md:text-xl max-w-2xl mb-10 leading-relaxed ${mutedText}`}>
+          className="text-base sm:text-lg md:text-xl max-w-2xl mb-8 sm:mb-10 leading-relaxed"
+          style={{ color: mutedText }}>
           A passionate developer focused on clean code, performant UI, and building
           impactful products that make a difference.
         </motion.p>

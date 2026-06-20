@@ -86,3 +86,12 @@ body {
 @supports (-webkit-overflow-scrolling: touch) {
   html { -webkit-overflow-scrolling: touch; }
 }
+
+/* ── Prevent horizontal scroll on mobile from absolute-positioned elements ── */
+html, body {
+  overflow-x: hidden;
+  width: 100%;
+}
+#root {
+  overflow-x: hidden;
+}
