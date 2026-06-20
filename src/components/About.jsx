@@ -124,8 +124,20 @@ function About() {
             Turning Ideas Into <span style={{ color: accent }}>Digital Reality</span>
           </h2>
           <p className="leading-relaxed text-sm sm:text-base" style={{ color: mutedText }}>
-            Hi! I'm Guruvishnu S, a BSc IT student and passionate Full Stack Developer with a strong foundation in modern web technologies.
-          </p>
+           
+
+           <p>Hello! I'm Guru Vishnu, a motivated BSc Information Technology student from Puducherry, India, with a passion for building practical web solutions. I'm currently pursuing my degree at KPR College of Arts, Science and Research, where I'm developing strong foundations in full-stack web development.</p>
+
+             <p>I specialize in front-end development using HTML, CSS, and JavaScript, and I'm actively expanding my skills into back-end technologies including the MERN stack (MongoDB, Express, React, Node.js). My development toolkit includes Visual Studio Code for coding and GitHub for version control and portfolio hosting.</p>
+
+              <p>As an aspiring full-stack developer, I'm dedicated to creating clean, efficient, and user-friendly web applications. I'm currently seeking internship opportunities where I can contribute my skills while learning from experienced professionals in the industry.</p>
+
+                  <p>Beyond coding, I'm passionate about continuous learning through certification courses from platforms like IBM Skill Build, Udemy, Coursera, and LinkedIn Learning. I also maintain a balanced lifestyle with fitness workouts and enjoy Tamil music and movies.</p>
+
+                   <p>I'm always excited to connect with fellow developers, explore new technologies, and collaborate on meaningful projects. Feel free to reach out through LinkedIn or email to discuss potential opportunities!</p>
+
+                     <p><strong>Let's build something amazing together!</strong></p>
+                       </p>
         </motion.div>
 
         {/* ── Skills radar/orbit ── */}
