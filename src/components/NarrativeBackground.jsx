@@ -2,18 +2,12 @@ import { useEffect, useRef, useState } from 'react'
 import { useTheme } from '../ThemeContext'
 import { getColors } from '../colors'
 import { useScrollNarrative } from '../ScrollNarrative'
+import ThemeBackdrop from './ThemeBackdrop'
 
 const hexToRgb = (hex) => {
   const h = hex.replace('#', '')
   return `${parseInt(h.substring(0, 2), 16)},${parseInt(h.substring(2, 4), 16)},${parseInt(h.substring(4, 6), 16)}`
 }
-
-// ── Each chapter has a distinct particle "behavior" target ──
-// hero:     scattered, drifting freely, calm
-// about:    pulled into a loose central cluster (focus tightens)
-// journey:  arranged along a horizontal path (timeline read)
-// projects: pulled to the edges / dimmed (content takes center stage)
-// contact:  converge toward center (arriving, closing the loop)
 
 export default function NarrativeBackground() {
   const canvasRef = useRef(null)
@@ -50,8 +44,6 @@ export default function NarrativeBackground() {
         r: 0.8 + Math.random() * 1.4,
         flicker: Math.random() * Math.PI * 2,
         seed: Math.random(),
-        // each node gets a stable "journey index" so the timeline
-        // arrangement is consistent frame to frame
         journeyIndex: i,
       }))
     }
@@ -77,39 +69,33 @@ export default function NarrativeBackground() {
     const baseRGB = hexToRgb(dark ? '#8B949E' : '#57606A')
     const accentRGB = hexToRgb(c.accent)
 
-    // Target position for a node given the current chapter
-    const getTarget = (n, chapterName, chapterProgress, count) => {
+    const getTarget = (n, chapterName, chapterProgress) => {
       const cx = width / 2
       const cy = height / 2
 
       switch (chapterName) {
         case 'hero':
-          // free scatter — no pull, just base drift around spawn point
           return null
 
         case 'about': {
-          // pull into a loose cluster, radius shrinks as progress increases
           const angle = n.seed * Math.PI * 2
           const radius = Math.min(width, height) * (0.32 - chapterProgress * 0.08)
           return { x: cx + Math.cos(angle) * radius, y: cy + Math.sin(angle) * radius, strength: 0.02 }
         }
 
         case 'journey': {
-          // arrange along a horizontal line (timeline), staggered by journeyIndex
           const t = (n.journeyIndex % 24) / 24
           const lineY = cy + Math.sin(t * Math.PI * 2 + time * 0.3) * 30
           return { x: width * 0.1 + t * width * 0.8, y: lineY, strength: 0.025 }
         }
 
         case 'projects': {
-          // pull to edges, dim center for content focus
           const side = n.seed > 0.5 ? 1 : -1
           const edgeX = side > 0 ? width * (0.85 + n.seed * 0.1) : width * (0.05 - n.seed * 0.1)
           return { x: edgeX, y: n.y, strength: 0.015 }
         }
 
         case 'contact': {
-          // converge toward center — arriving
           const angle = n.seed * Math.PI * 2
           const radius = Math.min(width, height) * 0.15 * (1 - chapterProgress * 0.6)
           return { x: cx + Math.cos(angle) * radius, y: cy + Math.sin(angle) * radius, strength: 0.03 }
@@ -128,18 +114,15 @@ export default function NarrativeBackground() {
       const { chapterName, chapterProgress } = narrativeRef.current || { chapterName: 'hero', chapterProgress: 0 }
 
       nodes.forEach(n => {
-        // free drift always present (keeps things alive, never fully static)
         n.x += n.vx
         n.y += n.vy
 
-        // pull toward chapter target, if any
-        const target = getTarget(n, chapterName, chapterProgress, nodes.length)
+        const target = getTarget(n, chapterName, chapterProgress)
         if (target) {
           n.x += (target.x - n.x) * target.strength
           n.y += (target.y - n.y) * target.strength
         }
 
-        // cursor repulsion — always active, gives life/interactivity
         if (mx > 0) {
           const dx = n.x - mx, dy = n.y - my
           const d2 = dx * dx + dy * dy
@@ -159,7 +142,6 @@ export default function NarrativeBackground() {
         if (n.y > height + m) n.y = -m
       })
 
-      // connections — distance depends on chapter (tighter when clustered/timeline)
       const linkDist = chapterName === 'journey' ? 90 : chapterName === 'projects' ? 100 : 125
       const lineAlphaMul = chapterName === 'projects' ? 0.5 : 1
 
@@ -189,7 +171,6 @@ export default function NarrativeBackground() {
         }
       }
 
-      // nodes
       nodes.forEach(n => {
         const flick = 0.6 + 0.4 * Math.sin(time * 1.3 + n.flicker)
         let boost = 0
@@ -231,7 +212,7 @@ export default function NarrativeBackground() {
 
   return (
     <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
-      <div className="absolute inset-0 transition-colors duration-500" style={{ backgroundColor: c.bg }} />
+      <ThemeBackdrop />
       <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" style={{ background: 'transparent' }} />
       <div className="absolute inset-0 pointer-events-none"
         style={{
