@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react'
 import { motion, useScroll, useTransform } from 'framer-motion'
-import { GithubLogo, LinkedinLogo, FileText } from '@phosphor-icons/react'
+import { GithubLogo, LinkedinLogo, FileText, ArrowDown } from '@phosphor-icons/react'
 import { useTheme } from '../ThemeContext'
 import { getColors } from '../colors'
 
-function useTypingEffect(text, speed = 80, startDelay = 600) {
+function useTypingEffect(text, speed = 90, startDelay = 700) {
   const [displayed, setDisplayed] = useState('')
   const [done, setDone] = useState(false)
   useEffect(() => {
@@ -27,22 +27,22 @@ const socialLinks = [
   { name: 'Resume', icon: FileText, href: '/resume.pdf', download: true },
 ]
 
-function Hero() {
+export default function Hero() {
   const { dark } = useTheme()
   const c = getColors(dark)
   const { scrollY } = useScroll()
   const opacity = useTransform(scrollY, [0, 400], [1, 0])
-  const scale = useTransform(scrollY, [0, 400], [1, 0.95])
-  const y = useTransform(scrollY, [0, 400], [0, 100])
+  const scale = useTransform(scrollY, [0, 400], [1, 0.96])
+  const y = useTransform(scrollY, [0, 400], [0, 80])
   const { displayed, done } = useTypingEffect('Vishnu', 90, 700)
 
   const containerVariants = {
     hidden: { opacity: 0 },
-    visible: { opacity: 1, transition: { staggerChildren: 0.15, delayChildren: 0.2 } },
+    visible: { opacity: 1, transition: { staggerChildren: 0.14, delayChildren: 0.2 } },
   }
   const itemVariants = {
-    hidden: { opacity: 0, y: 30 },
-    visible: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 100, damping: 15 } },
+    hidden: { opacity: 0, y: 28 },
+    visible: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 100, damping: 16 } },
   }
 
   return (
@@ -50,26 +50,20 @@ function Hero() {
       className="relative min-h-screen flex items-center justify-start pt-28 sm:pt-24 px-4 sm:px-6 lg:px-16"
       aria-label="Hero section">
 
-      <div
-        className="absolute inset-0 pointer-events-none z-0"
-        style={{
-          background: dark
-            ? `linear-gradient(to bottom, ${c.bg}cc, ${c.bg}66, transparent)`
-            : `linear-gradient(to bottom, ${c.bg}99, ${c.bg}33, transparent)`,
-        }}
-      />
+      <div className="absolute inset-0 pointer-events-none z-0"
+        style={{ background: `linear-gradient(to bottom, ${c.bg}b3, ${c.bg}40, transparent)` }} />
 
       <motion.div variants={containerVariants} initial="hidden" animate="visible"
-        className="relative z-10 max-w-4xl text-left w-full">
+        className="relative z-10 max-w-3xl text-left w-full">
 
         <motion.span variants={itemVariants}
-          className="inline-block px-3 py-1 rounded-full text-xs font-semibold tracking-wider uppercase mb-5"
+          className="inline-block px-3.5 py-1.5 rounded-full text-xs font-bold tracking-wider uppercase mb-6"
           style={{ backgroundColor: c.accentSoft, color: c.accent }}>
           Full Stack Developer
         </motion.span>
 
         <motion.h1 variants={itemVariants}
-          className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-tight mb-5 sm:mb-6"
+          className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold leading-[1.05] mb-6"
           style={{ color: c.textPrimary }}>
           Hi, I'm{' '}
           <span style={{ color: c.accent }}>
@@ -77,44 +71,54 @@ function Hero() {
             {!done && (
               <motion.span animate={{ opacity: [1, 0] }}
                 transition={{ duration: 0.5, repeat: Infinity, repeatType: 'reverse' }}
-                className="inline-block ml-1 w-[3px] h-[0.85em] align-middle"
+                className="inline-block ml-1 w-[3px] h-[0.8em] align-middle"
                 style={{ backgroundColor: c.accent }} />
             )}
-          </span>
-          .
+          </span>.
+          <br />
+          I build scalable full-stack web applications.
         </motion.h1>
 
         <motion.p variants={itemVariants}
-          className="text-base sm:text-lg md:text-xl max-w-2xl mb-8 sm:mb-10 leading-relaxed"
+          className="text-base sm:text-lg md:text-xl max-w-xl mb-9 leading-relaxed"
           style={{ color: c.textSecondary }}>
-          I build scalable full-stack web applications using{' '}
-          <span style={{ color: c.textPrimary, fontWeight: 600 }}>
-            React, Node.js, and the MERN stack
-          </span>.
+          Using <span style={{ color: c.textPrimary, fontWeight: 600 }}>React, Node.js, and the MERN stack</span>,
+          I turn ideas into clean, performant, and user-friendly products.
         </motion.p>
 
-        {/* Social icons */}
-        <motion.div variants={itemVariants} className="flex items-center gap-3 sm:gap-4">
-          {socialLinks.map(link => (
-            <motion.a
-              key={link.name}
-              href={link.href}
-              target={link.download ? undefined : '_blank'}
-              rel="noopener noreferrer"
-              download={link.download}
-              aria-label={link.name}
-              whileHover={{ scale: 1.1, y: -3 }}
-              whileTap={{ scale: 0.95 }}
-              className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl border flex items-center justify-center transition-all"
-              style={{ borderColor: c.cardBorder, backgroundColor: c.card, color: c.accent }}
-            >
-              <link.icon size={22} weight="duotone" />
-            </motion.a>
-          ))}
+        <motion.div variants={itemVariants} className="flex flex-col sm:flex-row items-start sm:items-center gap-5 sm:gap-6">
+          <motion.a
+            whileHover={{ scale: 1.03, y: -2 }}
+            whileTap={{ scale: 0.97 }}
+            href="#projects"
+            onClick={e => { e.preventDefault(); document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' }) }}
+            className="group inline-flex items-center gap-2 px-7 py-3.5 rounded-xl font-semibold text-sm sm:text-base transition-opacity hover:opacity-90"
+            style={{ backgroundColor: c.accent, color: '#FFFFFF' }}
+          >
+            View My Work
+            <ArrowDown size={18} weight="bold" className="group-hover:translate-y-0.5 transition-transform" />
+          </motion.a>
+
+          <div className="flex items-center gap-3">
+            {socialLinks.map(link => (
+              <motion.a
+                key={link.name}
+                href={link.href}
+                target={link.download ? undefined : '_blank'}
+                rel="noopener noreferrer"
+                download={link.download}
+                aria-label={link.name}
+                whileHover={{ scale: 1.1, y: -3 }}
+                whileTap={{ scale: 0.95 }}
+                className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl border flex items-center justify-center"
+                style={{ borderColor: c.cardBorder, backgroundColor: c.card, color: c.accent }}
+              >
+                <link.icon size={21} weight="duotone" />
+              </motion.a>
+            ))}
+          </div>
         </motion.div>
       </motion.div>
     </motion.section>
   )
 }
-
-export default Hero

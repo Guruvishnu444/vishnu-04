@@ -31,15 +31,10 @@ function AppInner() {
   const { dark } = useTheme()
   const c = getColors(dark)
 
-  if (is404) {
-    return <NotFound />
-  }
+  if (is404) return <NotFound />
 
   return (
-    <div
-      className="relative min-h-screen overflow-hidden"
-      style={{ backgroundColor: c.bg, color: c.textPrimary }}
-    >
+    <div className="relative min-h-screen overflow-hidden" style={{ backgroundColor: c.bg, color: c.textPrimary }}>
       <InteractiveBackground />
       <Navbar />
       <main>
@@ -58,18 +53,16 @@ function AppInner() {
           border: `1px solid ${c.cardBorder}`,
         },
         success: { iconTheme: { primary: c.accent, secondary: c.card } },
-        error: { iconTheme: { primary: '#f85149', secondary: c.card } },
+        error: { iconTheme: { primary: c.danger, secondary: c.card } },
       }} />
     </div>
   )
 }
 
-function App() {
+export default function App() {
   return (
     <ThemeProvider>
       <AppInner />
     </ThemeProvider>
   )
 }
-
-export default App

@@ -13,7 +13,7 @@ export default function ThemeToggle() {
       aria-label={dark ? 'Switch to light mode' : 'Switch to dark mode'}
       whileHover={{ scale: 1.08 }}
       whileTap={{ scale: 0.92 }}
-      className="relative w-14 h-7 rounded-full transition-colors duration-300 focus:outline-none"
+      className="relative w-14 h-7 rounded-full flex-shrink-0"
       style={{ backgroundColor: `${c.accent}33`, border: `1px solid ${c.accent}66` }}
     >
       <motion.div
@@ -29,8 +29,7 @@ export default function ThemeToggle() {
               initial={{ opacity: 0, rotate: -90, scale: 0.5 }}
               animate={{ opacity: 1, rotate: 0, scale: 1 }}
               exit={{ opacity: 0, rotate: 90, scale: 0.5 }}
-              transition={{ duration: 0.2 }}
-              className="flex items-center justify-center">
+              transition={{ duration: 0.2 }}>
               <Moon size={12} weight="fill" style={{ color: c.bg }} />
             </motion.span>
           ) : (
@@ -38,8 +37,7 @@ export default function ThemeToggle() {
               initial={{ opacity: 0, rotate: 90, scale: 0.5 }}
               animate={{ opacity: 1, rotate: 0, scale: 1 }}
               exit={{ opacity: 0, rotate: -90, scale: 0.5 }}
-              transition={{ duration: 0.2 }}
-              className="flex items-center justify-center">
+              transition={{ duration: 0.2 }}>
               <Sun size={12} weight="fill" style={{ color: '#FFFFFF' }} />
             </motion.span>
           )}

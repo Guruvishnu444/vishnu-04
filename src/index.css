@@ -5,21 +5,8 @@
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
 html { scroll-behavior: smooth; }
-
-/* ── Premium color system ── */
-:root {
-  --color-bg-dark: #0D1117;
-  --color-card-dark: #161B22;
-  --color-text-primary-dark: #E6EDF2;
-  --color-text-secondary-dark: #8B949E;
-  --color-accent-dark: #58A6FF;
-
-  --color-bg-light: #F8F9FA;
-  --color-card-light: #FFFFFF;
-  --color-text-primary-light: #1F2328;
-  --color-text-secondary-light: #57606A;
-  --color-accent-light: #0969DA;
-}
+html, body { overflow-x: hidden; width: 100%; }
+#root { overflow-x: hidden; }
 
 body {
   font-family: 'Inter', system-ui, sans-serif;
@@ -27,37 +14,8 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* ── Smooth theme transitions ── */
 *, *::before, *::after {
-  transition:
-    background-color 0.3s ease,
-    color 0.3s ease,
-    border-color 0.3s ease,
-    box-shadow 0.3s ease,
-    opacity 0.2s ease;
-}
-
-[data-framer-motion], .motion-safe\:transform {
-  transition:
-    background-color 0.3s ease,
-    color 0.3s ease,
-    border-color 0.3s ease !important;
-}
-
-.glass {
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-}
-
-.hoverable {
-  transition: transform 0.2s ease, opacity 0.2s ease !important;
-}
-.hoverable:hover {
-  transform: translateY(-4px);
-  opacity: 0.92;
-}
-.hoverable:active {
-  transform: translateY(-1px);
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 ::-webkit-scrollbar { width: 5px; }
@@ -65,12 +23,6 @@ body {
 ::-webkit-scrollbar-thumb { background: rgba(88,166,255,0.3); border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: rgba(88,166,255,0.5); }
 
-.line-clamp-2 {
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
 .line-clamp-3 {
   display: -webkit-box;
   -webkit-line-clamp: 3;
@@ -80,16 +32,4 @@ body {
 
 @media (max-width: 380px) {
   html { font-size: 14px; }
-}
-
-@supports (-webkit-overflow-scrolling: touch) {
-  html { -webkit-overflow-scrolling: touch; }
-}
-
-html, body {
-  overflow-x: hidden;
-  width: 100%;
-}
-#root {
-  overflow-x: hidden;
 }
