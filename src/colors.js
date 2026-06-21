@@ -1,6 +1,3 @@
-// ── Premium color system ──
-// Dark mode: deep charcoal background, soft white text, electric blue accent
-// Light mode: clean off-white background, navy text, royal blue accent
 export const getColors = (dark) => ({
   bg: dark ? '#0D1117' : '#F8F9FA',
   card: dark ? '#161B22' : '#FFFFFF',

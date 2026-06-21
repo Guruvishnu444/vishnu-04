@@ -31,9 +31,9 @@ export default function Hero() {
   const { dark } = useTheme()
   const c = getColors(dark)
   const { scrollY } = useScroll()
-  const opacity = useTransform(scrollY, [0, 400], [1, 0])
-  const scale = useTransform(scrollY, [0, 400], [1, 0.96])
-  const y = useTransform(scrollY, [0, 400], [0, 80])
+  const opacity = useTransform(scrollY, [0, 500], [1, 0])
+  const scale = useTransform(scrollY, [0, 500], [1, 0.96])
+  const y = useTransform(scrollY, [0, 500], [0, 60])
   const { displayed, done } = useTypingEffect('Vishnu', 90, 700)
 
   const containerVariants = {
@@ -41,17 +41,14 @@ export default function Hero() {
     visible: { opacity: 1, transition: { staggerChildren: 0.14, delayChildren: 0.2 } },
   }
   const itemVariants = {
-    hidden: { opacity: 0, y: 28 },
+    hidden: { opacity: 0, y: 24 },
     visible: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 100, damping: 16 } },
   }
 
   return (
-    <motion.section style={{ opacity, scale, y }}
+    <motion.section id="hero" style={{ opacity, scale, y }}
       className="relative min-h-screen flex items-center justify-start pt-28 sm:pt-24 px-4 sm:px-6 lg:px-16"
       aria-label="Hero section">
-
-      <div className="absolute inset-0 pointer-events-none z-0"
-        style={{ background: `linear-gradient(to bottom, ${c.bg}b3, ${c.bg}40, transparent)` }} />
 
       <motion.div variants={containerVariants} initial="hidden" animate="visible"
         className="relative z-10 max-w-3xl text-left w-full">
@@ -90,29 +87,22 @@ export default function Hero() {
           <motion.a
             whileHover={{ scale: 1.03, y: -2 }}
             whileTap={{ scale: 0.97 }}
-            href="#projects"
-            onClick={e => { e.preventDefault(); document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' }) }}
-            className="group inline-flex items-center gap-2 px-7 py-3.5 rounded-xl font-semibold text-sm sm:text-base transition-opacity hover:opacity-90"
-            style={{ backgroundColor: c.accent, color: '#FFFFFF' }}
-          >
-            View My Work
+            href="#about"
+            onClick={e => { e.preventDefault(); document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' }) }}
+            className="group inline-flex items-center gap-2 px-7 py-3.5 rounded-xl font-semibold text-sm sm:text-base"
+            style={{ backgroundColor: c.accent, color: '#FFFFFF' }}>
+            Scroll My Story
             <ArrowDown size={18} weight="bold" className="group-hover:translate-y-0.5 transition-transform" />
           </motion.a>
 
           <div className="flex items-center gap-3">
             {socialLinks.map(link => (
-              <motion.a
-                key={link.name}
-                href={link.href}
-                target={link.download ? undefined : '_blank'}
-                rel="noopener noreferrer"
-                download={link.download}
+              <motion.a key={link.name} href={link.href}
+                target={link.download ? undefined : '_blank'} rel="noopener noreferrer" download={link.download}
                 aria-label={link.name}
-                whileHover={{ scale: 1.1, y: -3 }}
-                whileTap={{ scale: 0.95 }}
+                whileHover={{ scale: 1.1, y: -3 }} whileTap={{ scale: 0.95 }}
                 className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl border flex items-center justify-center"
-                style={{ borderColor: c.cardBorder, backgroundColor: c.card, color: c.accent }}
-              >
+                style={{ borderColor: c.cardBorder, backgroundColor: c.card, color: c.accent }}>
                 <link.icon size={21} weight="duotone" />
               </motion.a>
             ))}

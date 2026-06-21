@@ -7,19 +7,13 @@ export function ThemeProvider({ children }) {
 
   useEffect(() => {
     const saved = localStorage.getItem('theme')
-    if (saved) {
-      setDark(saved === 'dark')
-      return
-    }
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
-    setDark(prefersDark)
+    if (saved) { setDark(saved === 'dark'); return }
+    setDark(window.matchMedia('(prefers-color-scheme: dark)').matches)
   }, [])
 
   useEffect(() => {
     const mq = window.matchMedia('(prefers-color-scheme: dark)')
-    const handler = (e) => {
-      if (!localStorage.getItem('theme')) setDark(e.matches)
-    }
+    const handler = (e) => { if (!localStorage.getItem('theme')) setDark(e.matches) }
     mq.addEventListener('change', handler)
     return () => mq.removeEventListener('change', handler)
   }, [])
@@ -34,11 +28,7 @@ export function ThemeProvider({ children }) {
 
   if (dark === null) return null
 
-  return (
-    <ThemeContext.Provider value={{ dark, toggle }}>
-      {children}
-    </ThemeContext.Provider>
-  )
+  return <ThemeContext.Provider value={{ dark, toggle }}>{children}</ThemeContext.Provider>
 }
 
 export const useTheme = () => useContext(ThemeContext)

@@ -23,13 +23,6 @@ body {
 ::-webkit-scrollbar-thumb { background: rgba(88,166,255,0.3); border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: rgba(88,166,255,0.5); }
 
-.line-clamp-3 {
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
 @media (max-width: 380px) {
   html { font-size: 14px; }
 }

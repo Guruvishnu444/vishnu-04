@@ -71,8 +71,6 @@ export default function Navbar() {
       >
         <div className="w-full py-3">
           <div className="flex items-center justify-between md:justify-center w-full max-w-7xl mx-auto px-4 sm:px-8">
-
-            {/* Desktop: centered links */}
             <div className="hidden md:flex items-center gap-9 lg:gap-10">
               {navLinks.map(link => (
                 <button key={link.id} onClick={() => scrollToSection(link.id)}
@@ -83,26 +81,20 @@ export default function Navbar() {
                 >
                   {link.label}
                   <span className="absolute bottom-0 left-0 h-[2px] rounded-full transition-all duration-300"
-                    style={{
-                      backgroundColor: c.accent,
-                      boxShadow: `0 0 8px ${c.accent}`,
-                      width: activeSection === link.id ? '100%' : '0%',
-                    }} />
+                    style={{ backgroundColor: c.accent, boxShadow: `0 0 8px ${c.accent}`, width: activeSection === link.id ? '100%' : '0%' }} />
                 </button>
               ))}
             </div>
 
-            {/* Desktop right cluster */}
             <div className="hidden md:flex items-center gap-4 absolute right-4 sm:right-8">
               <ThemeToggle />
               <a href="mailto:guruvishnu4gd@gmail.com"
-                className="px-4 py-2 rounded-full font-semibold text-sm transition-opacity hover:opacity-90"
+                className="px-4 py-2 rounded-full font-semibold text-sm hover:opacity-90"
                 style={{ backgroundColor: c.accent, color: '#FFFFFF' }}>
                 Hire Me
               </a>
             </div>
 
-            {/* Mobile bar */}
             <div className="md:hidden flex items-center justify-between w-full">
               <span className="font-bold text-sm" style={{ color: c.accent }}>GV</span>
               <div className="flex items-center gap-2">
@@ -125,10 +117,7 @@ export default function Navbar() {
                 {navLinks.map(link => (
                   <button key={link.id} onClick={() => scrollToSection(link.id)}
                     className="text-left font-medium py-2.5 border-b transition-colors"
-                    style={{
-                      color: activeSection === link.id ? c.accent : c.textSecondary,
-                      borderColor: activeSection === link.id ? c.accent : 'transparent',
-                    }}>
+                    style={{ color: activeSection === link.id ? c.accent : c.textSecondary, borderColor: activeSection === link.id ? c.accent : 'transparent' }}>
                     {link.label}
                   </button>
                 ))}
