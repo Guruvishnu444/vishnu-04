@@ -89,10 +89,10 @@ function Hero() {
 
   return (
     <motion.section id="hero" style={{ opacity, scale, y }}
-      className="relative min-h-screen flex items-center justify-center pt-24 px-6"
+      className="relative min-h-screen flex items-center justify-start pt-24 px-6"
       aria-label="Hero section">
       <motion.div variants={containerVariants} initial="hidden" animate="visible"
-        className="max-w-4xl mx-auto text-center">
+        className="max-w-4xl text-left">
 
         <motion.div variants={itemVariants} className="mb-6">
           <span className={`inline-block px-4 py-2 text-sm font-bold text-white bg-gradient-to-r ${badgeGradient} rounded-xl shadow-sm`}>
@@ -114,13 +114,13 @@ function Hero() {
         </motion.h1>
 
         <motion.p variants={itemVariants}
-          className={`text-lg sm:text-xl max-w-2xl mx-auto mb-10 leading-relaxed ${mutedText}`}>
+          className={`text-lg sm:text-xl max-w-2xl mb-10 leading-relaxed ${mutedText}`}>
           A passionate developer focused on clean code, performant UI, and building
           impactful products that make a difference.
         </motion.p>
 
         <motion.div variants={itemVariants}
-          className="flex flex-col sm:flex-row items-center justify-center gap-4">
+          className="flex flex-col sm:flex-row items-start justify-start gap-4">
           <MagneticButton
             onClick={() => document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' })}
             className={`group px-8 py-4 rounded-xl text-white font-semibold hover:opacity-90 transition-all flex items-center gap-2 ${btnGradient}`}>
@@ -133,15 +133,6 @@ function Hero() {
             <FileArrowDown size={20} weight="bold" />
             Resume Here
           </MagneticLink>
-        </motion.div>
-
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.5 }}
-          className="absolute bottom-10 left-1/2 -translate-x-1/2">
-          <motion.div animate={{ y: [0, 10, 0] }}
-            transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-            className={`w-6 h-10 rounded-full border-2 flex items-start justify-center p-2 ${scrollBorder}`}>
-            <motion.div className={`w-1.5 h-1.5 rounded-full ${scrollDot}`} />
-          </motion.div>
         </motion.div>
       </motion.div>
     </motion.section>
