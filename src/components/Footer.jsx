@@ -98,7 +98,7 @@ function Footer() {
               <span className="text-white font-bold text-lg">V</span>
             </div>
             <div>
-              <span className={`font-semibold ${textColor}`}>Guruvishnu</span>
+              <span className={`font-semibold ${textColor}`}>VISHNU!</span>
               <p className={`text-sm ${mutedColor}`}>Building the future</p>
             </div>
           </motion.div>
@@ -130,7 +130,7 @@ function Footer() {
         <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }}
           viewport={{ once: true }} transition={{ delay: 0.3 }}
           className={`mt-8 pt-8 border-t text-center ${borderColor}`}>
-          <p className={`text-sm ${mutedColor}`}>© 2025 Guruvishnu S. All rights reserved.</p>
+          <p className={`text-sm ${mutedColor}`}>© 2026 Guruvishnu S. All rights reserved.</p>
           <p className={`text-xs mt-2 ${dark ? 'text-[#f5f5f5]/25' : 'text-[#1a1a1a]/25'}`}>
             Made with lots of ☕️ and a whole lot of ❤️.
           </p>

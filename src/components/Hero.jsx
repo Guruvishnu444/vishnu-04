@@ -96,8 +96,9 @@ function Hero() {
 
         <motion.div variants={itemVariants} className="mb-6">
           <span className={`inline-block px-4 py-2 text-sm font-bold text-white bg-gradient-to-r ${badgeGradient} rounded-xl shadow-sm`}>
-            Full Stack Developer
+            Full Stack Developer !
           </span>
+
         </motion.div>
 
         <motion.h1 variants={itemVariants}
@@ -118,22 +119,7 @@ function Hero() {
           A passionate developer focused on clean code, performant UI, and building
           impactful products that make a difference.
         </motion.p>
-
-        <motion.div variants={itemVariants}
-          className="flex flex-col sm:flex-row items-start justify-start gap-4">
-          <MagneticButton
-            onClick={() => document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' })}
-            className={`group px-8 py-4 rounded-xl text-white font-semibold hover:opacity-90 transition-all flex items-center gap-2 ${btnGradient}`}>
-            View My Work
-            <ArrowDown size={20} weight="bold" className="group-hover:translate-y-1 transition-transform" />
-          </MagneticButton>
-
-          <MagneticLink href="/resume.pdf"
-            className={`px-8 py-4 rounded-xl border font-semibold transition-all flex items-center gap-2 backdrop-blur-sm ${resumeBtn}`}>
-            <FileArrowDown size={20} weight="bold" />
-            Resume Here
-          </MagneticLink>
-        </motion.div>
+        
       </motion.div>
     </motion.section>
   )
