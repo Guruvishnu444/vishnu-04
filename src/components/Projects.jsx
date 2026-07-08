@@ -6,10 +6,10 @@ function SkeletonCard({ dark }) {
   const shimmer = dark ? 'bg-white/10' : 'bg-black/10'
   const border = dark ? 'border-white/10' : 'border-black/10'
   return (
-    <div className={`flex-shrink-0 w-[320px] border rounded-2xl overflow-hidden ${border}`}>
-      <div className={`h-44 ${shimmer} animate-pulse`} />
-      <div className="p-5 space-y-3">
-        <div className={`h-5 w-3/4 rounded ${shimmer} animate-pulse`} />
+    <div className={`flex-shrink-0 w-[600px] border rounded-2xl overflow-hidden ${border}`}>
+      <div className={`h-80 ${shimmer} animate-pulse`} />
+      <div className="p-6 space-y-3">
+        <div className={`h-6 w-3/4 rounded ${shimmer} animate-pulse`} />
         <div className={`h-4 w-full rounded ${shimmer} animate-pulse`} />
         <div className={`h-4 w-2/3 rounded ${shimmer} animate-pulse`} />
       </div>
@@ -27,29 +27,29 @@ function ProjectCard({ project, dark }) {
   
   return (
     <motion.div whileHover={{ y: -4 }} transition={{ duration: 0.2 }}
-      className={`flex-shrink-0 w-[320px] border rounded-2xl overflow-hidden transition-all ${cardBg}`}>
-      <div className="h-44 overflow-hidden">
+      className={`flex-shrink-0 w-[600px] max-w-full border-2 rounded-2xl overflow-hidden transition-all ${cardBg}`}>
+      <div className="h-80 overflow-hidden bg-black/5">
         {project.image ? (
-          <img src={project.image} alt={project.title} className="w-full h-full object-cover" />
+          <img src={project.image} alt={project.title} className="w-full h-full object-contain" />
         ) : (
           <div className={`w-full h-full flex items-center justify-center ${placeholderBg}`}>
-            <span className={`text-4xl font-bold ${textColor} opacity-50`}>💰</span>
+            <span className={`text-6xl font-bold ${textColor} opacity-50`}>💰</span>
           </div>
         )}
       </div>
-      <div className="p-5">
-        <h3 className={`font-bold text-lg mb-2 ${textColor}`}>{project.title}</h3>
-        <p className={`text-sm mb-4 leading-relaxed ${mutedText}`}>{project.description}</p>
+      <div className="p-6">
+        <h3 className={`font-bold text-xl mb-3 ${textColor}`}>{project.title}</h3>
+        <p className={`text-base mb-5 leading-relaxed ${mutedText}`}>{project.description}</p>
         {project.tags && (
-          <div className="flex flex-wrap gap-2 mb-4">
+          <div className="flex flex-wrap gap-2 mb-5">
             {project.tags.map(tag => (
-              <span key={tag} className={`px-2 py-1 rounded-full text-xs font-medium ${tagBg}`}>{tag}</span>
+              <span key={tag} className={`px-3 py-1.5 rounded-full text-sm font-medium ${tagBg}`}>{tag}</span>
             ))}
           </div>
         )}
         {project.link && (
           <a href={project.link} target="_blank" rel="noopener noreferrer"
-            className={`inline-flex items-center gap-1 text-sm font-semibold transition-colors ${linkColor}`}>
+            className={`inline-flex items-center gap-2 text-base font-semibold transition-colors ${linkColor}`}>
             Visit Project →
           </a>
         )}
