@@ -116,10 +116,11 @@ function Hero() {
 
         <motion.p variants={itemVariants}
           className={`text-lg sm:text-xl max-w-2xl mb-10 leading-relaxed ${mutedText}`}>
-          A passionate developer focused on clean code, performant UI, and building
-          impactful products that make a difference.
+          I’m an aspiring full-stack developer and BSc IT student from Coimbatore, passionate about building clean, responsive web experiences.<br></br>
+          I enjoy turning ideas into practical digital products using React, JavaScript, HTML, and CSS.
+
         </motion.p>
-        
+
       </motion.div>
     </motion.section>
   )
