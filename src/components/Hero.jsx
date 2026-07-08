@@ -1,11 +1,41 @@
 import { useState, useEffect } from 'react'
-import { motion, useScroll, useTransform } from 'framer-motion'
-import { GithubLogo, LinkedinLogo, FileText, ArrowDown, ArrowUpRight } from '@phosphor-icons/react'
+import { motion, useScroll, useTransform, useMotionValue, useSpring } from 'framer-motion'
+import { ArrowDown, FileArrowDown } from '@phosphor-icons/react'
 import { useTheme } from '../ThemeContext'
-import { getColors } from '../colors'
-import { buttonMotionProps, iconMotionProps } from './motionPresets'
 
-function useTypingEffect(text, speed = 90, startDelay = 700) {
+function MagneticButton({ children, className, onClick }) {
+  const x = useMotionValue(0); const y = useMotionValue(0)
+  const springX = useSpring(x, { stiffness: 150, damping: 20 })
+  const springY = useSpring(y, { stiffness: 150, damping: 20 })
+  const handleMouse = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect()
+    x.set((e.clientX - rect.left - rect.width / 2) * 0.3)
+    y.set((e.clientY - rect.top - rect.height / 2) * 0.3)
+  }
+  return (
+    <motion.button style={{ x: springX, y: springY }}
+      onMouseMove={handleMouse} onMouseLeave={() => { x.set(0); y.set(0) }}
+      onClick={onClick} className={className}>{children}</motion.button>
+  )
+}
+
+function MagneticLink({ children, className, href }) {
+  const x = useMotionValue(0); const y = useMotionValue(0)
+  const springX = useSpring(x, { stiffness: 150, damping: 20 })
+  const springY = useSpring(y, { stiffness: 150, damping: 20 })
+  const handleMouse = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect()
+    x.set((e.clientX - rect.left - rect.width / 2) * 0.3)
+    y.set((e.clientY - rect.top - rect.height / 2) * 0.3)
+  }
+  return (
+    <motion.a style={{ x: springX, y: springY }}
+      onMouseMove={handleMouse} onMouseLeave={() => { x.set(0); y.set(0) }}
+      href={href} target="_blank" rel="noopener noreferrer" className={className}>{children}</motion.a>
+  )
+}
+
+function useTypingEffect(text, speed = 80, startDelay = 600) {
   const [displayed, setDisplayed] = useState('')
   const [done, setDone] = useState(false)
   useEffect(() => {
@@ -22,103 +52,100 @@ function useTypingEffect(text, speed = 90, startDelay = 700) {
   return { displayed, done }
 }
 
-export default function Hero() {
+function Hero() {
   const { dark } = useTheme()
-  const c = getColors(dark)
   const { scrollY } = useScroll()
-  const opacity = useTransform(scrollY, [0, 500], [1, 0])
-  const scale = useTransform(scrollY, [0, 500], [1, 0.96])
-  const y = useTransform(scrollY, [0, 500], [0, 60])
-  const { displayed, done } = useTypingEffect('Vishnu', 90, 700)
+  const opacity = useTransform(scrollY, [0, 400], [1, 0])
+  const scale = useTransform(scrollY, [0, 400], [1, 0.95])
+  const y = useTransform(scrollY, [0, 400], [0, 100])
+  const { displayed, done } = useTypingEffect('Guruvishnu S', 80, 800)
+
+  const textColor = dark ? 'text-[#f5f5f5]' : 'text-[#1a1a1a]'
+  const mutedText = dark ? 'text-[#f5f5f5]/65' : 'text-[#1a1a1a]/65'
+  const nameGradient = dark
+    ? 'from-red-500 via-orange-400 to-red-400'
+    : 'from-blue-400 via-pink-400 to-violet-500'
+  const cursorColor = dark ? 'bg-orange-400' : 'bg-violet-500'
+  const btnGradient = dark
+    ? 'bg-gradient-to-r from-red-600 to-orange-500'
+    : 'bg-gradient-to-r from-blue-400 via-pink-400 to-violet-500'
+  const resumeBtn = dark
+    ? 'border-white/15 text-[#f5f5f5] hover:border-orange-500/50'
+    : 'border-black/15 text-[#1a1a1a] hover:border-violet-400/50'
+  const scrollBorder = dark ? 'border-white/25' : 'border-black/25'
+  const scrollDot = dark ? 'bg-orange-400' : 'bg-violet-500'
+  const badgeGradient = dark
+    ? 'from-red-600 via-orange-500 to-red-400'
+    : 'from-blue-400 via-pink-400 to-violet-500'
 
   const containerVariants = {
     hidden: { opacity: 0 },
-    visible: { opacity: 1, transition: { staggerChildren: 0.14, delayChildren: 0.2 } },
+    visible: { opacity: 1, transition: { staggerChildren: 0.15, delayChildren: 0.2 } },
   }
   const itemVariants = {
-    hidden: { opacity: 0, y: 24 },
-    visible: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 100, damping: 16 } },
+    hidden: { opacity: 0, y: 30 },
+    visible: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 100, damping: 15 } },
   }
 
   return (
-    <motion.section id="hero" style={{ opacity, scale, y }}
-      className="relative min-h-screen flex items-center justify-start pt-28 sm:pt-24 px-4 sm:px-6 lg:px-16"
+    <motion.section style={{ opacity, scale, y }}
+      className="relative min-h-screen flex items-center justify-center pt-24 px-6"
       aria-label="Hero section">
-
       <motion.div variants={containerVariants} initial="hidden" animate="visible"
-        className="relative z-10 max-w-3xl text-left w-full">
+        className="max-w-4xl mx-auto text-center">
 
-        <motion.span variants={itemVariants}
-          className="inline-block px-3.5 py-1.5 rounded-full text-xs font-bold tracking-wider uppercase mb-6"
-          style={{ backgroundColor: c.accentSoft, color: c.accent }}>
-          Open to Internships
-        </motion.span>
+        <motion.div variants={itemVariants} className="mb-6">
+          <span className={`inline-block px-4 py-2 text-sm font-bold text-white bg-gradient-to-r ${badgeGradient} rounded-xl shadow-sm`}>
+            Full Stack Developer
+          </span>
+        </motion.div>
 
         <motion.h1 variants={itemVariants}
-          className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold leading-[1.05] mb-6"
-          style={{ color: c.textPrimary }}>
-          Hi, I'm{' '}
-          <span style={{ color: c.accent }}>
+          className={`text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-tight mb-6 ${textColor}`}>
+          Hello, I'm{' '}
+          <span className={`bg-gradient-to-r ${nameGradient} bg-clip-text text-transparent`}>
             {displayed}
             {!done && (
               <motion.span animate={{ opacity: [1, 0] }}
                 transition={{ duration: 0.5, repeat: Infinity, repeatType: 'reverse' }}
-                className="inline-block ml-1 w-[3px] h-[0.8em] align-middle"
-                style={{ backgroundColor: c.accent }} />
+                className={`inline-block ml-1 w-[3px] h-[0.85em] align-middle ${cursorColor}`} />
             )}
-          </span>.
+          </span>
         </motion.h1>
 
         <motion.p variants={itemVariants}
-          className="text-base sm:text-lg md:text-xl max-w-xl mb-9 leading-relaxed"
-          style={{ color: c.textSecondary }}>
-          I build clean, responsive interfaces with{' '}
-          <span style={{ color: c.textPrimary, fontWeight: 600 }}>HTML, CSS & JavaScript</span>,
-          and I'm currently deepening that into full-stack work with the{' '}
-          <span style={{ color: c.textPrimary, fontWeight: 600 }}>MERN stack</span> —
-          learning in public, one real commit at a time.
+          className={`text-lg sm:text-xl max-w-2xl mx-auto mb-10 leading-relaxed ${mutedText}`}>
+          A passionate developer focused on clean code, performant UI, and building
+          impactful products that make a difference.
         </motion.p>
 
-        <motion.div variants={itemVariants} className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-5">
-          <motion.a
-            href="https://github.com/Guruvishnu444"
-            target="_blank"
-            rel="noopener noreferrer"
-            {...buttonMotionProps}
-            className="group inline-flex items-center gap-2 px-7 py-3.5 rounded-xl font-semibold text-sm sm:text-base shadow-lg"
-            style={{ backgroundColor: c.accent, color: '#FFFFFF', boxShadow: `0 8px 24px ${c.accent}40` }}>
-            <GithubLogo size={19} weight="bold" />
-            View My GitHub
-            <ArrowUpRight size={16} weight="bold" className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-          </motion.a>
+        <motion.div variants={itemVariants}
+          className="flex flex-col sm:flex-row items-center justify-center gap-4">
+          <MagneticButton
+            onClick={() => document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' })}
+            className={`group px-8 py-4 rounded-xl text-white font-semibold hover:opacity-90 transition-all flex items-center gap-2 ${btnGradient}`}>
+            View My Work
+            <ArrowDown size={20} weight="bold" className="group-hover:translate-y-1 transition-transform" />
+          </MagneticButton>
 
-          <motion.a
-            href="#about"
-            onClick={e => { e.preventDefault(); document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' }) }}
-            {...buttonMotionProps}
-            className="group inline-flex items-center gap-2 px-7 py-3.5 rounded-xl font-semibold text-sm sm:text-base border-2"
-            style={{ borderColor: c.cardBorder, color: c.textPrimary, backgroundColor: 'transparent' }}>
-            Scroll My Story
-            <ArrowDown size={16} weight="bold" className="group-hover:translate-y-0.5 transition-transform" />
-          </motion.a>
+          <MagneticLink href="/resume.pdf"
+            className={`px-8 py-4 rounded-xl border font-semibold transition-all flex items-center gap-2 backdrop-blur-sm ${resumeBtn}`}>
+            <FileArrowDown size={20} weight="bold" />
+            Resume Here
+          </MagneticLink>
         </motion.div>
 
-        <motion.div variants={itemVariants} className="flex items-center gap-3 mt-7">
-          {[
-            { name: 'LinkedIn', icon: LinkedinLogo, href: 'https://www.linkedin.com/in/guruvishnu-s-951a67345/' },
-            { name: 'Resume', icon: FileText, href: '/resume.pdf', download: true },
-          ].map(link => (
-            <motion.a key={link.name} href={link.href}
-              target={link.download ? undefined : '_blank'} rel="noopener noreferrer" download={link.download}
-              aria-label={link.name}
-              {...iconMotionProps}
-              className="w-10 h-10 rounded-lg border flex items-center justify-center"
-              style={{ borderColor: c.cardBorder, color: c.textSecondary }}>
-              <link.icon size={18} weight="duotone" />
-            </motion.a>
-          ))}
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.5 }}
+          className="absolute bottom-10 left-1/2 -translate-x-1/2">
+          <motion.div animate={{ y: [0, 10, 0] }}
+            transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+            className={`w-6 h-10 rounded-full border-2 flex items-start justify-center p-2 ${scrollBorder}`}>
+            <motion.div className={`w-1.5 h-1.5 rounded-full ${scrollDot}`} />
+          </motion.div>
         </motion.div>
       </motion.div>
     </motion.section>
   )
 }
+
+export default Hero
