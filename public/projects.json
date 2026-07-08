@@ -5,6 +5,6 @@
     "description": "A smart expense tracking application that helps you manage and monitor your finances. Track expenses, categorize spending, and gain insights into your financial habits with an intuitive and user-friendly interface.",
     "image": "./images/expense-tracker.jpg",
     "tags": ["React", "Vercel", "Finance"],
-    "link": "#"
+    "link": "https://expense-tracker-five-sigma-94.vercel.app/"
   }
 ]
