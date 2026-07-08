@@ -58,7 +58,9 @@ function Navbar() {
   const [scrolled, setScrolled] = useState(false)
 
   const navLinks = [
+    { label: 'Home', id: 'hero' },
     { label: 'About', id: 'about' },
+    { label: 'Journey', id: 'journey' },
     { label: 'Projects', id: 'projects' },
     { label: 'Contact', id: 'contact' },
   ]

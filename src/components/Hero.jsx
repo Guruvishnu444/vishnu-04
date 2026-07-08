@@ -88,7 +88,7 @@ function Hero() {
   }
 
   return (
-    <motion.section style={{ opacity, scale, y }}
+    <motion.section id="hero" style={{ opacity, scale, y }}
       className="relative min-h-screen flex items-center justify-center pt-24 px-6"
       aria-label="Hero section">
       <motion.div variants={containerVariants} initial="hidden" animate="visible"

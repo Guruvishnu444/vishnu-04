@@ -74,9 +74,11 @@ function Footer() {
   const linkHover = dark ? 'hover:text-orange-400' : 'hover:text-violet-500'
 
   const navLinks = [
-    { label: 'About', href: '#about' },
-    { label: 'Projects', href: '#projects' },
-    { label: 'Contact', href: '#contact' },
+    { label: 'About', href: '#about', key: 'about-1' },
+    { label: 'Projects', href: '#projects', key: 'projects-1' },
+    { label: 'Contact', href: '#contact', key: 'contact-1' },
+    { label: 'Projects', href: '#projects', key: 'projects-2' },
+    { label: 'Contact', href: '#contact', key: 'contact-2' },
   ]
   const socialLinks = [
     { name: 'GitHub', icon: GithubLogo, href: 'https://github.com/guruvishnu' },
@@ -93,7 +95,7 @@ function Footer() {
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }} className="flex items-center gap-3">
             <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${dark ? 'bg-gradient-to-br from-red-600 to-orange-500' : 'bg-gradient-to-br from-blue-400 via-pink-400 to-violet-500'}`}>
-              <span className="text-white font-bold text-lg">GV</span>
+              <span className="text-white font-bold text-lg">V</span>
             </div>
             <div>
               <span className={`font-semibold ${textColor}`}>Guruvishnu</span>
@@ -105,7 +107,7 @@ function Footer() {
             viewport={{ once: true }} transition={{ delay: 0.1 }}
             className="flex justify-center gap-8">
             {navLinks.map(link => (
-              <a key={link.label} href={link.href}
+              <a key={link.key} href={link.href}
                 className={`text-sm font-medium transition-colors ${mutedColor} ${linkHover}`}>
                 {link.label}
               </a>
