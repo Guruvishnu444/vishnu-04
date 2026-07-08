@@ -48,7 +48,7 @@ function useTypingEffect(text, speed = 80, startDelay = 600) {
       return () => clearInterval(interval)
     }, startDelay)
     return () => clearTimeout(timeout)
-  }, [text])
+  }, [text, speed, startDelay])
   return { displayed, done }
 }
 
@@ -58,7 +58,7 @@ function Hero() {
   const opacity = useTransform(scrollY, [0, 400], [1, 0])
   const scale = useTransform(scrollY, [0, 400], [1, 0.95])
   const y = useTransform(scrollY, [0, 400], [0, 100])
-  const { displayed, done } = useTypingEffect('Guruvishnu S', 80, 800)
+  const { displayed, done } = useTypingEffect('Guruvishnu S', 100, 1200)
 
   const textColor = dark ? 'text-[#f5f5f5]' : 'text-[#1a1a1a]'
   const mutedText = dark ? 'text-[#f5f5f5]/65' : 'text-[#1a1a1a]/65'
@@ -104,12 +104,15 @@ function Hero() {
         <motion.h1 variants={itemVariants}
           className={`text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-tight mb-6 ${textColor}`}>
           Hello, I'm{' '}
-          <span className={`bg-gradient-to-r ${nameGradient} bg-clip-text text-transparent`}>
+          <span className={`bg-gradient-to-r ${nameGradient} bg-clip-text text-transparent inline-block`}>
             {displayed}
             {!done && (
-              <motion.span animate={{ opacity: [1, 0] }}
-                transition={{ duration: 0.5, repeat: Infinity, repeatType: 'reverse' }}
-                className={`inline-block ml-1 w-[3px] h-[0.85em] align-middle ${cursorColor}`} />
+              <motion.span 
+                animate={{ opacity: [1, 0] }}
+                transition={{ duration: 0.6, repeat: Infinity, repeatType: 'reverse' }}
+                className={`inline-block ml-1 w-[4px] h-[0.9em] align-middle ${cursorColor}`} 
+                style={{ verticalAlign: 'middle' }}
+              />
             )}
           </span>
         </motion.h1>
