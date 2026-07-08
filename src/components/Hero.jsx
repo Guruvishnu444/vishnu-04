@@ -115,7 +115,7 @@ function Hero() {
         </motion.h1>
 
         <motion.p variants={itemVariants}
-          className={`text-lg sm:text-xl max-w-2xl mb-10 leading-relaxed ${mutedText}`}>
+          className={`text-lg sm:text-x2 max-w-2x4 mb-10 leading-relaxed ${mutedText}`}>
           I’m an aspiring full-stack developer and BSc IT student from Coimbatore, passionate about building clean, responsive web experiences.<br></br>
           I enjoy turning ideas into practical digital products using React, JavaScript, HTML, and CSS.
 
