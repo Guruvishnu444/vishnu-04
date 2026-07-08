@@ -4,7 +4,7 @@ import { useTheme } from '../ThemeContext'
 
 const timelineData = [
   { id: 1, title: 'Schooling', institution: 'Kongu Vellalar Matriculation Higher Secondary School, Karumathampatti.', period: '2021 - 2024', description: 'Scored 72% in 10th and 83.8% in 12th standard.', side: 'left' },
-  { id: 2, title: 'BSc. Information Technology', institution: 'KPR College of Arts, Science and Research (KPRCAS), Uthupalayam.', period: '2024 - Present', description: 'CGPA — 7.2 percentage', side: 'right' },
+  { id: 2, title: 'BSc. Information Technology', institution: 'KPR College of Arts, Science and Research (KPRCAS), Uthupalayam.', period: '2024 - Present', description: 'CGPA — 7.2%', side: 'right' },
 ]
 
 function TimelineCard({ item, index }) {

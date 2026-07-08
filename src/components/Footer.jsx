@@ -81,9 +81,9 @@ function Footer() {
     { label: 'Contact', href: '#contact', key: 'contact-2' },
   ]
   const socialLinks = [
-    { name: 'GitHub', icon: GithubLogo, href: 'https://github.com/guruvishnu' },
-    { name: 'LinkedIn', icon: LinkedinLogo, href: 'https://linkedin.com/in/guruvishnu' },
-    { name: 'LeetCode', icon: Code, href: 'https://leetcode.com/guruvishnu' },
+    { name: 'GitHub', icon: GithubLogo, href: 'https://github.com/Guruvishnu444' },
+    { name: 'LinkedIn', icon: LinkedinLogo, href: 'https://www.linkedin.com/in/guruvishnu-s-v4/' },
+    { name: 'LeetCode', icon: Code, href: 'https://leetcode.com/u/GuruvishnuS/' },
   ]
 
   return (
