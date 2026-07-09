@@ -1,7 +1,6 @@
 import { lazy, Suspense } from 'react'
 import { Toaster } from 'react-hot-toast'
 import { ThemeProvider, useTheme } from './ThemeContext'
-import { ScrollNarrativeProvider } from './ScrollNarrative'
 import { getColors } from './colors'
 import Navbar from './components/Navbar'
 import InteractiveBackground from './components/InteractiveBackground'

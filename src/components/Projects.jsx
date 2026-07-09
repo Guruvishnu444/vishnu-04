@@ -17,7 +17,7 @@ function SkeletonCard({ dark }) {
   )
 }
 
-function ProjectCard({ project, dark }) {
+function ProjectCard({ project, dark, index }) {
   const textColor = dark ? 'text-[#f5f5f5]' : 'text-[#1a1a1a]'
   const mutedText = dark ? 'text-[#f5f5f5]/60' : 'text-[#1a1a1a]/60'
   const cardBg = dark ? 'bg-white/5 border-white/10 hover:border-orange-500/30' : 'bg-black/4 border-black/10 hover:border-violet-400/30'
@@ -26,34 +26,113 @@ function ProjectCard({ project, dark }) {
   const placeholderBg = dark ? 'bg-gradient-to-br from-red-600/20 to-orange-500/20' : 'bg-gradient-to-br from-blue-400/20 via-pink-400/20 to-violet-500/20'
   
   return (
-    <motion.div whileHover={{ y: -4 }} transition={{ duration: 0.2 }}
-      className={`flex-shrink-0 w-[600px] max-w-full border-2 rounded-2xl overflow-hidden transition-all ${cardBg}`}>
-      <div className="h-80 overflow-hidden bg-black/5">
+    <motion.div 
+      initial={{ opacity: 0, y: 50, scale: 0.9 }}
+      whileInView={{ opacity: 1, y: 0, scale: 1 }}
+      viewport={{ once: true, margin: "-100px" }}
+      transition={{ 
+        duration: 0.5, 
+        delay: index * 0.2,
+        type: "spring",
+        stiffness: 100
+      }}
+      whileHover={{ 
+        y: -8,
+        scale: 1.02,
+        transition: { duration: 0.3 }
+      }}
+      className={`flex-shrink-0 w-[600px] max-w-full border-2 rounded-2xl overflow-hidden transition-all ${cardBg} shadow-xl`}>
+      <motion.div 
+        className="h-80 overflow-hidden bg-black/5 relative"
+        whileHover={{ scale: 1.05 }}
+        transition={{ duration: 0.4 }}>
         {project.image ? (
-          <img src={project.image} alt={project.title} className="w-full h-full object-contain" />
+          <motion.img 
+            src={project.image} 
+            alt={project.title} 
+            className="w-full h-full object-contain"
+            initial={{ scale: 1.1, opacity: 0 }}
+            whileInView={{ scale: 1, opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          />
         ) : (
           <div className={`w-full h-full flex items-center justify-center ${placeholderBg}`}>
-            <span className={`text-6xl font-bold ${textColor} opacity-50`}>💰</span>
+            <motion.span 
+              className={`text-6xl font-bold ${textColor} opacity-50`}
+              animate={{ 
+                scale: [1, 1.2, 1],
+                rotate: [0, 10, -10, 0]
+              }}
+              transition={{ 
+                duration: 2,
+                repeat: Infinity,
+                repeatType: "reverse"
+              }}>
+              💰
+            </motion.span>
           </div>
         )}
-      </div>
-      <div className="p-6">
-        <h3 className={`font-bold text-xl mb-3 ${textColor}`}>{project.title}</h3>
+      </motion.div>
+      <motion.div 
+        className="p-6"
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true }}
+        transition={{ delay: 0.3, duration: 0.5 }}>
+        <motion.h3 
+          className={`font-bold text-xl mb-3 ${textColor}`}
+          whileHover={{ x: 5 }}
+          transition={{ type: "spring", stiffness: 300 }}>
+          {project.title}
+        </motion.h3>
         <p className={`text-base mb-5 leading-relaxed ${mutedText}`}>{project.description}</p>
         {project.tags && (
           <div className="flex flex-wrap gap-2 mb-5">
-            {project.tags.map(tag => (
-              <span key={tag} className={`px-3 py-1.5 rounded-full text-sm font-medium ${tagBg}`}>{tag}</span>
+            {project.tags.map((tag, i) => (
+              <motion.span 
+                key={tag} 
+                className={`px-3 py-1.5 rounded-full text-sm font-medium ${tagBg}`}
+                initial={{ opacity: 0, scale: 0 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ 
+                  delay: 0.4 + (i * 0.1),
+                  type: "spring",
+                  stiffness: 200
+                }}
+                whileHover={{ 
+                  scale: 1.15,
+                  rotate: [-2, 2, -2, 0],
+                  transition: { duration: 0.3 }
+                }}>
+                {tag}
+              </motion.span>
             ))}
           </div>
         )}
         {project.link && (
-          <a href={project.link} target="_blank" rel="noopener noreferrer"
-            className={`inline-flex items-center gap-2 text-base font-semibold transition-colors ${linkColor}`}>
-            Visit Project →
-          </a>
+          <motion.a 
+            href={project.link} 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className={`inline-flex items-center gap-2 text-base font-semibold transition-colors ${linkColor}`}
+            whileHover={{ x: 5 }}
+            whileTap={{ scale: 0.95 }}
+            transition={{ type: "spring", stiffness: 400 }}>
+            Visit Project 
+            <motion.span
+              animate={{ x: [0, 5, 0] }}
+              transition={{ 
+                duration: 1.5,
+                repeat: Infinity,
+                repeatType: "loop"
+              }}>
+              →
+            </motion.span>
+          </motion.a>
         )}
-      </div>
+      </motion.div>
     </motion.div>
   )
 }
@@ -99,7 +178,7 @@ function Projects() {
           <style>{`div::-webkit-scrollbar{display:none}`}</style>
           {loading
             ? Array.from({ length: 1 }).map((_, i) => <SkeletonCard key={i} dark={dark} />)
-            : projects.map((p, i) => <ProjectCard key={p.id || i} project={p} dark={dark} />)}
+            : projects.map((p, i) => <ProjectCard key={p.id || i} project={p} dark={dark} index={i} />)}
         </div>
         {projects.length > 1 && <p className={`text-center text-sm mt-4 ${dragHint}`}>Drag to scroll →</p>}
       </div>
