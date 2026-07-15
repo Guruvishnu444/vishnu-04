@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react'
 import { motion, useScroll, useTransform, useMotionValue, useSpring } from 'framer-motion'
 import { ArrowDown, FileArrowDown } from '@phosphor-icons/react'
 import { useTheme } from '../ThemeContext'
-import SplitText from './SplitText'
 
 function MagneticButton({ children, className, onClick }) {
   const x = useMotionValue(0); const y = useMotionValue(0)
@@ -103,36 +102,10 @@ function Hero() {
 
         <motion.h1 variants={itemVariants}
           className={`text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-tight mb-6 ${textColor}`}>
-          <SplitText
-            tag="span"
-            text="Hello, I'm "
-            className="inline"
-            delay={40}
-            duration={0.8}
-            ease="power3.out"
-            splitType="chars"
-            from={{ opacity: 0, y: 40 }}
-            to={{ opacity: 1, y: 0 }}
-            threshold={0.1}
-            rootMargin="-100px"
-            textAlign="left"
-            repeatEvery={30000}
-          />
-          <SplitText
-            tag="span"
-            text="Guruvishnu S"
-            className={`inline bg-gradient-to-r ${nameGradient} bg-clip-text text-transparent pl-1`}
-            delay={40}
-            duration={0.8}
-            ease="power3.out"
-            splitType="chars"
-            from={{ opacity: 0, y: 40 }}
-            to={{ opacity: 1, y: 0 }}
-            threshold={0.1}
-            rootMargin="-100px"
-            textAlign="left"
-            repeatEvery={30000}
-          />
+          Hello, I'm{' '}
+          <span className={`bg-gradient-to-r ${nameGradient} bg-clip-text text-transparent`}>
+            Guruvishnu S
+          </span>
         </motion.h1>
 
         <motion.p variants={itemVariants}
