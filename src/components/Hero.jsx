@@ -97,9 +97,8 @@ function Hero() {
 
         <motion.div variants={itemVariants} className="mb-6">
           <span className={`inline-block px-4 py-2 text-sm font-bold text-white bg-gradient-to-r ${badgeGradient} rounded-xl shadow-sm`}>
-            Full Stack Developer !
+            Full Stack Developer
           </span>
-
         </motion.div>
 
         <motion.h1 variants={itemVariants}
@@ -122,7 +121,7 @@ function Hero() {
           <SplitText
             tag="span"
             text="Guruvishnu S"
-            className={`inline bg-gradient-to-r ${nameGradient} bg-clip-text text-transparent`}
+            className={`inline bg-gradient-to-r ${nameGradient} bg-clip-text text-transparent pl-1`}
             delay={40}
             duration={0.8}
             ease="power3.out"

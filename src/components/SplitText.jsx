@@ -212,11 +212,13 @@ const SplitText = ({
   const renderTag = () => {
     const style = {
       textAlign,
-      overflow: 'hidden',
+      overflow: 'visible',
       display: 'inline-block',
       whiteSpace: 'normal',
       wordWrap: 'break-word',
-      willChange: 'transform, opacity'
+      willChange: 'transform, opacity',
+      paddingLeft: '2px',
+      paddingRight: '2px'
     };
     const classes = `split-parent ${className}`;
     const Tag = tag || 'p';
