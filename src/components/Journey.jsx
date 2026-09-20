@@ -37,12 +37,12 @@ export default function Journey() {
   const lineHeight = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
 
   return (
-    <section id="journey" className="relative py-32 px-6" ref={containerRef}>
+    <section id="journey" className="relative py-20 sm:py-32 px-4 sm:px-6" ref={containerRef}>
       <div className="max-w-6xl mx-auto relative z-10">
         {/* Section header */}
-        <motion.div {...scrollAnim} variants={sectionVariants} className="mb-16">
+        <motion.div {...scrollAnim} variants={sectionVariants} className="mb-12 sm:mb-16 px-4 sm:px-0">
           <motion.h2 
-            className={`text-3xl sm:text-4xl md:text-5xl font-bold mb-6 ${dark ? 'text-white' : 'text-slate-900'}`}
+            className={`text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4 sm:mb-6 ${dark ? 'text-white' : 'text-slate-900'}`}
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -53,7 +53,7 @@ export default function Journey() {
         </motion.div>
 
         {/* Timeline */}
-        <div className="relative max-w-4xl ml-8">
+        <div className="relative max-w-4xl ml-4 sm:ml-8">
           {/* Timeline line with more space */}
           <div className={`absolute left-0 md:left-12 top-0 bottom-0 w-px ${dark ? 'bg-white/10' : 'bg-slate-300'}`}>
             <motion.div
@@ -63,7 +63,7 @@ export default function Journey() {
           </div>
 
           {/* Timeline items */}
-          <div className="space-y-12 md:space-y-16">
+          <div className="space-y-10 sm:space-y-12 md:space-y-16">
             {timeline.map((item, index) => (
               <motion.div
                 key={item.id}
@@ -71,7 +71,7 @@ export default function Journey() {
                 whileInView="visible"
                 viewport={{ once: true, margin: "-100px" }}
                 variants={timelineVariants}
-                className="relative flex items-start pl-12 md:pl-32"
+                className="relative flex items-start pl-8 sm:pl-12 md:pl-32"
               >
                 {/* Timeline dot with glow */}
                 <motion.div
@@ -108,7 +108,7 @@ export default function Journey() {
                     x: 8,
                     transition: { duration: 0.2 }
                   }}
-                  className={`flex-1 p-6 rounded-xl transition-all duration-300 ${
+                  className={`flex-1 p-4 sm:p-6 rounded-xl transition-all duration-300 ${
                     dark 
                       ? 'bg-slate-900/30 border border-slate-800 hover:border-slate-700' 
                       : 'bg-white/50 border border-slate-200 hover:border-slate-300'
@@ -146,7 +146,7 @@ export default function Journey() {
                   </motion.div>
 
                   <motion.h3 
-                    className={`text-xl md:text-2xl font-bold mb-2 ${dark ? 'text-white' : 'text-slate-900'}`}
+                    className={`text-lg sm:text-xl md:text-2xl font-bold mb-2 ${dark ? 'text-white' : 'text-slate-900'}`}
                     initial={{ opacity: 0, y: 10 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}

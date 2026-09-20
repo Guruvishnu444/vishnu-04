@@ -47,6 +47,13 @@ export default function Hero() {
           <h2 className={`text-xl sm:text-2xl md:text-3xl lg:text-4xl font-normal leading-tight tracking-wide ${dark ? 'text-slate-300' : 'text-slate-700'}`}>
             A Full-Stack Developer & Problem Solver.
           </h2>
+          <motion.div 
+            className="w-20 sm:w-24 h-0.5 mt-3"
+            style={{ backgroundColor: '#ef4444' }}
+            initial={{ width: 0 }}
+            animate={{ width: '5rem' }}
+            transition={{ delay: 0.7, duration: 0.6, ease: 'easeOut' }}
+          />
         </motion.div>
 
         {/* Description */}

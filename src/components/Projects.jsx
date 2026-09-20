@@ -19,14 +19,14 @@ export default function Projects() {
   }, []);
 
   return (
-    <section id="projects" className="relative py-32 px-6">
+    <section id="projects" className="relative py-20 sm:py-32 px-4 sm:px-6">
       <div className="max-w-6xl mx-auto">
         {/* Section header */}
-        <motion.div {...scrollAnim} variants={sectionVariants} className="mb-16">
-          <h2 className={`text-3xl sm:text-4xl md:text-5xl font-bold mb-6 ${dark ? 'text-white' : 'text-slate-900'}`}>
+        <motion.div {...scrollAnim} variants={sectionVariants} className="mb-12 sm:mb-16 px-4 sm:px-0">
+          <h2 className={`text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4 sm:mb-6 ${dark ? 'text-white' : 'text-slate-900'}`}>
             My Creations
           </h2>
-          <p className={`text-lg max-w-3xl ${dark ? 'text-slate-400' : 'text-slate-600'}`}>
+          <p className={`text-base sm:text-lg max-w-3xl ${dark ? 'text-slate-400' : 'text-slate-600'}`}>
             Here's a glimpse into some of the exciting projects I've worked on, showcasing my skills and passion 
             for innovation. Each project represents a unique challenge and a step forward in my journey.
           </p>

@@ -4,7 +4,7 @@ export default function Footer() {
   const { dark } = useTheme();
 
   return (
-    <footer className={`relative border-t py-8 px-6 transition-colors ${
+    <footer className={`relative border-t py-6 sm:py-8 px-4 sm:px-6 transition-colors ${
       dark ? 'border-white/10' : 'border-slate-200'
     }`}>
       <div className="max-w-4xl mx-auto">

@@ -19,24 +19,24 @@ export default function About() {
   const scrollAnim = useScrollAnimation();
 
   return (
-    <section id="about" className="relative py-32 px-6">
+    <section id="about" className="relative py-20 sm:py-32 px-4 sm:px-6">
       <div className="max-w-6xl mx-auto">
 
 
         {/* Main content - Editorial layout */}
-        <div className="space-y-16">
+        <div className="space-y-12 sm:space-y-16">
           {/* Intro paragraph */}
-          <motion.div {...scrollAnim} variants={sectionVariants} className="max-w-4xl">
-            <h2 className={`text-3xl sm:text-4xl md:text-5xl font-bold leading-tight mb-8 ${dark ? 'text-white' : 'text-slate-900'}`}>
+          <motion.div {...scrollAnim} variants={sectionVariants} className="max-w-4xl px-4 sm:px-0">
+            <h2 className={`text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold leading-tight mb-6 sm:mb-8 ${dark ? 'text-white' : 'text-slate-900'}`}>
               Fueling the future with innovative solutions, backed by continuous learning and real-world impact.
             </h2>
           </motion.div>
 
           {/* Body content */}
-          <motion.div {...scrollAnim} variants={sectionVariants} className="grid lg:grid-cols-12 gap-12 lg:gap-16">
+          <motion.div {...scrollAnim} variants={sectionVariants} className="grid lg:grid-cols-12 gap-8 lg:gap-12 xl:gap-16 px-4 sm:px-0">
             {/* Left side - Text */}
-            <div className="lg:col-span-7 space-y-6">
-              <p className={`text-lg leading-relaxed ${dark ? 'text-slate-400' : 'text-slate-600'}`}>
+            <div className="lg:col-span-7 space-y-4 sm:space-y-6">
+              <p className={`text-base sm:text-lg leading-relaxed ${dark ? 'text-slate-400' : 'text-slate-600'}`}>
                 I am a BSc Information Technology student at KPR College of Arts, Science and Research (KPRCAS) in Coimbatore. 
                 With a strong interest in full-stack web development, I focus on building responsive, user-friendly applications 
                 that solve real-world problems.
