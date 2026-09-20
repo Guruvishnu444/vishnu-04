@@ -1,141 +1,133 @@
-import { motion } from 'framer-motion'
-import { Code, FileHtml, FileCss, FileJs, Atom, BracketsAngle } from '@phosphor-icons/react'
-import { useTheme } from '../ThemeContext'
+import { motion } from 'framer-motion';
+import { Code, FileHtml, FileCss, FileJs, Atom, BracketsAngle } from '@phosphor-icons/react';
+import { useTheme } from '../ThemeContext';
+import { sectionVariants, gridContainerVariants, gridItemVariants, useScrollAnimation } from '../utils/animations';
 
 const skills = [
-  { name: 'HTML5', icon: FileHtml },
-  { name: 'CSS3', icon: FileCss },
-  { name: 'JavaScript', icon: FileJs },
-  { name: 'React', icon: Atom },
-  { name: 'Python', icon: Code },
-  { name: 'C', icon: BracketsAngle },
-  { name: 'C++', icon: BracketsAngle },
-  { name: 'Java', icon: Code },
-]
+  { name: 'HTML5', icon: FileHtml, category: 'Frontend' },
+  { name: 'CSS3', icon: FileCss, category: 'Frontend' },
+  { name: 'JavaScript', icon: FileJs, category: 'Frontend' },
+  { name: 'React', icon: Atom, category: 'Frontend' },
+  { name: 'Python', icon: Code, category: 'Backend' },
+  { name: 'C', icon: BracketsAngle, category: 'Language' },
+  { name: 'C++', icon: BracketsAngle, category: 'Language' },
+  { name: 'Java', icon: Code, category: 'Language' },
+];
 
-function About() {
-  const { dark } = useTheme()
-  const textColor = dark ? 'text-[#f5f5f5]' : 'text-[#1a1a1a]'
-  const mutedText = dark ? 'text-[#f5f5f5]/65' : 'text-[#1a1a1a]/65'
-  const cardBg = dark ? 'bg-white/5 border-white/10 hover:border-orange-500/30' : 'bg-black/4 border-black/10 hover:border-violet-400/30'
-  const badgeBg = dark ? 'bg-red-500/10 text-red-400' : 'bg-blue-400/10 text-blue-500'
-  const headingGradient = dark ? 'from-red-500 via-orange-400 to-red-400' : 'from-blue-400 via-pink-400 to-violet-500'
-  const iconColor = dark ? 'text-orange-400' : 'text-violet-500'
-
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.15,
-        delayChildren: 0.2
-      }
-    }
-  }
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 30 },
-    visible: { 
-      opacity: 1, 
-      y: 0,
-      transition: {
-        type: "spring",
-        stiffness: 100,
-        damping: 15
-      }
-    }
-  }
+export default function About() {
+  const { dark } = useTheme();
+  const scrollAnim = useScrollAnimation();
 
   return (
-    <section id="about" className="relative py-24 px-6" aria-label="About section">
+    <section id="about" className="relative py-32 px-6">
       <div className="max-w-6xl mx-auto">
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-start">
 
-          <motion.div 
-            initial={{ opacity: 0, x: -50 }} 
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, amount: 0.15 }}
-            transition={{ duration: 0.7, type: 'spring', stiffness: 80 }}>
-            <motion.span 
-              className={`inline-block px-3 py-1 rounded-full text-xs font-semibold tracking-wider uppercase mb-4 ${badgeBg}`}
-              whileHover={{ scale: 1.05, rotate: 2 }}
-              transition={{ type: "spring", stiffness: 300 }}>
-              About Me
-            </motion.span>
-            <motion.h2 
-              className={`text-3xl sm:text-4xl lg:text-5xl font-bold mb-6 ${textColor}`}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.2, duration: 0.6 }}>
-              Turning Ideas Into{' '}
-              <motion.span 
-                className={`bg-gradient-to-r ${headingGradient} bg-clip-text text-transparent inline-block`}
-                whileHover={{ scale: 1.05 }}
-                transition={{ type: "spring", stiffness: 300 }}>
-                Digital Reality
-              </motion.span>
-            </motion.h2>
-            <motion.div 
-              className={`space-y-4 leading-relaxed ${mutedText}`}
-              variants={containerVariants}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true }}>
-              <motion.p variants={itemVariants}>Hi! I'm Guruvishnu S, a passionate Full Stack Developer with a strong foundation in modern web technologies.</motion.p>
-              <motion.p variants={itemVariants}>I'm currently open to internships and freelance opportunities where I can contribute my skills while continuing to grow as a developer.</motion.p>
-              <motion.p variants={itemVariants}>When I'm not coding, you'll find me exploring new technologies, contributing to open-source projects, or sharpening my problem-solving skills.</motion.p>
-            </motion.div>
+
+        {/* Main content - Editorial layout */}
+        <div className="space-y-16">
+          {/* Intro paragraph */}
+          <motion.div {...scrollAnim} variants={sectionVariants} className="max-w-4xl">
+            <h2 className={`text-3xl sm:text-4xl md:text-5xl font-bold leading-tight mb-8 ${dark ? 'text-white' : 'text-slate-900'}`}>
+              Fueling the future with innovative solutions, backed by continuous learning and real-world impact.
+            </h2>
           </motion.div>
 
-          <motion.div 
-            initial={{ opacity: 0, x: 50 }} 
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, amount: 0.15 }}
-            transition={{ duration: 0.7, type: 'spring', stiffness: 80 }}>
-            <motion.div 
-              className={`border rounded-2xl p-6 sm:p-8 backdrop-blur-sm transition-all ${cardBg}`}
-              whileHover={{ scale: 1.02 }}
-              transition={{ type: "spring", stiffness: 200 }}>
-              <h3 className={`text-xl font-semibold mb-6 ${textColor}`}>Technical Skills</h3>
+          {/* Body content */}
+          <motion.div {...scrollAnim} variants={sectionVariants} className="grid lg:grid-cols-12 gap-12 lg:gap-16">
+            {/* Left side - Text */}
+            <div className="lg:col-span-7 space-y-6">
+              <p className={`text-lg leading-relaxed ${dark ? 'text-slate-400' : 'text-slate-600'}`}>
+                I am a BSc Information Technology student at KPR College of Arts, Science and Research (KPRCAS) in Coimbatore. 
+                With a strong interest in full-stack web development, I focus on building responsive, user-friendly applications 
+                that solve real-world problems.
+              </p>
+              
+              <p className={`text-lg leading-relaxed ${dark ? 'text-slate-400' : 'text-slate-600'}`}>
+                I work at the intersection of frontend design and backend logic, using modern frameworks like React, JavaScript, 
+                and Python to create seamless digital experiences. My approach prioritizes clean code, maintainable architecture, 
+                and thoughtful user interfaces.
+              </p>
+              
+              <p className={`text-lg leading-relaxed ${dark ? 'text-slate-400' : 'text-slate-600'}`}>
+                I'm currently open to internships and freelance opportunities where I can contribute my skills while continuing 
+                to grow as a developer. When I'm not coding, you'll find me exploring new technologies, contributing to open-source 
+                projects, or sharpening my problem-solving skills on competitive programming platforms.
+              </p>
+            </div>
+
+            {/* Right side - Stats */}
+            <div className="lg:col-span-5">
               <motion.div 
-                className="grid grid-cols-2 sm:grid-cols-3 gap-4"
-                variants={containerVariants}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true }}>
-                {skills.map((skill, index) => (
-                  <motion.div 
-                    key={skill.name}
-                    variants={itemVariants}
-                    whileHover={{ 
-                      scale: 1.1,
-                      rotate: [0, -5, 5, 0],
-                      transition: { duration: 0.3 }
-                    }}
-                    whileTap={{ scale: 0.95 }}
-                    className={`border rounded-xl p-4 flex flex-col items-center gap-3 cursor-default transition-all ${cardBg}`}>
-                    <motion.div
-                      initial={{ scale: 0, rotate: -180 }}
-                      whileInView={{ scale: 1, rotate: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ 
-                        delay: index * 0.1,
-                        type: "spring",
-                        stiffness: 200
-                      }}>
-                      <skill.icon size={32} weight="duotone" className={iconColor} />
-                    </motion.div>
-                    <span className={`text-sm font-medium ${textColor}`}>{skill.name}</span>
+                {...scrollAnim}
+                variants={gridContainerVariants}
+                className="space-y-8"
+              >
+                {[
+                  { label: 'Projects Completed', value: '2+' },
+                  { label: 'Technologies Mastered', value: '8+' },
+                  { label: 'Years Learning', value: '2+' },
+                ].map((stat) => (
+                  <motion.div key={stat.label} variants={gridItemVariants} className={`pb-8 border-b ${dark ? 'border-white/10' : 'border-slate-200'}`}>
+                    <div className={`text-5xl sm:text-6xl font-bold mb-2 ${dark ? 'text-cyan-400' : 'text-blue-600'}`}>
+                      {stat.value}
+                    </div>
+                    <div className={`text-sm font-medium tracking-wide ${dark ? 'text-slate-500' : 'text-slate-600'}`}>
+                      {stat.label}
+                    </div>
                   </motion.div>
                 ))}
               </motion.div>
+            </div>
+          </motion.div>
+
+          {/* Core Toolkit Section */}
+          <motion.div {...scrollAnim} variants={sectionVariants} className="pt-12">
+            <h3 className={`text-xl font-bold mb-8 ${dark ? 'text-white' : 'text-slate-900'}`}>
+              My Core Toolkit
+            </h3>
+            
+            <motion.div
+              variants={gridContainerVariants}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-50px" }}
+              className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-4"
+            >
+              {skills.map((skill) => (
+                <motion.div
+                  key={skill.name}
+                  variants={gridItemVariants}
+                  whileHover={{ 
+                    y: -6,
+                    transition: { duration: 0.2, ease: 'easeOut' }
+                  }}
+                  className={`group relative flex flex-col items-center gap-3 p-4 rounded-xl border transition-all cursor-default ${
+                    dark
+                      ? 'bg-white/[0.02] border-white/10 hover:border-cyan-400/50 hover:bg-white/5'
+                      : 'bg-white border-slate-200 hover:border-blue-500 hover:shadow-md'
+                  }`}
+                >
+                  <motion.div
+                    whileHover={{ scale: 1.1 }}
+                    transition={{ type: 'spring', stiffness: 400, damping: 10 }}
+                  >
+                    <skill.icon 
+                      size={28} 
+                      weight="duotone" 
+                      className={`${dark ? 'text-cyan-400' : 'text-blue-600'} transition-colors`} 
+                    />
+                  </motion.div>
+                  <div className="text-center">
+                    <div className={`text-xs font-medium ${dark ? 'text-slate-300 group-hover:text-white' : 'text-slate-700 group-hover:text-slate-900'} transition-colors`}>
+                      {skill.name}
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
             </motion.div>
           </motion.div>
         </div>
       </div>
     </section>
-  )
+  );
 }
-
-export default About

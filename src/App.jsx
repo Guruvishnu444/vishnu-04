@@ -1,9 +1,8 @@
 import { lazy, Suspense } from 'react'
 import { Toaster } from 'react-hot-toast'
 import { ThemeProvider, useTheme } from './ThemeContext'
-import { getColors } from './colors'
 import Navbar from './components/Navbar'
-import InteractiveBackground from './components/InteractiveBackground'
+import NetworkSolarSystem from './components/NetworkSolarSystem'
 import Footer from './components/Footer'
 
 const Hero = lazy(() => import('./components/Hero'))
@@ -16,7 +15,7 @@ function LoadingFallback() {
   const { dark } = useTheme()
   return (
     <div className="min-h-[50vh] flex items-center justify-center">
-      <div className={`w-8 h-8 border-2 border-t-transparent rounded-full animate-spin ${dark ? 'border-orange-400' : 'border-violet-500'}`} />
+      <div className={`w-8 h-8 border-2 border-t-transparent rounded-full animate-spin ${dark ? 'border-cyan-400' : 'border-blue-500'}`} />
     </div>
   )
 }
@@ -24,10 +23,10 @@ function LoadingFallback() {
 function AppInner() {
   const { dark } = useTheme()
   return (
-    <div className={`relative min-h-screen overflow-hidden transition-colors duration-500 ${dark ? 'bg-black' : 'bg-white'}`}>
-      <InteractiveBackground />
+    <div className={`relative min-h-screen overflow-hidden transition-colors duration-500 ${dark ? 'bg-black text-white' : 'bg-[#fafafa] text-slate-900'}`}>
+      <NetworkSolarSystem />
       <Navbar />
-      <main>
+      <main className="relative z-10">
         <Suspense fallback={<LoadingFallback />}><Hero /></Suspense>
         <Suspense fallback={<LoadingFallback />}><About /></Suspense>
         <Suspense fallback={<LoadingFallback />}><Journey /></Suspense>
@@ -42,7 +41,7 @@ function AppInner() {
           backdropFilter: 'blur(10px)',
           border: dark ? '1px solid rgba(255,255,255,0.08)' : '1px solid rgba(0,0,0,0.08)',
         },
-        success: { iconTheme: { primary: dark ? '#f97316' : '#8b5cf6', secondary: dark ? '#000' : '#fff' } },
+        success: { iconTheme: { primary: dark ? '#00f0ff' : '#3b82f6', secondary: dark ? '#000' : '#fff' } },
         error: { iconTheme: { primary: '#ef4444', secondary: dark ? '#000' : '#fff' } },
       }} />
     </div>

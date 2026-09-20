@@ -1,123 +1,111 @@
-import { useState, useEffect } from 'react'
-import { motion, useScroll, useTransform, useMotionValue, useSpring } from 'framer-motion'
-import { ArrowDown, FileArrowDown } from '@phosphor-icons/react'
-import { useTheme } from '../ThemeContext'
+import { motion } from 'framer-motion';
+import { ArrowDown } from '@phosphor-icons/react';
+import { useTheme } from '../ThemeContext';
+import { heroVariants } from '../utils/animations';
 
-function MagneticButton({ children, className, onClick }) {
-  const x = useMotionValue(0); const y = useMotionValue(0)
-  const springX = useSpring(x, { stiffness: 150, damping: 20 })
-  const springY = useSpring(y, { stiffness: 150, damping: 20 })
-  const handleMouse = (e) => {
-    const rect = e.currentTarget.getBoundingClientRect()
-    x.set((e.clientX - rect.left - rect.width / 2) * 0.3)
-    y.set((e.clientY - rect.top - rect.height / 2) * 0.3)
-  }
-  return (
-    <motion.button style={{ x: springX, y: springY }}
-      onMouseMove={handleMouse} onMouseLeave={() => { x.set(0); y.set(0) }}
-      onClick={onClick} className={className}>{children}</motion.button>
-  )
-}
+export default function Hero() {
+  const { dark } = useTheme();
 
-function MagneticLink({ children, className, href }) {
-  const x = useMotionValue(0); const y = useMotionValue(0)
-  const springX = useSpring(x, { stiffness: 150, damping: 20 })
-  const springY = useSpring(y, { stiffness: 150, damping: 20 })
-  const handleMouse = (e) => {
-    const rect = e.currentTarget.getBoundingClientRect()
-    x.set((e.clientX - rect.left - rect.width / 2) * 0.3)
-    y.set((e.clientY - rect.top - rect.height / 2) * 0.3)
-  }
-  return (
-    <motion.a style={{ x: springX, y: springY }}
-      onMouseMove={handleMouse} onMouseLeave={() => { x.set(0); y.set(0) }}
-      href={href} target="_blank" rel="noopener noreferrer" className={className}>{children}</motion.a>
-  )
-}
-
-function useTypingEffect(text, speed = 80, startDelay = 600) {
-  const [displayed, setDisplayed] = useState('')
-  const [done, setDone] = useState(false)
-  useEffect(() => {
-    let i = 0; setDisplayed(''); setDone(false)
-    const timeout = setTimeout(() => {
-      const interval = setInterval(() => {
-        i++; setDisplayed(text.slice(0, i))
-        if (i >= text.length) { clearInterval(interval); setDone(true) }
-      }, speed)
-      return () => clearInterval(interval)
-    }, startDelay)
-    return () => clearTimeout(timeout)
-  }, [text, speed, startDelay])
-  return { displayed, done }
-}
-
-function Hero() {
-  const { dark } = useTheme()
-  const { scrollY } = useScroll()
-  const opacity = useTransform(scrollY, [0, 400], [1, 0])
-  const scale = useTransform(scrollY, [0, 400], [1, 0.95])
-  const y = useTransform(scrollY, [0, 400], [0, 100])
-  const { displayed, done } = useTypingEffect('Guruvishnu S', 100, 1200)
-
-  const textColor = dark ? 'text-[#f5f5f5]' : 'text-[#1a1a1a]'
-  const mutedText = dark ? 'text-[#f5f5f5]/65' : 'text-[#1a1a1a]/65'
-  const nameGradient = dark
-    ? 'from-red-500 via-orange-400 to-red-400'
-    : 'from-blue-400 via-pink-400 to-violet-500'
-  const cursorColor = dark ? 'bg-orange-400' : 'bg-violet-500'
-  const btnGradient = dark
-    ? 'bg-gradient-to-r from-red-600 to-orange-500'
-    : 'bg-gradient-to-r from-blue-400 via-pink-400 to-violet-500'
-  const resumeBtn = dark
-    ? 'border-white/15 text-[#f5f5f5] hover:border-orange-500/50'
-    : 'border-black/15 text-[#1a1a1a] hover:border-violet-400/50'
-  const scrollBorder = dark ? 'border-white/25' : 'border-black/25'
-  const scrollDot = dark ? 'bg-orange-400' : 'bg-violet-500'
-  const badgeGradient = dark
-    ? 'from-red-600 via-orange-500 to-red-400'
-    : 'from-blue-400 via-pink-400 to-violet-500'
-
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: { opacity: 1, transition: { staggerChildren: 0.15, delayChildren: 0.2 } },
-  }
-  const itemVariants = {
-    hidden: { opacity: 0, y: 30 },
-    visible: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 100, damping: 15 } },
-  }
+  const scrollToSection = (id) => {
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+  };
 
   return (
-    <motion.section id="hero" style={{ opacity, scale, y }}
-      className="relative min-h-screen flex items-center justify-start pt-24 px-6"
-      aria-label="Hero section">
-      <motion.div variants={containerVariants} initial="hidden" animate="visible"
-        className="max-w-4xl text-left">
-
-        <motion.div variants={itemVariants} className="mb-6">
-          <span className={`inline-block px-4 py-2 text-sm font-bold text-white bg-gradient-to-r ${badgeGradient} rounded-xl shadow-sm`}>
-            Full Stack Developer
-          </span>
+    <section 
+      id="hero" 
+      className="relative min-h-screen flex items-center justify-center px-6 pt-32 pb-20"
+    >
+      <motion.div
+        variants={heroVariants.container}
+        initial="hidden"
+        animate="visible"
+        className="max-w-7xl mx-auto w-full relative z-10"
+      >
+        {/* Intro text */}
+        <motion.div variants={heroVariants.item} className="mb-6">
+          <p className={`text-base sm:text-lg md:text-xl font-light tracking-wide ${dark ? 'text-slate-400' : 'text-slate-600'}`}>
+            Hello, I'm
+          </p>
+          <motion.div 
+            className="w-16 h-0.5 mt-2"
+            style={{ backgroundColor: '#ef4444' }}
+            initial={{ width: 0 }}
+            animate={{ width: '4rem' }}
+            transition={{ delay: 0.5, duration: 0.6, ease: 'easeOut' }}
+          />
         </motion.div>
 
-        <motion.h1 variants={itemVariants}
-          className={`text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-tight mb-6 ${textColor}`}>
-          Hello, I'm{' '}
-          <span className={`bg-gradient-to-r ${nameGradient} bg-clip-text text-transparent`}>
+        {/* Name - Large Display */}
+        <motion.div variants={heroVariants.title} className="mb-6">
+          <h1 className={`text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold leading-[0.9] tracking-tight ${dark ? 'text-white' : 'text-slate-900'}`}>
             Guruvishnu S
+          </h1>
+        </motion.div>
+
+        {/* Professional title */}
+        <motion.div variants={heroVariants.item} className="mb-8">
+          <h2 className={`text-xl sm:text-2xl md:text-3xl lg:text-4xl font-normal leading-tight tracking-wide ${dark ? 'text-slate-300' : 'text-slate-700'}`}>
+            A Full-Stack Developer & Problem Solver.
+          </h2>
+        </motion.div>
+
+        {/* Description */}
+        <motion.div variants={heroVariants.item} className="mb-16 max-w-3xl">
+          <p className={`text-base sm:text-lg md:text-xl leading-relaxed font-light ${dark ? 'text-slate-400' : 'text-slate-600'}`}>
+            I learn, build, and optimize web solutions to solve real-world problems. 
+            BSc IT student from Coimbatore, passionate about creating clean, responsive digital experiences.
+          </p>
+        </motion.div>
+
+        {/* Social links - bottom */}
+        <motion.div 
+          variants={heroVariants.item}
+          className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6"
+        >
+          <span className={`text-xs font-mono tracking-widest uppercase ${dark ? 'text-slate-600' : 'text-slate-400'}`}>
+            Find me on
           </span>
-        </motion.h1>
-
-        <motion.p variants={itemVariants}
-          className={`text-lg sm:text-x2 max-w-2x4 mb-10 leading-relaxed ${mutedText}`}>
-          I’m an aspiring full-stack developer and BSc IT student from Coimbatore, passionate about building clean, responsive web experiences.<br></br>
-          I enjoy turning ideas into practical digital products using React, JavaScript, HTML, and CSS.
-
-        </motion.p>
-
+          <div className="flex items-center gap-5">
+            {[
+              { name: 'GitHub', url: 'https://github.com/Guruvishnu444' },
+              { name: 'LinkedIn', url: 'https://www.linkedin.com/in/guruvishnu-s-v4/' },
+              { name: 'LeetCode', url: 'https://leetcode.com/u/GuruvishnuS/' },
+            ].map((link) => (
+              <motion.a
+                key={link.name}
+                href={link.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`text-sm font-medium transition-colors ${
+                  dark 
+                    ? 'text-slate-400 hover:text-cyan-400' 
+                    : 'text-slate-600 hover:text-blue-600'
+                }`}
+                whileHover={{ y: -2 }}
+              >
+                {link.name}
+              </motion.a>
+            ))}
+          </div>
+        </motion.div>
       </motion.div>
-    </motion.section>
-  )
-}
 
-export default Hero
+      {/* Scroll indicator */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1.8, duration: 0.8 }}
+        className="absolute bottom-10 left-1/2 -translate-x-1/2 z-10"
+      >
+        <motion.button
+          onClick={() => scrollToSection('about')}
+          animate={{ y: [0, 8, 0] }}
+          transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+          className="flex flex-col items-center gap-2 cursor-pointer group"
+        >
+          <ArrowDown size={20} className={`${dark ? 'text-slate-600 group-hover:text-cyan-400' : 'text-slate-400 group-hover:text-blue-600'} transition-colors`} weight="bold" />
+        </motion.button>
+      </motion.div>
+    </section>
+  );
+}
