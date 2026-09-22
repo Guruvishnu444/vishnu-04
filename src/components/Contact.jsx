@@ -10,7 +10,7 @@ export default function Contact() {
   const socialLinks = [
     { name: 'GitHub', icon: GithubLogo, url: 'https://github.com/Guruvishnu444' },
     { name: 'LinkedIn', icon: LinkedinLogo, url: 'https://www.linkedin.com/in/guruvishnu-s-v4/' },
-    { name: 'LeetCode', icon: Code, url: 'https://leetcode.com/u/GuruvishnuS/' },
+    { name: 'LeetCode', icon: Code, url: 'https://leetcode.com/u/Guruvishnu-v4/' },
   ];
 
   return (

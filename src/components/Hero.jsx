@@ -76,7 +76,7 @@ export default function Hero() {
             {[
               { name: 'GitHub', url: 'https://github.com/Guruvishnu444' },
               { name: 'LinkedIn', url: 'https://www.linkedin.com/in/guruvishnu-s-v4/' },
-              { name: 'LeetCode', url: 'https://leetcode.com/u/GuruvishnuS/' },
+              { name: 'LeetCode', url: 'https://leetcode.com/u/Guruvishnu-v4/' },
             ].map((link) => (
               <motion.a
                 key={link.name}

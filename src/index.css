@@ -119,3 +119,14 @@ p {
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+
+
+/* Shimmer animation for typographic effect */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
