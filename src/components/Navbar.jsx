@@ -64,6 +64,17 @@ export default function Navbar() {
     >
       <nav className="max-w-6xl mx-auto px-6 lg:px-8 py-5">
         <div className="flex items-center justify-between">
+          {/* Logo */}
+          <div className="flex items-center">
+            <button onClick={() => scrollToSection('hero')} className="focus:outline-none">
+              <img
+                src="./favicon.jpg"
+                alt="Guruvishnu S Logo"
+                className="w-9 h-9 rounded-lg object-cover"
+              />
+            </button>
+          </div>
+
           {/* Desktop Navigation - Centered */}
           <div className="hidden md:flex items-center gap-8 flex-1 justify-center">
             {navLinks.map((link) => (
@@ -150,6 +161,7 @@ export default function Navbar() {
             </motion.button>
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
               className={`p-2 ${dark ? 'text-white' : 'text-slate-900'}`}
             >
               {mobileMenuOpen ? <X size={24} /> : <List size={24} />}

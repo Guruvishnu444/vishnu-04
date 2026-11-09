@@ -6,15 +6,24 @@ import { sectionVariants, timelineVariants, useScrollAnimation } from '../utils/
 const timeline = [
   {
     id: 1,
-    year: '2021 - 2024',
-    title: 'Schooling',
+    year: '2021 - 2022',
+    title: '10th Standard (SSLC)',
     institution: 'Kongu Vellalar Matriculation Higher Secondary School',
     location: 'Karumathampatti',
-    description: 'Scored 72% in 10th and 83.8% in 12th standard.',
+    description: 'Scored 72% in 10th standard.',
     status: 'completed',
   },
   {
     id: 2,
+    year: '2022 - 2024',
+    title: '12th Standard (HSC)',
+    institution: 'Kongu Vellalar Matriculation Higher Secondary School',
+    location: 'Karumathampatti',
+    description: 'Scored 83.8% in 12th standard.',
+    status: 'completed',
+  },
+  {
+    id: 3,
     year: '2024 - Present',
     title: 'BSc. Information Technology',
     institution: 'KPR College of Arts, Science and Research (KPRCAS)',
@@ -41,6 +50,9 @@ export default function Journey() {
       <div className="max-w-6xl mx-auto relative z-10">
         {/* Section header */}
         <motion.div {...scrollAnim} variants={sectionVariants} className="mb-12 sm:mb-16 px-4 sm:px-0">
+          <h2 className={`text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4 sm:mb-6 ${dark ? 'text-white' : 'text-slate-900'}`}>
+            Journey
+          </h2>
           <motion.h2 
             className={`text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4 sm:mb-6 ${dark ? 'text-white' : 'text-slate-900'}`}
             initial={{ opacity: 0, y: 20 }}

@@ -22,6 +22,12 @@ export default function About() {
     <section id="about" className="relative py-20 sm:py-32 px-4 sm:px-6">
       <div className="max-w-6xl mx-auto">
 
+        {/* Section header */}
+        <motion.div {...scrollAnim} variants={sectionVariants} className="mb-12 sm:mb-16 px-4 sm:px-0">
+          <h2 className={`text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4 sm:mb-6 ${dark ? 'text-white' : 'text-slate-900'}`}>
+            About
+          </h2>
+        </motion.div>
 
         {/* Main content - Editorial layout */}
         <div className="space-y-12 sm:space-y-16">

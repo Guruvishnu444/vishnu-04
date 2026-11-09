@@ -12,13 +12,13 @@ const NetworkSolarSystem = () => {
   const smoothMouseX = useSpring(mouseX, springConfig);
   const smoothMouseY = useSpring(mouseY, springConfig);
 
-  // Reduced particle count for better performance
+  // Increased particle count for more visual density
   const particles = useMemo(() => {
     const newParticles = [];
     
-    // 3 spiral arms with fewer particles
-    const numArms = 3;
-    const particlesPerArm = 60; // Reduced from 120
+    // 4 spiral arms with more particles
+    const numArms = 4;
+    const particlesPerArm = 90; // Increased from 60
     const armSpread = 0.5;
     
     for (let arm = 0; arm < numArms; arm++) {
@@ -46,8 +46,8 @@ const NetworkSolarSystem = () => {
       }
     }
     
-    // Dense center cluster - reduced
-    for (let i = 0; i < 50; i++) {
+    // Dense center cluster - increased
+    for (let i = 0; i < 80; i++) {
       const angle = Math.random() * Math.PI * 2;
       const radius = Math.random() * 60;
       
@@ -62,8 +62,8 @@ const NetworkSolarSystem = () => {
       });
     }
     
-    // Field stars - reduced
-    for (let i = 0; i < 40; i++) {
+    // Field stars - increased
+    for (let i = 0; i < 70; i++) {
       const angle = Math.random() * Math.PI * 2;
       const radius = 400 + Math.random() * 200;
       
@@ -75,6 +75,22 @@ const NetworkSolarSystem = () => {
         opacity: 0.3 + Math.random() * 0.4,
         speed: 100 + Math.random() * 50,
         glowSize: 2 + Math.random() * 2,
+      });
+    }
+
+    // Additional ambient particles scattered randomly
+    for (let i = 0; i < 60; i++) {
+      const angle = Math.random() * Math.PI * 2;
+      const radius = 150 + Math.random() * 300;
+      
+      newParticles.push({
+        id: `ambient-${i}`,
+        angle,
+        radius,
+        size: 1 + Math.random() * 1.8,
+        opacity: 0.3 + Math.random() * 0.5,
+        speed: 70 + Math.random() * 60,
+        glowSize: 2 + Math.random() * 2.5,
       });
     }
 
