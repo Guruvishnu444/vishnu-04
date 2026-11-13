@@ -173,12 +173,6 @@ Suggestions, feedback, and ideas for improvement are always welcome.
 
 If you find something interesting, feel free to explore the repository and share your thoughts.
 
-## 📄 LICENSE
-
-No open-source license has currently been specified for this repository. Please contact the repository owner before redistributing or reusing its contents.
-
----
-
 <p align="center">
   <strong>Designed with curiosity. Built with creativity. Driven by innovation.</strong>
 </p>
